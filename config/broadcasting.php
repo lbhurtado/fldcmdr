@@ -54,6 +54,13 @@ return [
             'driver' => 'null',
         ],
 
+        'telerivet' => [
+            'driver' => 'telerivet',
+            'api_key' => env('TELERIVET_API_KEY'),
+            'project_id' => env('TELERIVET_PROJECT_ID'),
+            'service_id' => env('TELERIVET_SERVICE_ID'),
+        ],
+        
     ],
 
 ];

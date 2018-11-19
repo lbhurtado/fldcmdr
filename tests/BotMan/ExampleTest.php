@@ -2,11 +2,14 @@
 
 namespace Tests\BotMan;
 
-use Illuminate\Foundation\Inspiring;
 use Tests\TestCase;
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
+    
     /**
      * A basic test example.
      *
@@ -15,8 +18,8 @@ class ExampleTest extends TestCase
     public function testBasicTest()
     {
         $this->bot
-            ->receives('Hi')
-            ->assertReply('Hello!');
+            ->receives('test')
+            ->assertReply('It works!');
     }
 
     /**

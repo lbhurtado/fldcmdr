@@ -15,11 +15,15 @@
         "botman/driver-facebook": "^1.9",
         "botman/driver-telegram": "^1.5",
         "botman/driver-web": "~1.0",
-        "botman/studio-addons": "~1.4.1",
+        "botman/studio-addons": "~1.2.1",
         "botman/tinker": "~1.0",
         "fideloper/proxy": "~4.0",
-        "laravel/framework": "5.7.*",
-        "laravel/tinker": "~1.0"
+        "laravel/framework": "5.6.*",
+        "laravel/tinker": "~1.0",
+        "propaganistas/laravel-intl": "^2.1",
+        "propaganistas/laravel-phone": "^4.0",
+        "spomky-labs/otphp": "^9.1",
+        "telerivet/telerivet-php-client": "^1.1"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.2",
@@ -32,7 +36,8 @@
     },
     "autoload": {
         "classmap": [
-            "database"
+            "database",
+            "vendor/telerivet/telerivet-php-client/telerivet.php"
         ],
         "psr-4": {
             "App\\": "app/"
