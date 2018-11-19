@@ -4,6 +4,7 @@ namespace App\Conversations;
 
 use App\User;
 use App\Helpers\Phone;
+use App\Conversations\Survey;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -26,7 +27,7 @@ class Verify extends Conversation
     	$driver = $this->bot->getDriver()->getName();
     	$channel_id = $this->bot->getUser()->getId();
 
-    	if ($user = User::where(compact('driver', 'channel_id'))->first()) {
+        if ($user = User::fromMessenger($driver, $channel_id)) {
     		if (! ($user->first_name || $user->last_name)) {
 	    		$user->first_name = $this->bot->getUser()->getFirstName();
 	    		$user->last_name = $this->bot->getUser()->getLastName();
@@ -62,7 +63,8 @@ class Verify extends Conversation
             ;
 
         return $this->ask($question, function (Answer $answer) {
-            if (! $mobile = $this->checkMobile($answer->getText()))
+            
+            if (! $mobile = Phone::validate($answer->getText()))
                 return $this->repeat(trans('verify.input.mobile'));
 
             tap($this->getUser(), function ($user) use ($mobile) {
@@ -99,15 +101,17 @@ class Verify extends Conversation
     protected function finish()
     {
         $this->bot->reply(trans('verify.success'));
+
+        // return $this->survey();
+    }
+
+    protected function survey()
+    {
+        $this->bot->startConversation(new Survey());
     }
 
     private function getUser()
     {
     	return $this->user;
-    }
-
-    private function checkMobile($mobile)
-    {
-		return Phone::validate($mobile);
     }
 }

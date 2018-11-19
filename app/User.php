@@ -2,17 +2,14 @@
 
 namespace App;
 
-use OTPHP\TOTP;
 use App\Helpers\Phone;
 use Illuminate\Notifications\Notifiable;
-use App\Jobs\{RegisterTelerivetService, RequestOTP};
+use App\Traits\{HasNotifications, Verifiable};
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
-
-    protected $totp;
+    use Notifiable, HasNotifications, Verifiable;
 
     protected $fillable = [
         'name', 'email', 'password', 'mobile', 'driver', 'channel_id',
@@ -22,41 +19,23 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function routeNotificationForTelerivet()
+    public static function fromMessenger($driver, $channel_id)
     {
-        return $this->telerivet_id;
+        return static::where(compact('driver', 'channel_id'))->firstOrFail();
     }
 
-    public function registerTelerivet()
+    public function checkins()
     {
-        RegisterTelerivetService::dispatch($this);
-
-        return $this;
+        return $this->hasMany(Checkin::class);
     }
-
-    public function challenge()
-    {
-        $this->totp = TOTP::create(null, 360);
-
-        RequestOTP::dispatch($this, $this->totp->now());
-    }
-
-    public function verify($otp, $notSimulated = true)
-    {
-        $verified = ! $notSimulated || $this->totp->verify($otp);
-
-        if ($verified) $this->forceFill(['verified_at' => now()])->save(); 
-
-        return $this;
-    }
-
-    public function isVerified()
-    {
-        return $this->verified_at && $this->verified_at <= now();
-    } 
-
+    
     public function scopeWithMobile($query, $value)
     {
         return $query->where('mobile', Phone::number($value));
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->whereDate('verified_at', '=', now()->toDateString());
     }
 }

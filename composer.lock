@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c8e52353db7a874edaa8857e4f20a72c",
+    "content-hash": "daa7e23064792ffa58efe79418871171",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -317,24 +317,24 @@
         },
         {
             "name": "botman/studio-addons",
-            "version": "1.2.3",
+            "version": "1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/botman/studio-addons.git",
-                "reference": "3be9a597de96a4fbaaaa5a30a48ba049b22ee048"
+                "reference": "0e7b081989389681e76d9b99fa4dcec7e0e71a3d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/botman/studio-addons/zipball/3be9a597de96a4fbaaaa5a30a48ba049b22ee048",
-                "reference": "3be9a597de96a4fbaaaa5a30a48ba049b22ee048",
+                "url": "https://api.github.com/repos/botman/studio-addons/zipball/0e7b081989389681e76d9b99fa4dcec7e0e71a3d",
+                "reference": "0e7b081989389681e76d9b99fa4dcec7e0e71a3d",
                 "shasum": ""
             },
             "require": {
                 "botman/botman": "~2.0|~3.0",
                 "guzzlehttp/guzzle": "~6.0",
-                "illuminate/console": "~5.5.0|~5.6.0",
-                "illuminate/contracts": "~5.5.0|~5.6.0",
-                "illuminate/support": "~5.5.0|~5.6.0",
+                "illuminate/console": "~5.5.0|~5.6.0|~5.7.0",
+                "illuminate/contracts": "~5.5.0|~5.6.0|~5.7.0",
+                "illuminate/support": "~5.5.0|~5.6.0|~5.7.0",
                 "php": ">=7.0",
                 "thecodingmachine/discovery": "^1.2"
             },
@@ -374,7 +374,7 @@
                 "bot",
                 "studio"
             ],
-            "time": "2018-08-08T19:23:58+00:00"
+            "time": "2018-10-01T08:32:22+00:00"
         },
         {
             "name": "botman/tinker",

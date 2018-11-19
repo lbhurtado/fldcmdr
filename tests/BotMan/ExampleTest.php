@@ -44,7 +44,7 @@ class ExampleTest extends TestCase
         ];
 
         $this->bot
-            ->receives('Start Conversation')
+            ->receives('/bored')
             ->assertQuestion('Huh - you woke me up. What do you need?')
             ->receivesInteractiveMessage('quote')
             ->assertReplyIn($quotes);
