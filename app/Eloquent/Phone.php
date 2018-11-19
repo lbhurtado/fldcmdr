@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Eloquent;
 
 use libphonenumber\PhoneNumberUtil;
 use Illuminate\Support\Facades\Validator;

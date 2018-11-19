@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Helpers\Phone;
+use App\Eloquent\{Phone, Messenger};
 use Illuminate\Notifications\Notifiable;
 use App\Traits\{HasNotifications, Verifiable};
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,11 +19,6 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public static function fromMessenger($driver, $channel_id)
-    {
-        return static::where(compact('driver', 'channel_id'))->firstOrFail();
-    }
-
     public function checkins()
     {
         return $this->hasMany(Checkin::class);
@@ -32,10 +27,5 @@ class User extends Authenticatable
     public function scopeWithMobile($query, $value)
     {
         return $query->where('mobile', Phone::number($value));
-    }
-
-    public function scopeVerified($query)
-    {
-        return $query->whereDate('verified_at', '=', now()->toDateString());
     }
 }

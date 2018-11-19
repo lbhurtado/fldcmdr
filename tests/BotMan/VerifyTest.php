@@ -5,7 +5,7 @@ namespace Tests\BotMan;
 use Tests\TestCase;
 
 use App\User;
-use App\Helpers\Phone;
+use App\Eloquent\Phone;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;

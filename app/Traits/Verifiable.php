@@ -10,6 +10,8 @@ trait Verifiable
 
     protected $totp;
 
+    protected $expiration = 60;
+
     public function challenge()
     {
         $this->totp = TOTP::create(null, 360);
@@ -30,4 +32,19 @@ trait Verifiable
     {
         return $this->verified_at && $this->verified_at <= now();
     } 
+
+    public function isNotVerified()
+    {
+        return ! $this->isVerified();
+    }
+
+    public function isVerificationStale()
+    {
+        return $this->verified_at && $this->verified_at->addSeconds($this->expiration) <= now();
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->whereDate('verified_at', '=', now()->toDateString());
+    }
 }

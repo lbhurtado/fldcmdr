@@ -3,37 +3,24 @@
 namespace App\Conversations;
 
 use App\User;
-use App\Helpers\Phone;
 use App\Conversations\Survey;
+use App\Eloquent\{Phone, Messenger};
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use BotMan\BotMan\Messages\Conversations\Conversation;
+use App\Eloquent\Conversation;
 
 class Verify extends Conversation
 {
-    /**
-     * Start the conversation.
-     *
-     * @return mixed
-     */
-    public function run()
+    public function ready()
     {
         $this->setup()->introduction()->start();
     }
 
     protected function setup()
     {
-    	$driver = $this->bot->getDriver()->getName();
-    	$channel_id = $this->bot->getUser()->getId();
+        if ($user = $this->getMessenger()->impressUser()) {
 
-        if ($user = User::fromMessenger($driver, $channel_id)) {
-    		if (! ($user->first_name || $user->last_name)) {
-	    		$user->first_name = $this->bot->getUser()->getFirstName();
-	    		$user->last_name = $this->bot->getUser()->getLastName();
-		        $user->name = trim(ucfirst($user->first_name . ' ' . $user->last_name));
-		        $user->save();    			
-    		}
     		$this->user = $user;
        };
 
@@ -101,8 +88,6 @@ class Verify extends Conversation
     protected function finish()
     {
         $this->bot->reply(trans('verify.success'));
-
-        // return $this->survey();
     }
 
     protected function survey()

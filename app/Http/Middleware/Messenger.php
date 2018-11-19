@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\User;
 use BotMan\BotMan\BotMan;
+use App\Eloquent\Messenger as Msgr;
 use BotMan\BotMan\Interfaces\Middleware\Heard;
 use BotMan\BotMan\Interfaces\Middleware\Sending;
 use BotMan\BotMan\Interfaces\Middleware\Captured;
@@ -38,6 +39,9 @@ class Messenger implements Received, Captured, Matching, Heard, Sending
      */
     public function received(IncomingMessage $message, $next, BotMan $bot)
     {
+        $msgr = Msgr::spawn($bot);
+        // $msgr->conjureUser();
+
         $driver = $bot->getDriver()->getName();
         $channel_id = $message->getSender();
         $name = $driver . ":" . $channel_id;
@@ -45,6 +49,8 @@ class Messenger implements Received, Captured, Matching, Heard, Sending
         $email = $name . '@serbis.io';
 
         if ($user = User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'password', 'email'))) {
+        // if ($messenger = Msgr::spawn($bot)) {
+            // $user = $messenger->getUser();
             $message->addExtras('is_new_user', $user->wasRecentlyCreated);
             try {
                 $user->first_name = $bot->getUser()->getFirstName();
