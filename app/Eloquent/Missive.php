@@ -6,6 +6,7 @@ use App\User;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage as Message;
 
+//helper class for botman middleware
 class Missive
 {
 	protected $bot;

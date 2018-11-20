@@ -7,23 +7,11 @@ use BotMan\BotMan\BotMan;
 
 class Messenger
 {
-	protected $bot;
+	private $bot;
 
-    public static function create(BotMan $bot)
+    public static function hook(BotMan $bot)
     {
         return new static($bot);
-    }
-
-    public static function spawn(BotMan $bot)
-    {
-        return tap(static::create($bot), function ($messenger) {
-            $driver = $messenger->getBot()->getDriver()->getName();
-            // $channel_id = $messenger->getBot()->getUser()->getId();
-            // $name = $driver . ":" . $channel_id;
-            // $password = bcrypt('1234');
-            // $email = $name . '@serbis.io';
-
-        });
     }
 
     public function __construct(BotMan $bot)
@@ -35,25 +23,12 @@ class Messenger
     {
         return tap($this->getUser(), function ($user) {
             if (! ($user->first_name || $user->last_name)) {
-                $user->first_name = trim(ucfirst($this->bot->getUser()->getFirstName()));
-                $user->last_name = trim(ucfirst($this->bot->getUser()->getLastName()));
+                $user->first_name = trim(ucfirst($this->getBot()->getUser()->getFirstName()));
+                $user->last_name = trim(ucfirst($this->getBot()->getUser()->getLastName()));
                 $user->name = $user->first_name . ' ' . $user->last_name;
                 $user->save();                    
             }
         });
-    }
-
-    public function conjureUser()
-    {
-        $driver = $this->bot->getDriver()->getName();
-        $channel_id = $this->bot->getUser()->getId();
-        $name = $driver . ":" . $channel_id;
-        $password = bcrypt('1234');
-        $email = $name . '@serbis.io';
-
-        // User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'password', 'email'));
-
-        return $this;
     }
 
     protected function getBot()

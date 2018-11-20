@@ -18,7 +18,7 @@ abstract class Conversation extends BaseConversation
 
     protected function admin()
     {
-    	$this->messenger = Messenger::create($this->bot);
+    	$this->messenger = Messenger::hook($this->bot);
 
     	return $this;
     }

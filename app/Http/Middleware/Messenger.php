@@ -39,7 +39,11 @@ class Messenger implements Received, Captured, Matching, Heard, Sending
      */
     public function received(IncomingMessage $message, $next, BotMan $bot)
     {
-        $user = Missive::create($bot, $message)->spawn()->getUser();
+        tap(Missive::create($bot, $message)->spawn()->getUser(), function($user) use ($message) {
+            $message->addExtras('is_new_user', $user->wasRecentlyCreated);
+            $message->addExtras('is_verified_user', $user->isVerified());
+        });
+
         // $msgr->conjureUser();
 
         // $driver = $bot->getDriver()->getName();
