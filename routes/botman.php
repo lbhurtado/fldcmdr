@@ -4,7 +4,7 @@ use BotMan\BotMan\BotMan;
 use App\Http\Middleware\Messenger;
 use BotMan\BotMan\Middleware\Dialogflow;
 use App\Http\Controllers\BotManController;
-use App\Conversations\{Survey, Verify, Checkin};
+use App\Conversations\{Survey, Verify, Checkin, Invite};
 
 $botman = resolve('botman');
 
@@ -30,6 +30,10 @@ $botman->hears('/checkin', function (BotMan $bot) {
 
 $botman->hears('/start|GET_STARTED', function (BotMan $bot) {
     $bot->startConversation(new Verify());
+})->stopsConversation();
+
+$botman->hears('/invite', function (BotMan $bot) {
+    $bot->startConversation(new Invite());
 })->stopsConversation();
 
 $botman->hears('/stop|\s', function(BotMan $bot) {
