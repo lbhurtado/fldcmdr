@@ -2,14 +2,16 @@
 
 namespace App;
 
-use App\Eloquent\{Phone, Messenger};
+use App\Eloquent\Phone;
 use Illuminate\Notifications\Notifiable;
-use App\Traits\{HasNotifications, Verifiable};
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Traits\{HasNotifications, Verifiable, HasSchemalessAttributes};
 
 class User extends Authenticatable
 {
-    use Notifiable, HasNotifications, Verifiable;
+    use Notifiable;
+
+    use HasNotifications, Verifiable, HasSchemalessAttributes;
 
     protected $fillable = [
         'name', 'email', 'password', 'mobile', 'driver', 'channel_id',
@@ -17,6 +19,10 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password', 'remember_token',
+    ];
+
+    public $casts = [
+        'extra_attributes' => 'array',
     ];
 
     public function checkins()

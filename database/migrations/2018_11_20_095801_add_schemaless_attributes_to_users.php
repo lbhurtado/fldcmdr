@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddMessengerFieldsToUsers extends Migration
+class AddSchemalessAttributesToUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,7 @@ class AddMessengerFieldsToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('driver')->nullable();
-            $table->string('channel_id')->nullable()->index();
-            $table->unique(['driver', 'channel_id']);
+            $table->schemalessAttributes('extra_attributes');
         });
     }
 
@@ -28,8 +26,7 @@ class AddMessengerFieldsToUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('driver');
-            $table->dropColumn('channel_id'); 
+            $table->dropColumn('extra_attributes');
         });
     }
 }

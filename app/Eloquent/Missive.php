@@ -34,9 +34,17 @@ class Missive
         $password 	= $this->generatePassword($driver, $channel_id);
         $email 		= $this->generateEmail($driver, $channel_id);
 
-        if (! $this->user = User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'password', 'email')))
-        	return false;
+        // if (! $this->user = User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'password', 'email')))
+        // 	return false;
        
+        $this->user = tap(User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'password', 'email')), function($user) {
+        	if ($user->wasRecentlyCreated) {
+        		$user->extra_attributes->wants_notifications = false;
+        		$user->save();
+        	}
+        });
+
+
         return $this;
 	}
 

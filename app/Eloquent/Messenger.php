@@ -22,10 +22,14 @@ class Messenger
     public function impressUser()
     {
         return tap($this->getUser(), function ($user) {
-            if (! ($user->first_name || $user->last_name)) {
-                $user->first_name = trim(ucfirst($this->getBot()->getUser()->getFirstName()));
-                $user->last_name = trim(ucfirst($this->getBot()->getUser()->getLastName()));
-                $user->name = $user->first_name . ' ' . $user->last_name;
+            if (! ($user->extra_attributes->first_name || $user->extra_attributes->last_name)) {
+                
+                $first_name = trim(ucfirst($this->getBot()->getUser()->getFirstName()));
+                $last_name = trim(ucfirst($this->getBot()->getUser()->getLastName()));
+
+                $user->extra_attributes->first_name = $first_name;
+                $user->extra_attributes->last_name = $last_name;
+                $user->name = $first_name . ' ' . $last_name;
                 $user->save();                    
             }
         });

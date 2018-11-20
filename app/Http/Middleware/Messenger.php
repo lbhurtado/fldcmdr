@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\User;
 use App\Eloquent\Missive;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Interfaces\Middleware\Heard;
@@ -43,27 +42,6 @@ class Messenger implements Received, Captured, Matching, Heard, Sending
             $message->addExtras('is_new_user', $user->wasRecentlyCreated);
             $message->addExtras('is_verified_user', $user->isVerified());
         });
-
-        // $msgr->conjureUser();
-
-        // $driver = $bot->getDriver()->getName();
-        // $channel_id = $message->getSender();
-        // $name = $driver . ":" . $channel_id;
-        // $password = bcrypt('1234');
-        // $email = $name . '@serbis.io';
-
-        // if ($user = User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'password', 'email'))) {
-        //     $message->addExtras('is_new_user', $user->wasRecentlyCreated);
-        //     try {
-        //         $user->first_name = $bot->getUser()->getFirstName();
-        //         $user->last_name = $bot->getUser()->getLastName();
-        //         $user->name = $user->first_name . ' ' . $user->last_name;
-        //         $user->save();
-        //     }
-        //     catch (\Exception $e) {
-
-        //     }
-        // }
 
         return $next($message);
     }
