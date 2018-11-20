@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\User;
+use App\Eloquent\Missive;
 use BotMan\BotMan\BotMan;
-use App\Eloquent\Messenger as Msgr;
 use BotMan\BotMan\Interfaces\Middleware\Heard;
 use BotMan\BotMan\Interfaces\Middleware\Sending;
 use BotMan\BotMan\Interfaces\Middleware\Captured;
@@ -39,29 +39,27 @@ class Messenger implements Received, Captured, Matching, Heard, Sending
      */
     public function received(IncomingMessage $message, $next, BotMan $bot)
     {
-        $msgr = Msgr::spawn($bot);
+        $user = Missive::create($bot, $message)->spawn()->getUser();
         // $msgr->conjureUser();
 
-        $driver = $bot->getDriver()->getName();
-        $channel_id = $message->getSender();
-        $name = $driver . ":" . $channel_id;
-        $password = bcrypt('1234');
-        $email = $name . '@serbis.io';
+        // $driver = $bot->getDriver()->getName();
+        // $channel_id = $message->getSender();
+        // $name = $driver . ":" . $channel_id;
+        // $password = bcrypt('1234');
+        // $email = $name . '@serbis.io';
 
-        if ($user = User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'password', 'email'))) {
-        // if ($messenger = Msgr::spawn($bot)) {
-            // $user = $messenger->getUser();
-            $message->addExtras('is_new_user', $user->wasRecentlyCreated);
-            try {
-                $user->first_name = $bot->getUser()->getFirstName();
-                $user->last_name = $bot->getUser()->getLastName();
-                $user->name = $user->first_name . ' ' . $user->last_name;
-                $user->save();
-            }
-            catch (\Exception $e) {
+        // if ($user = User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'password', 'email'))) {
+        //     $message->addExtras('is_new_user', $user->wasRecentlyCreated);
+        //     try {
+        //         $user->first_name = $bot->getUser()->getFirstName();
+        //         $user->last_name = $bot->getUser()->getLastName();
+        //         $user->name = $user->first_name . ' ' . $user->last_name;
+        //         $user->save();
+        //     }
+        //     catch (\Exception $e) {
 
-            }
-        }
+        //     }
+        // }
 
         return $next($message);
     }
