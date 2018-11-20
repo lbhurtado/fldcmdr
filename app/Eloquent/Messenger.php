@@ -7,7 +7,7 @@ use BotMan\BotMan\BotMan;
 
 class Messenger
 {
-	private $bot;
+	protected $bot;
 
     public static function hook(BotMan $bot)
     {

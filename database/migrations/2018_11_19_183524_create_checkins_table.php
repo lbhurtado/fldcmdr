@@ -19,6 +19,7 @@ class CreateCheckinsTable extends Migration
             $table->double('longitude');
             $table->double('latitude');
             $table->string('location')->nullable();
+            $table->string('accuracy')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

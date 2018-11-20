@@ -34,4 +34,15 @@ class User extends Authenticatable
     {
         return $query->where('mobile', Phone::number($value));
     }
+
+    public function checkin(...$coordinates)
+    {
+        $coordinates = array_flatten($coordinates);
+        $longitude = $coordinates[0];
+        $latitude = $coordinates[1];
+
+        $checkin = $this->checkins()->create(compact('longitude', 'latitude'));
+
+        return $checkin;
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Jobs\ReverseGeocode;
 use Illuminate\Database\Eloquent\Model;
 
 class Checkin extends Model
@@ -18,5 +19,10 @@ class Checkin extends Model
     public function user()
     {
     	return $this->belongsTo(User::class);
+    }
+
+    public function reverseGeocode()
+    {
+        ReverseGeocode::dispatch($this);
     }
 }

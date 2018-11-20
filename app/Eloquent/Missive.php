@@ -28,7 +28,7 @@ class Missive
 
 	public function spawn()
 	{
-        $driver 	= $this->bot->getDriver()->getName();
+        $driver 	= $this->getDriver();
         $channel_id = $this->message->getSender();
         $name 		= $this->generateName($driver, $channel_id);
         $password 	= $this->generatePassword($driver, $channel_id);
@@ -46,6 +46,23 @@ class Missive
 
 
         return $this;
+	}
+
+	protected function getDriver()
+	{
+		$driver = $this->bot->getDriver()->getName();
+		
+		switch ($driver) {
+			case 'TelegramLocation':
+				$driver = 'Telegram';
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+
+		return $driver;
 	}
 
 	public function getUser()

@@ -23,7 +23,7 @@ abstract class Conversation extends BaseConversation
     	return $this;
     }
 
-    protected function getMessenger()
+    public function getMessenger()
     {
     	return $this->messenger;
     }
