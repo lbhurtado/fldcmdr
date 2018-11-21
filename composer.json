@@ -21,6 +21,7 @@
         "kalnoy/nestedset": "^4.3",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
+        "mcesar/laravel-survey": "^1.1",
         "propaganistas/laravel-intl": "^2.1",
         "propaganistas/laravel-phone": "^4.0",
         "spatie/geocoder": "^3.3",

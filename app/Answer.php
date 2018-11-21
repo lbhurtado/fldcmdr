@@ -2,9 +2,11 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use MCesar\Survey\Models\Answer as BaseAnswer;
 
-class Answer extends Model
+class Answer extends BaseAnswer implements \MCesar\Survey\Contracts\Answer
 {
-    //
+    protected $fillable = [
+    	'answer',
+    ];
 }

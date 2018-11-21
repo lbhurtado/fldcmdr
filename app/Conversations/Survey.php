@@ -2,12 +2,14 @@
 
 namespace App\Conversations;
 
+use App\Answer;
 use BotMan\BotMan\BotMan;
+use App\Eloquent\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer as BotManAnswer;
 use BotMan\BotMan\Messages\Outgoing\Question as BotManQuestion;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use App\{Question, Answer};
-use BotMan\BotMan\Messages\Conversations\Conversation;
+use MCesar\Survey\Models\{Category, Question};
+
 
 class Survey extends Conversation
 {
@@ -26,12 +28,32 @@ class Survey extends Conversation
     /** @var integer */
     protected $currentQuestion = 1;
 
-    public function run()
+    public function ready()
     {
-        $this->quizQuestions = Question::all();
+        $this->setup()->introduction()->start();
+    }
+
+    protected function setup()
+    {
+        $this->category = Category::first();
+        $this->user = $this->getMessenger()->getUser();
+
+        $this->quizQuestions = $this->category->questions;
         $this->questionCount = $this->quizQuestions->count();
         $this->quizQuestions = $this->quizQuestions->keyBy('id');
 
+        return $this;
+    }
+
+    public function introduction()
+    {
+        $this->bot->reply(trans('survey.introduction'));
+
+        return $this;
+    }
+
+    public function start()
+    {
         $this->survey();
     }
 
@@ -53,7 +75,18 @@ class Survey extends Conversation
     private function askQuestion(Question $question)
     {
         $this->ask($this->createQuestionTemplate($question), function (BotManAnswer $answer) use ($question) {
-            $quizAnswer = Answer::find($answer->getValue());
+            $quizAnswer = $answer->getValue();
+
+            tap($question->answers()->firstOrNew(['answer' => $quizAnswer]), function ($ans)  use ($question) {
+                $ans->user()->associate($this->user);
+                // $ans->question()->associate($question);
+            })->save();
+
+            // $ans = new Answer();
+            // $ans->forceFill(['answer' => $quizAnswer]); 
+            // $ans->user()->associate($this->user);
+            // $ans->question()->associate($question);
+            // $ans->save();
 
             if (! $quizAnswer) {
                 $this->say(trans('survey.fallback'));
@@ -63,7 +96,7 @@ class Survey extends Conversation
             $this->quizQuestions->forget($question->id);
             $this->currentQuestion++;
 
-            $this->say("Your answer: {$quizAnswer->text}");
+            $this->say("Your answer: {$quizAnswer}");
             $this->checkForNextQuestion();
         });
     }
@@ -73,11 +106,13 @@ class Survey extends Conversation
         $questionTemplate = BotManQuestion::create(trans('survey.question', [
             'current' => $this->currentQuestion,
             'count' => $this->questionCount,
-            'text' => $question->text
+            // 'text' => $question->text
+            'text' => $question->question
         ]));
 
-        foreach ($question->answers as $answer) {
-            $questionTemplate->addButton(Button::create($answer->text)->value($answer->id));
+        // foreach ($question->answers as $answer) {
+        foreach ($question->options as $answer) {
+            $questionTemplate->addButton(Button::create($answer)->value($answer));
         }
 
         return $questionTemplate;

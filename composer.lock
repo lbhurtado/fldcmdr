@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "81ca4bd3fdf86bd9c84ca1a3d9674f8f",
+    "content-hash": "5f81020ba50e4803056fdf540a2ed10a",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1897,6 +1897,63 @@
                 "library"
             ],
             "time": "2018-07-17T06:10:10+00:00"
+        },
+        {
+            "name": "mcesar/laravel-survey",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/milo526/laravel-survey.git",
+                "reference": "d07f9522c0a79e226a8cac87b62ead5bd70ef2ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/milo526/laravel-survey/zipball/d07f9522c0a79e226a8cac87b62ead5bd70ef2ab",
+                "reference": "d07f9522c0a79e226a8cac87b62ead5bd70ef2ab",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.4.0|~5.5.0|~5.6.0",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7|6.2|^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "MCesar\\Survey\\SurveyServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "MCesar\\Survey\\": "src"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Milo Cesar",
+                    "email": "me@mcesar.eu"
+                }
+            ],
+            "description": "Survey package for Laravel 5.5 and up",
+            "homepage": "https://github.com/spatie/laravel-permission",
+            "keywords": [
+                "answer",
+                "laravel",
+                "question",
+                "survey"
+            ],
+            "time": "2018-02-15T22:31:48+00:00"
         },
         {
             "name": "monolog/monolog",
