@@ -75,20 +75,18 @@ class Survey extends Conversation
     private function askQuestion(Question $question)
     {
         $this->ask($this->createQuestionTemplate($question), function (BotManAnswer $answer) use ($question) {
-            $quizAnswer = $answer->getValue();
+            $surveyAnswer = $answer->getValue();
 
-            tap($question->answers()->firstOrNew(['answer' => $quizAnswer]), function ($ans)  use ($question) {
+            if (! $ans = $question->answers()->first()) {
+                $ans = new Answer();
                 $ans->user()->associate($this->user);
-                // $ans->question()->associate($question);
-            })->save();
+                $ans->question()->associate($question);
+            }
 
-            // $ans = new Answer();
-            // $ans->forceFill(['answer' => $quizAnswer]); 
-            // $ans->user()->associate($this->user);
-            // $ans->question()->associate($question);
-            // $ans->save();
+            $ans->forceFill(['answer' => $surveyAnswer]); 
+            $ans->save();   
 
-            if (! $quizAnswer) {
+            if (! $surveyAnswer) {
                 $this->say(trans('survey.fallback'));
                 return $this->checkForNextQuestion();
             }
@@ -96,7 +94,7 @@ class Survey extends Conversation
             $this->quizQuestions->forget($question->id);
             $this->currentQuestion++;
 
-            $this->say("Your answer: {$quizAnswer}");
+            $this->say("Your answer: {$surveyAnswer}");
             $this->checkForNextQuestion();
         });
     }
@@ -106,11 +104,9 @@ class Survey extends Conversation
         $questionTemplate = BotManQuestion::create(trans('survey.question', [
             'current' => $this->currentQuestion,
             'count' => $this->questionCount,
-            // 'text' => $question->text
             'text' => $question->question
         ]));
 
-        // foreach ($question->answers as $answer) {
         foreach ($question->options as $answer) {
             $questionTemplate->addButton(Button::create($answer)->value($answer));
         }
