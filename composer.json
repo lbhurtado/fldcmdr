@@ -18,6 +18,7 @@
         "botman/studio-addons": "~1.4.1",
         "botman/tinker": "~1.0",
         "fideloper/proxy": "~4.0",
+        "kalnoy/nestedset": "^4.3",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
         "propaganistas/laravel-intl": "^2.1",

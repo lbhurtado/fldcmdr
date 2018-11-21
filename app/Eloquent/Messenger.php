@@ -3,6 +3,7 @@
 namespace App\Eloquent;
 
 use App\User;
+use App\Invitation;
 use BotMan\BotMan\BotMan;
 
 class Messenger

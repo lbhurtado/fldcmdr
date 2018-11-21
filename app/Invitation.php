@@ -3,15 +3,15 @@
 namespace App;
 
 use App\Jobs\SendUserInvitation;
-use App\Traits\HasNotifications;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use App\Traits\{HasNotifications, HasMobile};
 
 class Invitation extends Model
 {
     use Notifiable;
 
-	use HasNotifications;
+	use HasNotifications, HasMobile;
 	
     protected $fillable = [
     	'mobile',

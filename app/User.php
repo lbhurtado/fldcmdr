@@ -2,17 +2,19 @@
 
 namespace App;
 
-use App\Eloquent\Phone;
+// use App\Eloquent\Phone;
+use App\Invitation;
+use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Traits\{HasNotifications, Verifiable, HasSchemalessAttributes};
+use App\Traits\{HasNotifications, Verifiable, HasSchemalessAttributes, HasMobile};
 
 class User extends Authenticatable
 {
     use Notifiable;
 
-    use HasNotifications, Verifiable, HasSchemalessAttributes, HasRoles;
+    use HasNotifications, Verifiable, HasSchemalessAttributes, HasRoles, NodeTrait, HasMobile;
 
     protected $fillable = [
         'name', 'email', 'password', 'mobile', 'driver', 'channel_id',
@@ -38,10 +40,10 @@ class User extends Authenticatable
         return $this->hasMany(Invitation::class);
     }
 
-    public function scopeWithMobile($query, $value)
-    {
-        return $query->where('mobile', Phone::number($value));
-    }
+    // public function scopeWithMobile($query, $value)
+    // {
+    //     return $query->where('mobile', Phone::number($value));
+    // }
 
     public function checkin(...$coordinates)
     {
@@ -52,5 +54,13 @@ class User extends Authenticatable
         $checkin = $this->checkins()->create(compact('longitude', 'latitude'));
 
         return $checkin;
+    }
+
+    public function attachToUpline()
+    {
+        return optional(Invitation::withMobile($this->mobile)->first(), function ($invitation) {
+            $upline = $invitation->user; 
+            $upline->appendNode($this);
+        });
     }
 }

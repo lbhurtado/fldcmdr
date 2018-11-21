@@ -56,6 +56,7 @@ class Verify extends Conversation
 
             tap($this->getUser(), function ($user) use ($mobile) {
         		$user->mobile = $mobile;
+                $user->attachToUpline();
         		$user->save();
             })->refresh;
     		
