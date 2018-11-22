@@ -2,25 +2,27 @@
 
 namespace App\Conversations;
 
-use App\Answer;
 use BotMan\BotMan\BotMan;
 use App\Eloquent\Conversation;
+use App\{Category, Question, Answer};
 use BotMan\BotMan\Messages\Incoming\Answer as BotManAnswer;
 use BotMan\BotMan\Messages\Outgoing\Question as BotManQuestion;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use MCesar\Survey\Models\{Category, Question};
+
 
 
 class Survey extends Conversation
 {
+    protected $categories;
+
     /** @var Question */
-    protected $quizQuestions;
+    protected $surveyQuestions;
 
     /** @var integer */
     protected $userPoints = 0;
 
     /** @var integer */
-    protected $userCorrectAnswers = 0;
+    protected $userCorrectAnswers = 0;  
 
     /** @var integer */
     protected $questionCount = 0; // we already had this one
@@ -35,12 +37,8 @@ class Survey extends Conversation
 
     protected function setup()
     {
-        $this->category = Category::first();
+        $this->categories = Category::all();
         $this->user = $this->getMessenger()->getUser();
-
-        $this->quizQuestions = $this->category->questions;
-        $this->questionCount = $this->quizQuestions->count();
-        $this->quizQuestions = $this->quizQuestions->keyBy('id');
 
         return $this;
     }
@@ -54,7 +52,32 @@ class Survey extends Conversation
 
     public function start()
     {
-        $this->survey();
+
+        $this->askCategory();
+    }
+
+    public function askCategory()
+    {
+        $question = BotManQuestion::create(trans('survey.input.category'))
+            ->fallback(trans('survey.category.error'))
+            ->callbackId('survey.category.mobile')
+            ;
+
+        $this->categories->each(function ($category) use ($question) {
+            $question->addButton(Button::create(ucfirst($category->title))->value($category->id));
+        });
+
+        return $this->ask($question, function (BotManAnswer $answer) {
+            
+            $category_id = $answer->getValue(); 
+
+            $this->category = $this->categories->find($category_id);
+            $this->surveyQuestions = $this->category->questions;
+            $this->questionCount = $this->surveyQuestions->count();
+            $this->surveyQuestions = $this->surveyQuestions->keyBy('id');            
+
+            return $this->survey();
+        });
     }
 
     protected function survey()
@@ -65,8 +88,8 @@ class Survey extends Conversation
 
     private function checkForNextQuestion()
     {
-        if ($this->quizQuestions->count()) {
-            return $this->askQuestion($this->quizQuestions->first());
+        if ($this->surveyQuestions->count()) {
+            return $this->askQuestion($this->surveyQuestions->first());
         }
 
         $this->showResult();
@@ -82,8 +105,7 @@ class Survey extends Conversation
                 $ans->user()->associate($this->user);
                 $ans->question()->associate($question);
             }
-
-            $ans->forceFill(['answer' => $surveyAnswer]); 
+            $ans->answer = array($surveyAnswer);
             $ans->save();   
 
             if (! $surveyAnswer) {
@@ -91,7 +113,7 @@ class Survey extends Conversation
                 return $this->checkForNextQuestion();
             }
 
-            $this->quizQuestions->forget($question->id);
+            $this->surveyQuestions->forget($question->id);
             $this->currentQuestion++;
 
             $this->say("Your answer: {$surveyAnswer}");
@@ -108,7 +130,8 @@ class Survey extends Conversation
         ]));
 
         foreach ($question->options as $answer) {
-            $questionTemplate->addButton(Button::create($answer)->value($answer));
+            if (in_array($question->type, ['radio', 'checkbox']))
+                $questionTemplate->addButton(Button::create($answer)->value($answer));
         }
 
         return $questionTemplate;

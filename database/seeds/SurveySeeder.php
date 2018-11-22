@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use MCesar\Survey\Models\{Category, Question, Answer};
+use App\{Category, Question, Answer};
 
 class SurveySeeder extends Seeder
 {
@@ -21,7 +21,7 @@ class SurveySeeder extends Seeder
         			'category_id' => $createdCategory->id,
         			'question' => $question['question'],
         			'type' => $question['type'],
-        			'options' => $question['options'] ?? null,
+        			'options' => $question['options'] ?? [],
         		]);
         	});
         });
