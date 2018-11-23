@@ -150,7 +150,7 @@ class Survey extends Conversation
         $this->askable->answers->each(function ($answer) use (&$qanda) {
             $q = $answer->question->question;
             $a = implode($answer->answer);
-            $qanda .= $q . " = " . $a . "\n";
+            $qanda .= $q . " " . $a . "\n";
         });
 
         $this->say(trans('survey.result', compact('qanda')));

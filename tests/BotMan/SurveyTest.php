@@ -77,7 +77,7 @@ class SurveyTest extends TestCase
             ->assertReply(trans('survey.finished'))
             ;
 
-        $qanda = "Gender = Male\nAge Group = 18 to 30\nDistrict = Tondo\n";
+        $qanda = "Gender Male\nAge Group 18 to 30\nDistrict Tondo\n";
 
         $this->bot
             ->assertReply(trans('survey.result', compact('qanda')))
@@ -98,7 +98,7 @@ class SurveyTest extends TestCase
                 ],
                 'questions' => [
                     [
-                        'question' => 'Gender',
+                        'question' => 'Gender?',
                         'type' => 'radio',
                         'options' => [
                             'required' => false,
@@ -109,7 +109,7 @@ class SurveyTest extends TestCase
                         ],
                     ],
                     [
-                        'question' => 'Age Group',
+                        'question' => 'Age Group?',
                         'type' => 'radio',
                         'options' => [
                             'required' => false,
@@ -122,7 +122,7 @@ class SurveyTest extends TestCase
                         ],
                     ],
                     [
-                        'question' => 'District',
+                        'question' => 'District?',
                         'type' => 'radio',
                         'options' => [
                             'required' => false,
