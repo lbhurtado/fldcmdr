@@ -75,7 +75,12 @@ class SurveyTest extends TestCase
             ->receives('Tondo')
             ->assertReply(trans('survey.answer', ['answer' => 'Tondo']))
             ->assertReply(trans('survey.finished'))
-            ->assertReply(trans('survey.result'))
+            ;
+
+        $qanda = "Gender = Male\nAge Group = 18 to 30\nDistrict = Tondo\n";
+
+        $this->bot
+            ->assertReply(trans('survey.result', compact('qanda')))
             ;
 
         \Queue::assertPushed(\App\Jobs\SendAskableReward::class);

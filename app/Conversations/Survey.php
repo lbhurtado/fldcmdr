@@ -145,7 +145,15 @@ class Survey extends Conversation
     protected function showResult()
     {
         $this->say(trans('survey.finished'));
-        $this->say(trans('survey.result'));
+        
+        $qanda = '';
+        $this->askable->answers->each(function ($answer) use (&$qanda) {
+            $q = $answer->question->question;
+            $a = implode($answer->answer);
+            $qanda .= $q . " = " . $a . "\n";
+        });
+
+        $this->say(trans('survey.result', compact('qanda')));
 
         $this->sendReward();
     }

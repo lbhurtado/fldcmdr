@@ -243,7 +243,7 @@ class SurveySeeder extends Seeder
 		        ],
 		    ],
 		    [
-        		'category' => 'D-Day Afternoon',
+        		'category' => 'Poll Count',
         		'enabled_at' => now(),
         		'options' => [
         			'twosome' => false,

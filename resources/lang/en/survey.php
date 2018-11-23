@@ -9,5 +9,6 @@ return [
     'question' => "Question [:current/:count]:\n\n:text",
     'answer' => "Answered: :answer",
     'finished' => "Finished: Thank you for participating.",
-    'result' => "TBD",
+    'result' => "Your answers are:\n:qanda",
+    'reward' => "Reward was sent online."
 ];
