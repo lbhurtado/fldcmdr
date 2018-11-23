@@ -52,6 +52,9 @@ class SurveyTest extends TestCase
         $mobile = Phone::number('09178251991');
         $category = 'Demographics';
         $count = 3;
+
+        \Queue::fake();
+
         $this->bot
             ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
@@ -63,7 +66,19 @@ class SurveyTest extends TestCase
             ->assertQuestion(trans('survey.input.mobile'))
             ->receives($mobile)
             ->assertTemplate(Question::class)
+            ->receives('Male')
+            ->assertReply(trans('survey.answer', ['answer' => 'Male']))
+            ->assertTemplate(Question::class)
+            ->receives('18 to 30')
+            ->assertReply(trans('survey.answer', ['answer' => '18 to 30']))
+            ->assertTemplate(Question::class)
+            ->receives('Tondo')
+            ->assertReply(trans('survey.answer', ['answer' => 'Tondo']))
+            ->assertReply(trans('survey.finished'))
+            ->assertReply(trans('survey.result'))
             ;
+
+        \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
     }
 
     private function getData()

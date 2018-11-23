@@ -153,7 +153,7 @@ class Survey extends Conversation
     protected function sendReward()
     {
         if ($this->category->reward > 0.00) {
-            // if ($this->model->sendReward())
+            if ($this->askable->sendReward($this->category->reward))
                 $this->say(trans('survey.reward'));                 
         }
     }

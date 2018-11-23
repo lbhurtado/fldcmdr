@@ -4,9 +4,10 @@ namespace App;
 
 use App\{User, Question};
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Contracts\Answer as AnswerContract;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Answer extends Model implements AnswerContract
 {
@@ -44,7 +45,7 @@ class Answer extends Model implements AnswerContract
         return $this->belongsTo(Question::class);
     }
 
-    public function askable()
+    public function askable():MorphTo
     {
         return $this->morphTo();
     }
