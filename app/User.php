@@ -40,11 +40,6 @@ class User extends Authenticatable
         return $this->hasMany(Invitation::class);
     }
 
-    // public function scopeWithMobile($query, $value)
-    // {
-    //     return $query->where('mobile', Phone::number($value));
-    // }
-
     public function checkin(...$coordinates)
     {
         $coordinates = array_flatten($coordinates);

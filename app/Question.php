@@ -3,6 +3,7 @@
 namespace App;
 
 use App\{Category, Answer};
+use App\Traits\HasSchemalessAttributes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use App\Contracts\Question as QuestionContract;
 
 class Question extends Model implements QuestionContract
 {
-    use SoftDeletes;
+    use SoftDeletes, HasSchemalessAttributes;
 
     public $guarded = ['id'];
 
@@ -49,17 +50,16 @@ class Question extends Model implements QuestionContract
      */
     protected $casts = [
         'options' => 'array',
+        'extra_attributes' => 'array',
     ];
 
     public function category(): BelongsTo
     {
-        // return $this->belongsTo(config('survey.models.category'));
         return $this->belongsTo(Category::class);
     }
 
     public function answers(): HasMany
     {
-        // return $this->hasMany(config('survey.models.answer'));
         return $this->hasMany(Answer::class);
     }
 
@@ -94,13 +94,12 @@ class Question extends Model implements QuestionContract
 
     public function getRequiredAttribute(): bool
     {
-        return $this->options["required"];
+        return $this->extra_attributes["required"];
     }
 
     public function getValuesAttribute(): array
     {
-
-        return $this->options["values"];
+        return $this->extra_attributes["values"];
     }
 
     public function default(string $old): string

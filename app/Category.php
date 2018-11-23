@@ -3,40 +3,32 @@
 namespace App;
 
 use App\Question;
+use App\Traits\HasSchemalessAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Contracts\Category as CategoryContract;
 
-
 class Category extends Model implements CategoryContract
 {
-    use SoftDeletes;
+    use SoftDeletes, HasSchemalessAttributes;
 
     public $guarded = ['id'];
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'created_at', 'updated_at', 'deleted_at',
+    public $casts = [
+        'extra_attributes' => 'array',
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
+    protected $dates = [
+        'created_at', 'updated_at', 'deleted_at', 'enabled_at',
+    ];
+
     protected $appends = [
-        'completion',
-        'completed',
+        'completion', 'completed', 'enabled'
     ];
 
     public function questions(): HasMany
     {
-        // return $this->hasMany(config('survey.models.question'));
         return $this->hasMany(Question::class);
     }
 
@@ -52,4 +44,25 @@ class Category extends Model implements CategoryContract
     {
         return $this->questions()->answered == $this->questions;
     }
+
+    public function getTwosomeAttribute(): bool
+    {
+        return $this->extra_attributes["twosome"] ?? false;
+    }
+
+    public function getRewardAttribute(): float
+    {
+        return $this->extra_attributes["reward"] ?? 0.00;
+    }
+
+    public function getPollCountAttribute(): bool
+    {
+        return $this->extra_attributes["pollcount"] ?? false;
+    }
+
+    public function getEnabledAttribute(): bool
+    {
+        return $this->enabled_at && $this->enabled_at <= now();
+    }
 }
+

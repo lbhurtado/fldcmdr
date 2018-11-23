@@ -33,7 +33,7 @@ class UserInvitation extends Notification
 
     protected function getContent($notifiable)
     {
-        $name = $notifiable->mobile;
+        $name = $notifiable->user->name;
         $url = $this->getURL($notifiable);
 
         return trans('invite.notification', compact('name', 'url'));

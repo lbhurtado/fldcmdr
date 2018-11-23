@@ -19,6 +19,12 @@ class Invitation extends Model
         'message',
     ];
 
+    public static function invite($mobile, $role, $driver = null) {
+        return tap(static::create(compact('mobile', 'role')), function ($invitee) use ($driver) {
+            $invitee->send($driver);
+        });
+    }
+
     public function send($driver = 'Telegram')
     {
         SendUserInvitation::dispatch($this, $driver);

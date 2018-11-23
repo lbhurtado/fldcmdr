@@ -18,27 +18,31 @@ $botman->hears('test', function ($bot) {
     $bot->reply('It works!');
 });
 
-$botman->hears('/bored', BotManController::class.'@startConversation');
-
-$botman->hears('/survey', function (BotMan $bot) {
-    $bot->startConversation(new Survey());
+$botman->hears('/invite', function (BotMan $bot) {
+    $bot->startConversation(new Invite());
 })->stopsConversation();
 
 $botman->hears('/checkin', function (BotMan $bot) {
     $bot->startConversation(new Checkin());
 })->stopsConversation();
 
-$botman->hears('/start|GET_STARTED', function (BotMan $bot) {
+$botman->hears('/survey', function (BotMan $bot) {
+    $bot->startConversation(new Survey());
+})->stopsConversation();
+
+$botman->hears('/verify', function (BotMan $bot) {
     $bot->startConversation(new Verify());
 })->stopsConversation();
 
-$botman->hears('/invite', function (BotMan $bot) {
-    $bot->startConversation(new Invite());
+$botman->hears('/start|GET_STARTED', function (BotMan $bot) {
+    $bot->startConversation(new Verify());
 })->stopsConversation();
 
 $botman->hears('/stop|\s', function(BotMan $bot) {
 	$bot->reply('stopped...');
 })->stopsConversation();
+
+$botman->hears('/bored', BotManController::class.'@startConversation');
 
 $botman->fallback(function (BotMan $bot){
     return $bot->reply($bot->getMessage()->getExtras('apiReply'));

@@ -18,7 +18,7 @@ class Answer extends Model implements AnswerContract
      */
 
     protected $fillable = [
-    	'answer',
+    	'answer', 'askable_id', 'askable_type',
     ];
     
     protected $dates = [
@@ -42,5 +42,10 @@ class Answer extends Model implements AnswerContract
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);
+    }
+
+    public function askable()
+    {
+        return $this->morphTo();
     }
 }
