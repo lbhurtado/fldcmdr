@@ -92,130 +92,183 @@ class SurveySeeder extends Seeder
 		            ],
         		],
         	],
-   //      	[
-   //      		'category' => 'Popular',
-   //      		'questions' => [
-		 //            [
-		 //                'question' => 'Who will you vote for in the 2019 elections?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Erap Estrada',
-		 //                    'Isko Moreno',
-		 //                    'Lito Atienza',
-		 //                    'Alfredo Lim',
-		 //                ],
-		 //            ],
-		 //            [
-		 //                'question' => 'What is the most important issue?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Crime',
-		 //                    'Corruption',
-		 //                    'Environment',
-		 //                ],
-		 //            ],
-		 //            [
-		 //                'question' => 'What is your problem?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Health',
-		 //                    'Labor',
-		 //                    'Education',
-		 //                ],
-		 //            ],
-
-   //      		],
-   //      	],
-			// [
-   //      		'category' => 'D-Day Morning',
-   //      		'questions' => [
-		 //            [
-		 //                'question' => 'Is the precinct open?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Yes',
-		 //                    'No',
-		 //                ],
-		 //            ],
-		 //            [
-		 //                'question' => 'Is the BEI composition valid?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Yes',
-		 //                    'No',
-		 //                ],
-		 //            ],
-		 //            [
-		 //                'question' => 'Is the ballot box sealed?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Yes',
-		 //                    'No',
-		 //                ],
-		 //            ],
-		 //            [
-		 //                'question' => 'Is there a zero-votes print-out?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Yes',
-		 //                    'No',
-		 //                ],
-		 //            ],
-		 //            [
-		 //                'question' => 'Have you voted?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Yes',
-		 //                    'No',
-		 //                ],
-		 //            ],
-   //      		],
-   //      	],
-			// [
-   //      		'category' => 'D-Day Afternoon',
-   //      		'questions' => [
-		 //            [
-		 //                'question' => 'Is the precinct closed?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Yes',
-		 //                    'No',
-		 //                ],
-		 //            ],
-		 //            [
-		 //                'question' => 'Is there a print-out of the election return (ER)?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Yes',
-		 //                    'No',
-		 //                ],
-		 //            ],
-		 //            [
-		 //                'question' => 'Is there a PCOS transmission receipt?',
-		 //                'type' => 'radio',
-		 //                'options' => [
-		 //                    'Yes',
-		 //                    'No',
-		 //                ],
-		 //            ],
-		 //            [
-		 //                'question' => 'How many votes for Erap Estrada?',
-		 //                'type' => 'string',
-		 //            ],
-		 //            [
-		 //                'question' => 'How many votes for Lito Atienza?',
-		 //                'type' => 'string',
-		 //            ],
-		 //            [
-		 //                'question' => 'How many votes for Alfredo Lim?',
-		 //                'type' => 'string',
-		 //            ],
-		 //            [
-		 //                'question' => 'How many votes for Isko Moreno?',
-		 //                'type' => 'string',
-		 //            ],
-   //      		],
-   //      	],
+        	[
+        		'category' => 'Popular',
+        		'enabled_at' => now(),
+        		'options' => [
+        			'twosome' => false,
+        			'reward' => 0,
+        			'pollcount' => false,
+        		],
+        		'questions' => [
+		            [
+		                'question' => 'Who will you vote for in the 2019 elections?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Erap Estrada',
+			                    'Isko Moreno',
+			                    'Lito Atienza',
+			                    'Alfredo Lim',
+		                	],
+		                ],
+		            ],
+		            [
+		                'question' => 'What is the most important issue?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Crime',
+			                    'Corruption',
+			                    'Environment',
+		                	],
+		                ],
+		            ],
+		            [
+		                'question' => 'What is your problem?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Health',
+			                    'Labor',
+			                    'Education',
+		                	],
+		                ],
+		            ],
+        		],
+        	],
+			[
+        		'category' => 'D-Day Morning',
+        		'enabled_at' => now(),
+        		'options' => [
+        			'twosome' => false,
+        			'reward' => 0,
+        			'pollcount' => false,
+        		],
+        		'questions' => [
+		            [
+		                'question' => 'Is the precinct open?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'values' => [
+			                    'Yes',
+			                    'No',
+		                	],
+		                ],
+		            ],
+		            [
+		                'question' => 'Is the BEI composition valid?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'values' => [
+			                    'Yes',
+			                    'No',
+			                ],
+		                ],
+		            ],
+		            [
+		                'question' => 'Is the ballot box sealed?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'values' => [
+			                    'Yes',
+			                    'No',
+			                ],
+		                ],
+		            ],
+		            [
+		                'question' => 'Is there a zero-votes print-out?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'values' => [
+			                    'Yes',
+			                    'No',
+			                ],
+		                ],
+		            ],
+		            [
+		                'question' => 'Have you voted?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'values' => [
+			                    'Yes',
+			                    'No',
+			                ],
+		                ],
+		            ],
+        		],
+        	],
+			[
+        		'category' => 'D-Day Afternoon',
+        		'enabled_at' => now(),
+        		'options' => [
+        			'twosome' => false,
+        			'reward' => 0,
+        			'pollcount' => false,
+        		],
+        		'questions' => [
+		            [
+		                'question' => 'Is the precinct closed?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'values' => [
+			                    'Yes',
+			                    'No',
+			                ],
+		                ],
+		            ],
+		            [
+		                'question' => 'Is there a print-out of the election return (ER)?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'values' => [
+			                    'Yes',
+			                    'No',
+			                ],
+		                ],
+		            ],
+		            [
+		                'question' => 'Is there a PCOS transmission receipt?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'values' => [
+			                    'Yes',
+			                    'No',
+			                ],
+		                ],
+		            ],
+		        ],
+		    ],
+		    [
+        		'category' => 'D-Day Afternoon',
+        		'enabled_at' => now(),
+        		'options' => [
+        			'twosome' => false,
+        			'reward' => 0,
+        			'pollcount' => true,
+        		],
+        		'questions' => [
+		            [
+		                'question' => 'How many votes for Erap Estrada?',
+		                'type' => 'string',
+		            ],
+		            [
+		                'question' => 'How many votes for Lito Atienza?',
+		                'type' => 'string',
+		            ],
+		            [
+		                'question' => 'How many votes for Alfredo Lim?',
+		                'type' => 'string',
+		            ],
+		            [
+		                'question' => 'How many votes for Isko Moreno?',
+		                'type' => 'string',
+		            ],
+        		],
+        	],
         ]);
     }
 }
