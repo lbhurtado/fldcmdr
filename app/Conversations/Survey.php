@@ -177,8 +177,8 @@ class Survey extends Conversation
                 $ans->askable()->associate($this->askable);
                 $ans->question()->associate($question);
             }
-            $ans->answer = array($surveyAnswer);
-            // $ans->weight = array_sum($ans->answer);
+            // $ans->answer = null;
+            $ans->weight = $ans->answer;
             $ans->save();   
 
             if (! $surveyAnswer) {
