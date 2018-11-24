@@ -40,6 +40,12 @@ class Survey extends Conversation
     /** @var bool */
     protected $twosome;
 
+    protected $asked;
+
+    protected $answered;
+
+    public $qanda;
+
     public function ready()
     {
         $this->setup()->introduction()->start();
@@ -146,13 +152,14 @@ class Survey extends Conversation
     {
         $this->say(trans('survey.finished'));
         
-        $qanda = '';
-        $this->askable->answers->sortByDesc('id')->each(function ($answer) use (&$qanda) {
-            $q = $answer->question->question;
-            $a = $answer->answer;
-            $qanda .= $q . " " . $a . "\n";
-        });
+        // $qanda = '';
+        // $this->askable->answers->sortByDesc('id')->each(function ($answer) use (&$qanda) {
+        //     $q = $answer->question->question;
+        //     $a = $answer->answer;
+        //     $qanda .= $q . " " . $a . "\n";
+        // });
 
+        $qanda = $this->qanda;
         $this->say(trans('survey.result', compact('qanda')));
 
         $this->sendReward();
@@ -169,11 +176,12 @@ class Survey extends Conversation
     protected function askQuestion(Question $question)
     {
         $this->ask($this->createQuestionTemplate($question), function (BotManAnswer $answer) use ($question) {
-            // dd($this->category->type);
+            $q = $question->question;
             if ($this->category->type == 'numeric')
                 $surveyAnswer = $answer->getText();
             else    
                 $surveyAnswer = $answer->getValue();
+            $a = $surveyAnswer; 
 
             if (! $ans = $question->answers()->first()) {
                 $ans = new Answer();
@@ -182,6 +190,9 @@ class Survey extends Conversation
                 $ans->question()->associate($question);
             }
             $ans->answer = $surveyAnswer;
+
+            $this->qanda .= $q . " " . $a . "\n";
+
             if ($this->category->type == 'numeric')
                 $ans->weight = $surveyAnswer;
             $ans->save();   

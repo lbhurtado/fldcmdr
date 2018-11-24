@@ -104,27 +104,27 @@ class SurveyTest extends TestCase
             ->assertQuestion(trans('survey.input.category'))
             ->receives(2)
             ->assertReply(trans('survey.info', compact('category', 'count')))
-            // ->assertQuestion(trans('survey.input.mobile'))
-            // ->receives($mobile)
-            // ->assertTemplate(Question::class)
-            // ->receives('Male')
-            // ->assertReply(trans('survey.answer', ['answer' => 'Male']))
-            // ->assertTemplate(Question::class)
-            // ->receives('18 to 30')
-            // ->assertReply(trans('survey.answer', ['answer' => '18 to 30']))
-            // ->assertTemplate(Question::class)
-            // ->receives('Tondo')
-            // ->assertReply(trans('survey.answer', ['answer' => 'Tondo']))
-            // ->assertReply(trans('survey.finished'))
+            ->assertQuestion(trans('survey.input.mobile'))
+            ->receives($mobile)
+            ->assertTemplate(Question::class)
+            ->receives('Male')
+            ->assertReply(trans('survey.answer', ['answer' => 'Male']))
+            ->assertTemplate(Question::class)
+            ->receives('18 to 30')
+            ->assertReply(trans('survey.answer', ['answer' => '18 to 30']))
+            ->assertTemplate(Question::class)
+            ->receives('Tondo')
+            ->assertReply(trans('survey.answer', ['answer' => 'Tondo']))
+            ->assertReply(trans('survey.finished'))
             ;
 
-        // $qanda = "Gender? Male\nAge Group? 18 to 30\nDistrict? Tondo\n";
+        $qanda = "Gender? Male\nAge Group? 18 to 30\nDistrict? Tondo\n";
 
-        // $this->bot
-        //     ->assertReply(trans('survey.result', compact('qanda')))
-        //     ;
+        $this->bot
+            ->assertReply(trans('survey.result', compact('qanda')))
+            ;
 
-        // \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
+        \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
     }
 
     private function getData()
