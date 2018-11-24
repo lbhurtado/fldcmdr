@@ -40,10 +40,6 @@ class Survey extends Conversation
     /** @var bool */
     protected $twosome;
 
-    protected $asked;
-
-    protected $answered;
-
     public $qanda;
 
     public function ready()
@@ -151,16 +147,9 @@ class Survey extends Conversation
     protected function showResult()
     {
         $this->say(trans('survey.finished'));
-        
-        // $qanda = '';
-        // $this->askable->answers->sortByDesc('id')->each(function ($answer) use (&$qanda) {
-        //     $q = $answer->question->question;
-        //     $a = $answer->answer;
-        //     $qanda .= $q . " " . $a . "\n";
-        // });
 
         $qanda = $this->qanda;
-        $this->say(trans('survey.result', compact('qanda')));
+        $this->say(trans('survey.result', ['qanda' => $this->qanda]));
 
         $this->sendReward();
     }
@@ -176,22 +165,21 @@ class Survey extends Conversation
     protected function askQuestion(Question $question)
     {
         $this->ask($this->createQuestionTemplate($question), function (BotManAnswer $answer) use ($question) {
-            $q = $question->question;
-            if ($this->category->type == 'numeric')
-                $surveyAnswer = $answer->getText();
-            else    
-                $surveyAnswer = $answer->getValue();
+
+            $surveyAnswer = $this->category->type == 'numeric' 
+                            ? $answer->getText()
+                            : $answer->getValue()
+                            ;
+
+            $q = $question->question;            
             $a = $surveyAnswer; 
+            $this->qanda .= $q . " " . $a . "\n"; //refactor this!
 
-            if (! $ans = $question->answers()->first()) {
-                $ans = new Answer();
-                $ans->user()->associate($this->user);
-                $ans->askable()->associate($this->askable);
-                $ans->question()->associate($question);
-            }
+            $askable_type = get_class($this->askable);
+            $askable_id = $this->askable->id;
+            $ans = $question->answers()->firstOrNew(compact('askable_type','askable_id')));
+            $ans->user()->associate($this->user); //remove this in the future
             $ans->answer = $surveyAnswer;
-
-            $this->qanda .= $q . " " . $a . "\n";
 
             if ($this->category->type == 'numeric')
                 $ans->weight = $surveyAnswer;
