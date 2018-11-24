@@ -39,7 +39,7 @@ SQL;
     {
         return <<<SQL
 CREATE VIEW poll_counts AS 
-    select q.category_id, q.id as question_id, sum(a.weight) from answers a
+    select q.category_id, q.id as question_id, sum(a.weight) as sum from answers a
     join questions q on q.id = a.question_id
     join categories c on c.id = q.category_id
     where (c.type = 'numeric')
