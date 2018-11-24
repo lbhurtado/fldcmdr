@@ -15,6 +15,7 @@ class SurveySeeder extends Seeder
         $survey->each(function ($category) {
         	$createdCategory = Category::create([
         		'title' => $category['category'],
+        		'type' => $category['type'],
         		'enabled_at' => $category['enabled_at'],
         		'extra_attributes' => $category['options'] ?? [],
         	]);
@@ -35,6 +36,7 @@ class SurveySeeder extends Seeder
         return collect([
         	[
         		'category' => 'Demographics',
+        		'type' => 'text',
         		'enabled_at' => now(),
         		'options' => [
         			'twosome' => true,
@@ -94,6 +96,7 @@ class SurveySeeder extends Seeder
         	],
         	[
         		'category' => 'Popular',
+        		'type' => 'text',
         		'enabled_at' => now(),
         		'options' => [
         			'twosome' => false,
@@ -142,6 +145,7 @@ class SurveySeeder extends Seeder
         	],
 			[
         		'category' => 'D-Day Morning',
+        		'type' => 'text',
         		'enabled_at' => now(),
         		'options' => [
         			'twosome' => false,
@@ -203,6 +207,7 @@ class SurveySeeder extends Seeder
         	],
 			[
         		'category' => 'D-Day Afternoon',
+        		'type' => 'text',
         		'enabled_at' => now(),
         		'options' => [
         			'twosome' => false,
@@ -244,6 +249,7 @@ class SurveySeeder extends Seeder
 		    ],
 		    [
         		'category' => 'D-Day Poll Count',
+        		'type' => 'numeric',
         		'enabled_at' => now(),
         		'options' => [
         			'twosome' => false,

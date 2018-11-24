@@ -39,10 +39,10 @@ SQL;
     {
         return <<<SQL
 CREATE VIEW poll_counts AS 
-    select q.category_id, q.id as question_id, sum(cast (a.answer as integer)) from answers a
+    select q.category_id, q.id as question_id, sum(a.weight) from answers a
     join questions q on q.id = a.question_id
     join categories c on c.id = q.category_id
-    where (c.title = 'D-Day Poll Count')
+    where (c.type = 'numeric')
     group by q.category_id, q.id;
 SQL;
     }
@@ -52,3 +52,4 @@ SQL;
 
     }
 }
+

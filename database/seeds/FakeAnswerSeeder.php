@@ -55,7 +55,7 @@ class FakeAnswerSeeder extends Seeder
 		    ],
 		]);
 
-    	$category = tap(Category::make(['title' => 'Poll Count']), function ($category) {
+    	$category = tap(Category::make(['title' => 'Poll Count', 'type' => 'numeric']), function ($category) {
     		$category->extra_attributes = [
     			'twosome' => false,
     			'reward' => 0,
@@ -84,6 +84,7 @@ class FakeAnswerSeeder extends Seeder
 		$node->each(function ($user) use ($questions) {
 			$questions->each(function ($question) use ($user) {
 		    	$a = tap(Answer::make(['answer' => [rand(1,250)]]), function ($answer) use ($question, $user) {
+		    		$answer->weight = array_sum($answer->answer);
 		    		$answer->question()->associate($question);
 		    		$answer->user()->associate($user);
 		    		$answer->askable()->associate($user);
