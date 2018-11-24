@@ -60,9 +60,4 @@ class Answer extends Model implements AnswerContract
     {
         return $this->morphTo();
     }
-
-    // public function getVotesAttribute()
-    // {
-    //     return $this->attributes['weight'];
-    // }
 }

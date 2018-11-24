@@ -14,7 +14,7 @@ class FldCmdrController extends Controller
 
         $text = '';
         $items->each(function($item, $key) use (&$text) {
-        	$text .= $key . "➡️" . $item .  "\n";
+        	$text .= $key . "➡" . $item .  "\n";
         });
 
         $bot->reply($text);
