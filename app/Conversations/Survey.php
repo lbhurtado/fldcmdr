@@ -177,7 +177,7 @@ class Survey extends Conversation
 
             $askable_type = get_class($this->askable);
             $askable_id = $this->askable->id;
-            $ans = $question->answers()->firstOrNew(compact('askable_type','askable_id')));
+            $ans = $question->answers()->firstOrNew(compact('askable_type','askable_id'));
             $ans->user()->associate($this->user); //remove this in the future
             $ans->answer = $surveyAnswer;
 
