@@ -1,7 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
-
+use Faker\Factory as FakerFactory;
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -15,6 +15,8 @@ use Faker\Generator as Faker;
 
 $factory->define(App\User::class, function (Faker $faker) {
     static $password;
+
+    // $faker = FakerFactory::create('en_PH');
 
     return [
         'name' => $faker->name,

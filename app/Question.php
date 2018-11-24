@@ -41,6 +41,7 @@ class Question extends Model implements QuestionContract
         'answered',
         'required',
         'values',
+        'code',
     ];
 
     /**
@@ -126,5 +127,12 @@ class Question extends Model implements QuestionContract
             return in_array($value, $defaults);
         }
         return $value == $defaults;
+    }
+
+    public function getCodeAttribute()
+    {
+        preg_match('/#(\w+)/', $this->question, $matches);
+
+        return $matches[1]; 
     }
 }

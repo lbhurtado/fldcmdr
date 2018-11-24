@@ -77,7 +77,7 @@ class SurveyTest extends TestCase
             ->assertReply(trans('survey.finished'))
             ;
 
-        $qanda = "Gender Male\nAge Group 18 to 30\nDistrict Tondo\n";
+        $qanda = "Gender? Male\nAge Group? 18 to 30\nDistrict? Tondo\n";
 
         $this->bot
             ->assertReply(trans('survey.result', compact('qanda')))

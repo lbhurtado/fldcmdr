@@ -243,7 +243,7 @@ class SurveySeeder extends Seeder
 		        ],
 		    ],
 		    [
-        		'category' => 'Poll Count',
+        		'category' => 'D-Day Poll Count',
         		'enabled_at' => now(),
         		'options' => [
         			'twosome' => false,
@@ -252,20 +252,33 @@ class SurveySeeder extends Seeder
         		],
         		'questions' => [
 		            [
-		                'question' => 'How many votes for Erap Estrada?',
+		                'question' => 'How many votes for Erap #Estrada?',
 		                'type' => 'string',
+		                'options' => [
+		                	'values' => [0],
+		                ],
+
 		            ],
 		            [
-		                'question' => 'How many votes for Lito Atienza?',
+		                'question' => 'How many votes for Lito #Atienza?',
 		                'type' => 'string',
+		                'options' => [
+		                	'values' => [0],
+		                ],
 		            ],
 		            [
-		                'question' => 'How many votes for Alfredo Lim?',
+		                'question' => 'How many votes for Alfredo #Lim?',
 		                'type' => 'string',
+		                'options' => [
+		                	'values' => [0],
+		                ],
 		            ],
 		            [
-		                'question' => 'How many votes for Isko Moreno?',
+		                'question' => 'How many votes for Isko #Moreno?',
 		                'type' => 'string',
+		                'options' => [
+		                	'values' => [0],
+		                ],
 		            ],
         		],
         	],

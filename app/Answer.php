@@ -33,7 +33,18 @@ class Answer extends Model implements AnswerContract
      */
     protected $casts = [
         'answer' => 'array',
+        'votes' => 'integer',
     ];
+
+    public function getAnswerAttribute($value)
+    {
+        return explode(",", $value);
+    }
+
+    public function setAnswerAttribute($value)
+    {
+        $this->attributes['answer'] = implode($value, ",");
+    }
 
     public function user(): BelongsTo
     {
@@ -48,5 +59,10 @@ class Answer extends Model implements AnswerContract
     public function askable():MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function getVotesAttribute()
+    {
+        return $this->attributes['answer'];
     }
 }

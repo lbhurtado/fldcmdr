@@ -182,6 +182,7 @@ class Survey extends Conversation
 
             if (! $surveyAnswer) {
                 $this->say(trans('survey.fallback'));
+                
                 return $this->checkForNextQuestion();
             }
 
