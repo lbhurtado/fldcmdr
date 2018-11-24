@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PollCount extends Model
 {
     protected $casts = [
-        'votes' => 'integer',
+        'sum' => 'integer',
     ];
 
     public static function result()

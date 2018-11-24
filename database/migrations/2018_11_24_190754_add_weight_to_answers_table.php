@@ -14,7 +14,7 @@ class AddWeightToAnswersTable extends Migration
     public function up()
     {
         Schema::table('answers', function (Blueprint $table) {
-            $table->float('weight')->default(1.0);
+            $table->unsignedInteger('weight')->default(0);
         });
     }
 

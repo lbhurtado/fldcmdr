@@ -19,7 +19,7 @@ class Answer extends Model implements AnswerContract
      */
 
     protected $fillable = [
-    	'answer', 'askable_id', 'askable_type',
+    	'answer', 'askable_id', 'askable_type', 'weight',
     ];
     
     protected $dates = [
@@ -33,7 +33,7 @@ class Answer extends Model implements AnswerContract
      */
     protected $casts = [
         'answer' => 'array',
-        'votes' => 'integer',
+        'weight' => 'integer',
     ];
 
     public function getAnswerAttribute($value)
@@ -61,8 +61,8 @@ class Answer extends Model implements AnswerContract
         return $this->morphTo();
     }
 
-    public function getVotesAttribute()
-    {
-        return $this->attributes['answer'];
-    }
+    // public function getVotesAttribute()
+    // {
+    //     return $this->attributes['weight'];
+    // }
 }
