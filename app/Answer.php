@@ -32,19 +32,19 @@ class Answer extends Model implements AnswerContract
      * @var array
      */
     protected $casts = [
-        'answer' => 'array',
+        // 'answer' => 'array',
         'weight' => 'integer',
     ];
 
-    public function getAnswerAttribute($value)
-    {
-        return explode(",", $value);
-    }
+    // public function getAnswerAttribute($value)
+    // {
+    //     return explode(",", $value);
+    // }
 
-    public function setAnswerAttribute($value)
-    {
-        $this->attributes['answer'] = implode($value, ",");
-    }
+    // public function setAnswerAttribute($value)
+    // {
+    //     $this->attributes['answer'] = implode($value, ",");
+    // }
 
     public function user(): BelongsTo
     {

@@ -147,9 +147,9 @@ class Survey extends Conversation
         $this->say(trans('survey.finished'));
         
         $qanda = '';
-        $this->askable->answers->each(function ($answer) use (&$qanda) {
+        $this->askable->answers->sortByDesc('id')->each(function ($answer) use (&$qanda) {
             $q = $answer->question->question;
-            $a = implode($answer->answer);
+            $a = $answer->answer;
             $qanda .= $q . " " . $a . "\n";
         });
 
@@ -169,7 +169,11 @@ class Survey extends Conversation
     protected function askQuestion(Question $question)
     {
         $this->ask($this->createQuestionTemplate($question), function (BotManAnswer $answer) use ($question) {
-            $surveyAnswer = $answer->getValue();
+            // dd($this->category->type);
+            if ($this->category->type == 'numeric')
+                $surveyAnswer = $answer->getText();
+            else    
+                $surveyAnswer = $answer->getValue();
 
             if (! $ans = $question->answers()->first()) {
                 $ans = new Answer();
@@ -177,8 +181,9 @@ class Survey extends Conversation
                 $ans->askable()->associate($this->askable);
                 $ans->question()->associate($question);
             }
-            // $ans->answer = null;
-            $ans->weight = $surveyAnswer;
+            $ans->answer = $surveyAnswer;
+            if ($this->category->type == 'numeric')
+                $ans->weight = $surveyAnswer;
             $ans->save();   
 
             if (! $surveyAnswer) {
