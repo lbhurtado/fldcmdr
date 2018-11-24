@@ -178,7 +178,7 @@ class Survey extends Conversation
                 $ans->question()->associate($question);
             }
             // $ans->answer = null;
-            $ans->weight = $ans->answer;
+            $ans->weight = $surveyAnswer;
             $ans->save();   
 
             if (! $surveyAnswer) {
