@@ -23,8 +23,7 @@ class FldCmdrController extends Controller
 
     public function woo(BotMan $bot)
     {
-    	$messenger = Messenger::hook($bot);
-    	$user = $messenger->getUser();
+    	$user = Messenger::hook($bot)->getUser();
 
     	$stub = Stub::generate($user);
 

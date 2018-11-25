@@ -10,13 +10,13 @@ class Stub extends Model
     	'stub', 'role',
     ];
 
-    public static function generate(User $user)
+    public static function generate(User $user, $role = 'subscriber')   
     {
-    	return tap(static::make(), function ($stub) use ($user) {
-    		$stub->stub = str_random(6);
-    		$stub->user()->associate($user);
-    		$stub->save();
-    	})->stub;
+        return tap(Stub::byUser($user)->firstOrNew(compact('role')), function ($model) use ($user) {
+            $model->stub = str_random(6);
+            $model->user()->associate($user);
+            $model->save();            
+        })->stub;
     }
 
     public static function validate($stub)
@@ -34,5 +34,12 @@ class Stub extends Model
     public function setStubAttribute($value)
     {
     	return $this->attributes['stub'] = strtoupper($value);
+    }
+
+    public function scopeByUser($query, User $user)
+    {
+        $user_id = $user->id;
+
+        return $query->where(compact('user_id'));
     }
 }
