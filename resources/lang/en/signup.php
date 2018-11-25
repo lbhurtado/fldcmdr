@@ -9,7 +9,7 @@ return [
 	],
 	'introduction' => "You are invited. Enter /stop anywhere to break the loop.",
 	'processing' => "Please stand by. Processing...",
-	'processed' => "Signup is complet.",
+	'processed' => "Signup is complete.",
 
 	'fail' => "Something is wrong. Please notify the system administrator.",
 ];

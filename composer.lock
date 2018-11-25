@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "81ca4bd3fdf86bd9c84ca1a3d9674f8f",
+    "content-hash": "b40161ccffbedc6e92fd2a11103feb35",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1897,6 +1897,61 @@
                 "library"
             ],
             "time": "2018-07-17T06:10:10+00:00"
+        },
+        {
+            "name": "malhal/laravel-geographical",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/malhal/Laravel-Geographical.git",
+                "reference": "c8818b029c291f7d6d0a25f7b701e89ace4a0d71"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/malhal/Laravel-Geographical/zipball/c8818b029c291f7d6d0a25f7b701e89ace4a0d71",
+                "reference": "c8818b029c291f7d6d0a25f7b701e89ace4a0d71",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "5.*",
+                "php": ">=5.6.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Malhal\\Geographical\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Malcolm Hall",
+                    "email": "composer@malcolmhall.com"
+                }
+            ],
+            "description": "Easily add longitude and latitude columns to your records and use inherited functionality for calculating distances",
+            "keywords": [
+                "Laravel Geographical",
+                "Laravel-Geographical",
+                "Malcolm Hall",
+                "framework",
+                "geographical",
+                "laravel",
+                "latitude",
+                "longitude",
+                "malhal",
+                "models",
+                "user"
+            ],
+            "time": "2018-01-23T22:11:51+00:00"
         },
         {
             "name": "monolog/monolog",

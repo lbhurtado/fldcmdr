@@ -5,6 +5,7 @@ namespace App\Conversations;
 use BotMan\BotMan\BotMan;
 // use App\Jobs\ReverseGeocode;
 use App\Eloquent\Conversation;
+use App\Http\Controllers\FldCmdrController;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Attachments\Location;
@@ -12,7 +13,7 @@ use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class Checkin extends Conversation
-{
+{   
     protected $longitude;
 
     protected $latitude;
@@ -66,9 +67,19 @@ class Checkin extends Conversation
 
         $remarks = $this->remarks;
         $checkin->forceFill(compact('remarks'))->save();
-        // ReverseGeocode::dispatch($checkin);
 
         $this->bot->reply(trans('checkin.processed'));
+
+        if (preg_match('/#(\w+)/', $remarks, $matches)) {
+            $keyword = strtolower($matches[1]);
+            switch ($keyword) {
+                case 'fence':
+                    return app(FldCmdrController::class)->fence($this->bot);
+                default:
+                    # code...
+                    break;
+            }            
+        }
     }
 }
 

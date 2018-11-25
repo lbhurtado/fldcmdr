@@ -3,11 +3,14 @@
 namespace App;
 
 use App\Jobs\ReverseGeocode;
+use Malhal\Geographical\Geographical;
 use Illuminate\Database\Eloquent\Model;
 
 class Checkin extends Model
 {
-    // protected static $kilometers = true;
+    use Geographical;
+    
+    protected static $kilometers = true;
     
     protected $fillable = [
     	'longitude',

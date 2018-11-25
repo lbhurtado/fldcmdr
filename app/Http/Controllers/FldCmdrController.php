@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use BotMan\BotMan\BotMan;
-use App\{PollCount, Stub};
+use App\{PollCount, Stub, TapZone};
 use App\Eloquent\Messenger;
 use Illuminate\Http\Request;
 
@@ -28,5 +28,14 @@ class FldCmdrController extends Controller
     	$stub = Stub::generate($user);
 
     	$bot->reply(trans('signup.woo.stub', compact('stub')));
+    }
+
+    public function fence(BotMan $bot)
+    {
+        $user = Messenger::hook($bot)->getUser();
+
+        $center = TapZone::generate($user);
+
+        $bot->reply(trans('signup.fence.center', compact('center'))
     }
 }
