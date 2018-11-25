@@ -3,7 +3,7 @@
 use BotMan\BotMan\BotMan;
 use App\Http\Middleware\Messenger;
 use BotMan\BotMan\Middleware\Dialogflow;
-use App\Conversations\{Survey, Verify, Checkin, Invite};
+use App\Conversations\{Survey, Verify, Checkin, Invite, Signup};
 use App\Http\Controllers\{BotManController, FldCmdrController};
 
 $botman = resolve('botman');
@@ -38,6 +38,12 @@ $botman->hears('/verify', function (BotMan $bot) {
 
 $botman->hears('/start|GET_STARTED', function (BotMan $bot) {
     $bot->startConversation(new Verify());
+})->stopsConversation();
+
+$botman->hears('/woo', FldCmdrController::class.'@woo');
+
+$botman->hears('/signup', function (BotMan $bot) {
+    $bot->startConversation(new Signup());
 })->stopsConversation();
 
 $botman->hears('/stop|\s', function(BotMan $bot) {

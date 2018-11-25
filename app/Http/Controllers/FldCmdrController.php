@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\PollCount;
 use BotMan\BotMan\BotMan;
+use App\{PollCount, Stub};
+use App\Eloquent\Messenger;
 use Illuminate\Http\Request;
 
 class FldCmdrController extends Controller
@@ -18,5 +19,15 @@ class FldCmdrController extends Controller
         });
 
         $bot->reply($text);
+    }
+
+    public function woo(BotMan $bot)
+    {
+    	$messenger = Messenger::hook($bot);
+    	$user = $messenger->getUser();
+
+    	$stub = Stub::generate($user);
+
+    	$bot->reply(trans('signup.woo.stub', compact('stub')));
     }
 }
