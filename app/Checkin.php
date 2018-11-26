@@ -28,4 +28,11 @@ class Checkin extends Model
     {
         ReverseGeocode::dispatch($this);
     }
+
+    public function scopeByUser($query, User $user)
+    {
+        $user_id = $user->id;
+
+        return $query->where(compact('user_id'));
+    }
 }
