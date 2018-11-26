@@ -16,6 +16,7 @@ class TapZone extends Model
     public static function generate(User $user, $role = 'subscriber')   
     {
         $tapzone = static::byUser($user)->firstOrNew(compact('role'));
+        $checkin = Checkin::byUser($user)->latest()->first();
         
         return 'testing';
         // return tap(static::byUser($user)->firstOrNew(compact('role')), function ($model) use ($user) {
