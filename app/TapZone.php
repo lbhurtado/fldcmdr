@@ -41,10 +41,10 @@ class TapZone extends Model
 
     public function getCoordinatesAttribute(): array
     {
-        return [
-            'longitude' => 121.030962,
-            'latitide' => 14.644346,
-        ];
+        // return [
+        //     'longitude' => 121.030962,
+        //     'latitide' => 14.644346,
+        // ];
 
         return [
             'longitude' => $this->longitude,
