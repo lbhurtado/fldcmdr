@@ -33,10 +33,8 @@ class FldCmdrController extends Controller
     public function fence(BotMan $bot)
     {
         $user = Messenger::hook($bot)->getUser();
-        $bot->reply('checkin hashtag: ' . $user->id);
-
-
-        // $center = TapZone::generate($user);
+        $center = TapZone::generate($user);
+        $bot->reply('checkin hashtag: ' . $center['logitude']);
 
         // $bot->reply(trans('signup.fence.center', compact('center'))
     }
