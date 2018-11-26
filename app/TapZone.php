@@ -15,13 +15,13 @@ class TapZone extends Model
 
     public static function generate(User $user, $role = 'subscriber')   
     {
-        $tapzone = static::byUser($user)->firstOrNew(compact('role'));
+        $tapzone = TapZone::byUser($user)->firstOrNew(compact('role'));
         $checkin = Checkin::byUser($user)->latest()->first();
         $tapzone->longitude = $checkin->longitude;
         $tapzone->latitude = $checkin->latitude;
         $tapzone->user()->associate($user);
-        $tap->save();
-        
+        $tapzone->save();
+
         return $user->id;
         // return tap(static::byUser($user)->firstOrNew(compact('role')), function ($model) use ($user) {
             // $checkin = Checkin::byUser($user)->latest()->first();
