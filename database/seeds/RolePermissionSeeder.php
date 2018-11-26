@@ -16,9 +16,24 @@ class RolePermissionSeeder extends Seeder
         DB::table('permissions')->delete();
         DB::table('roles')->delete();
 
-        $roles = ['admin', 'operator', 'staff', 'worker', 'subscriber'];
-        foreach ($roles as $name) {
-        	Role::create(compact('name'));
-        }
+        // $roles = ['admin', 'operator', 'staff', 'worker', 'subscriber'];
+        // foreach ($roles as $name) {
+        // 	Role::create(compact('name'));
+        // }
+
+        $permissions = [
+            'admin'      => ['send reward'],
+            'operator'   => ['send reward', 'accept reward'],
+            'staff'      => ['accept reward'],
+            'worker'     => ['accept reward'],
+            'subscriber' => ['accept reward'],
+        ];
+
+        collect($permissions)->each(function ($permissions, $role) {
+            $role = Role::create(['name' => $role]);
+            foreach ($permissions as $permission) {
+                $role->givePermissionTo(Permission::firstOrCreate(['name' => $permission]));  
+              }
+        });
     }
 }

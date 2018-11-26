@@ -69,6 +69,12 @@ class VerifyTest extends TestCase
             ;
 
         $this->assertTrue($user->isVerified());
+        if (config('chatbot.reward.enabled'))
+            $this->bot->assertReply(trans('verify.reward'))
+            ;  
+            
+        \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
+
         $this->bot
             ->assertReply(trans('verify.success'))
             ;

@@ -82,8 +82,20 @@ class Verify extends Conversation
             })->isVerified())
             	return $this->inputPIN();
 
-            return $this->finish();
+            return $this->sendReward();
         });   
+    }
+
+    protected function sendReward()
+    {
+        if (config('chatbot.reward.enabled')) {
+            if ($this->getUser()->)
+            $this->getUser()->sendReward(config('chatbot.reward.amount'));
+
+            $this->say(trans('verify.reward'));   
+        }
+
+        return $this->finish();
     }
 
     protected function finish()

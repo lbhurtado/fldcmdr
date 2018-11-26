@@ -3,8 +3,12 @@
 use Illuminate\Validation\Rule;
 
 return [
-   'links' => [ 
-        'messenger' => [
+    'reward' => [
+        'enabled' => env('REWARD_ENABLED', true),
+        'amount' => env('REWARD_AMOUNT', 25),
+    ],
+    'links' => [ 
+            'messenger' => [
             'Telegram' => 'http://t.me/grassroots_bot',
             'Facebook' => 'http://m.me/dyagwarbot',
         ],
