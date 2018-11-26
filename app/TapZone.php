@@ -48,7 +48,7 @@ class TapZone extends Model
 
         return [
             'longitude' => $this->longitude,
-            'latitide' => $this->latitide,
+            'latitude' => $this->latitide,
         ];
     }
 
