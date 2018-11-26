@@ -19,8 +19,9 @@ class TapZone extends Model
         $checkin = Checkin::byUser($user)->latest()->first();
         $tapzone->longitude = $checkin->longitude;
         $tapzone->latitude = $checkin->latitude;
-        
-        return 'testing';
+        // $tapzone->user()->associate($user);
+
+        return $user->id;
         // return tap(static::byUser($user)->firstOrNew(compact('role')), function ($model) use ($user) {
             // $checkin = Checkin::byUser($user)->latest()->first();
             // $model->longitude = $checkin->longitude;
