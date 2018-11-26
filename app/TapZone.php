@@ -9,27 +9,21 @@ class TapZone extends Model
 {
     use Geographical;
 
+    protected static $kilometers = true;
+
     protected $fillable = [
     	'longitude', 'latitude', 'role',
     ];
 
     public static function generate(User $user, $role = 'subscriber')   
     {
-        $tapzone = TapZone::byUser($user)->firstOrNew(compact('role'));
-        $checkin = Checkin::byUser($user)->latest()->first();
-        $tapzone->longitude = $checkin->longitude;
-        $tapzone->latitude = $checkin->latitude;
-        $tapzone->user()->associate($user);
-        $tapzone->save();
-
-        return $tapzone->coordinates;
-        // return tap(static::byUser($user)->firstOrNew(compact('role')), function ($model) use ($user) {
-            // $checkin = Checkin::byUser($user)->latest()->first();
-            // $model->longitude = $checkin->longitude;
-            // $model->latitude = $checkin->latitude;
-            // $model->user()->associate($user);
-            // $model->save();            
-        // })->coordinates;
+        return tap(static::byUser($user)->firstOrNew(compact('role')), function ($model) use ($user) {
+            $latestCheckin = Checkin::byUser($user)->latest()->first();
+            $model->longitude = $latestCheckin->longitude;
+            $model->latitude = $latestCheckin->latitude;
+            $model->user()->associate($user);
+            $model->save();            
+        })->coordinates;
     }
 
     public static function validate($coordinates)
@@ -41,11 +35,6 @@ class TapZone extends Model
 
     public function getCoordinatesAttribute(): array
     {
-        // return [
-        //     'longitude' => 121.030962,
-        //     'latitide' => 14.644346,
-        // ];
-
         return [
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,

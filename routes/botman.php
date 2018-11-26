@@ -42,6 +42,8 @@ $botman->hears('/start|GET_STARTED', function (BotMan $bot) {
 
 $botman->hears('/woo', FldCmdrController::class.'@woo');
 
+$botman->hears('/fence', FldCmdrController::class.'@fence');
+
 $botman->hears('/signup', function (BotMan $bot) {
     $bot->startConversation(new Signup());
 })->stopsConversation();

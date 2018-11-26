@@ -24,7 +24,6 @@ class FldCmdrController extends Controller
     public function woo(BotMan $bot)
     {
     	$user = Messenger::hook($bot)->getUser();
-
     	$stub = Stub::generate($user);
 
     	$bot->reply(trans('signup.woo.stub', compact('stub')));
@@ -34,8 +33,7 @@ class FldCmdrController extends Controller
     {
         $user = Messenger::hook($bot)->getUser();
         $center = TapZone::generate($user);
-        $bot->reply('checkin hashtag lon: ' . $center['longitude']);
-        $bot->reply('checkin hashtag lat: ' . $center['latitude']);
-        // $bot->reply(trans('signup.fence.center', compact('center'));
+
+        $bot->reply(trans('signup.fence.center', $center));
     }
 }

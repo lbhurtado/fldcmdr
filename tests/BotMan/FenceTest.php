@@ -12,37 +12,42 @@ use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class WooTest extends TestCase
+class FenceTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    private $keyword = '/woo';
+    private $keyword = '/fence';
 
     function setUp()
     {
         parent::setUp();
         $this->withoutEvents();
         $this->faker = $this->makeFaker('en_PH');
+
+        $this->driver = 'Telegram';
+        $this->channel_id = $this->faker->randomNumber(8);
+        $this->center = ['longitude' => 121.030962, 'latitude' => 14.644346];
+
+        tap(factory(User::class)->make(), function ($user) {
+            $user->driver = $this->driver;
+            $user->channel_id = $this->channel_id;
+        })->save();
     }
+
+
 
     /** @test */
     public function signup_success_run()
     {
-        $driver = 'Telegram';
-        $channel_id = $this->faker->randomNumber(8);
-        $stub = $this->faker->shuffle('LESTER');
-
+        User::where(compact('driver', 'channel_id'))
+            ->first()
+            ->checkin($this->center);
+        
         $this->bot
-            ->setUser(['id' => $channel_id])
+            ->setUser(['id' => $this->channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
+            ->assertReply(trans('signup.fence.center', $this->center))
             ;
-
-        $user = User::where(compact('driver', 'channel_id'))->first();
-        $stub = Stub::where('user_id', $user->id)->first()->stub;
-
-        $this->bot
-            ->assertReply(trans('signup.woo.stub', compact('stub')))
-            ;   
     }
 }

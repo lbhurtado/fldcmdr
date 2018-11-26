@@ -11,7 +11,7 @@ return [
 	'processing' => "Please stand by. Processing...",
 	'processed' => "Signup is complete.",
 	'fence' => [
-		'center' = "longitude = :longitude, latitude = :latitude",
+		'center' => "longitude = :longitude, latitude = :latitude",
 	],
 	'fail' => "Something is wrong. Please notify the system administrator.",
 ];

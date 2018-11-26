@@ -35,20 +35,19 @@ class DistanceTest extends TestCase
 	public function tapzone_distance_can_be_measured()
 	{
 		$user = factory(User::class)->create();
-		//West Maya Drive, Philam Homes
-		$longitude = 121.028884;
-		$latitude = 14.646914;
+		//Metro Manila
+		$longitude = 120.984222;
+		$latitude = 14.599512;
 		$tapzone = TapZone::make(compact('longitude', 'latitude'));
 		$tapzone->user()->associate($user);
 		$tapzone->save();
 
-		//Farmer's Plaza
-		$lon = 121.052468;
-		$lat = 14.618562;
+		//Taytay Rizal
+		$lon = 121.136086;
+		$lat = 14.558555;
 
-		$distance = $tapzone->distance(14.618562, 121.052468)->first()->distance;
-		dd($distance);
-		$this->assertTrue($distance > 5);
-		$this->assertTrue($distance < 5);	
+		$distance = $tapzone->distance($lat, $lon)->first()->distance;
+
+		$this->assertTrue($distance > 10);	
 	}
 }
