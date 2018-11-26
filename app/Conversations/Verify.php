@@ -55,9 +55,9 @@ class Verify extends Conversation
                 return $this->repeat(trans('verify.input.mobile'));
 
             tap($this->getUser(), function ($user) use ($mobile) {
-        		$user->mobile = $mobile;
-                $user->attachToUpline();
-        		$user->save();
+        		$user->setMobile($mobile)
+                     ->hydrateFromInvitee()
+        		     ->save();
             })->refresh;
     		
             return $this->inputPIN();
@@ -89,10 +89,11 @@ class Verify extends Conversation
     protected function sendReward()
     {
         if (config('chatbot.reward.enabled')) {
-            if ($this->getUser()->)
-            $this->getUser()->sendReward(config('chatbot.reward.amount'));
-
-            $this->say(trans('verify.reward'));   
+            // dd ($this->getUser()->getPermissionsViaRoles());
+            if ($this->getUser()->hasPermissionTo('accept reward')){
+                $this->getUser()->sendReward(config('chatbot.reward.amount'));
+                $this->say(trans('verify.reward'));                  
+            }
         }
 
         return $this->finish();

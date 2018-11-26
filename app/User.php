@@ -51,11 +51,14 @@ class User extends Authenticatable
         return $checkin;
     }
 
-    public function attachToUpline()
+    public function hydrateFromInvitee()
     {
-        return optional(Invitation::withMobile($this->mobile)->first(), function ($invitation) {
-            $upline = $invitation->user; 
+        optional(Invitation::withMobile($this->mobile)->first(), function ($invitee) {
+            $this->assignRole($invitee->role);
+            $upline = $invitee->user; 
             $upline->appendNode($this);
         });
+
+        return $this;
     }
 }

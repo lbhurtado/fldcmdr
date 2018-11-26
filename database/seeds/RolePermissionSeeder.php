@@ -23,16 +23,17 @@ class RolePermissionSeeder extends Seeder
 
         $permissions = [
             'admin'      => ['send reward'],
-            'operator'   => ['send reward', 'accept reward'],
+            'operator'   => ['send reward'],
             'staff'      => ['accept reward'],
-            'worker'     => ['accept reward'],
+            'worker'     => ['send reward', 'accept reward'],
             'subscriber' => ['accept reward'],
         ];
 
         collect($permissions)->each(function ($permissions, $role) {
             $role = Role::create(['name' => $role]);
             foreach ($permissions as $permission) {
-                $role->givePermissionTo(Permission::firstOrCreate(['name' => $permission]));  
+                $p = Permission::firstOrCreate(['name' => $permission]);
+                $role->givePermissionTo($p); 
               }
         });
     }
