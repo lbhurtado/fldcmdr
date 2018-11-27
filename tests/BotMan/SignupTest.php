@@ -30,11 +30,13 @@ class SignupTest extends TestCase
     {
         $admin = factory(User::class)->create();
         $stub = Stub::generate($admin);
+        $mobile = Phone::number('09178251991');
+        $pin = $this->faker->randomNumber(6);
 
         $channel_id = $this->faker->randomNumber(8);
         // $mode = 'stub';
 
-        // \Queue::fake();
+        \Queue::fake();
         $this->bot
             ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
@@ -46,6 +48,19 @@ class SignupTest extends TestCase
             ->receivesInteractiveMessage($stub)
             ->assertReply(trans('signup.processing'))
             ->assertReply(trans('signup.processed'))
+            ->assertReply(trans('verify.introduction'))
+            ->assertQuestion(trans('verify.input.mobile'))
+            ->receives($mobile)
+            ->assertQuestion(trans('verify.input.pin'))
+            ->receives('123456')
+            ;
+
+        $user = User::withMobile($mobile)->first();
+        dd($user);
+        $this->assertTrue($user->isVerified());
+        if (config('chatbot.reward.enabled'))
+            $this->bot->assertReply(trans('verify.reward'))
+
             ;
         
         // \Queue::assertPushed(\App\Jobs\SendUserInvitation::class);   
