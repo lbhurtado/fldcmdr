@@ -6,7 +6,6 @@ use Tests\TestCase;
 
 use App\User;
 use App\Eloquent\Phone;
-use Spatie\Permission\Models\Role;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
@@ -23,17 +22,8 @@ class InviteTest extends TestCase
         parent::setUp();
         $this->withoutEvents();
         $this->faker = $this->makeFaker('en_PH');
-
-        $this->dbseed();
     }
 
-    function dbseed()
-    {
-        $roles = ['admin', 'operator', 'staff', 'worker', 'subscriber'];
-        foreach ($roles as $name) {
-            Role::create(compact('name'));
-        }        
-    }
     /** @test */
     public function invite_success_run()
     {

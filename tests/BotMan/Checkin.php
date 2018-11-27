@@ -29,7 +29,6 @@ class CheckinTest extends TestCase
         $channel_id = $this->faker->randomNumber(8);
         $mobile = Phone::number('09178251991');
 
-        // \Queue::fake();
         $this->bot
             ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)

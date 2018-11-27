@@ -6,7 +6,6 @@ use Tests\TestCase;
 
 use App\{User, Stub};
 use App\Eloquent\Phone;
-use Spatie\Permission\Models\Role;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
@@ -25,7 +24,7 @@ class SignupTest extends TestCase
         $this->faker = $this->makeFaker('en_PH');
     }
 
-    /** @rest */
+    /** @test */
     public function signup_success_run()
     {
         $admin = factory(User::class)->create();
@@ -56,12 +55,11 @@ class SignupTest extends TestCase
             ;
 
         $user = User::withMobile($mobile)->first();
-   
-        $this->assertTrue($user->isVerified());
-        if (config('chatbot.reward.enabled'))
-            $this->bot->assertReply(trans('verify.reward'))
+        $user->verify($pin, false);
 
-            ;
+        $this->assertTrue($user->isVerified());
+        // if (config('chatbot.reward.enabled'))
+            // $this->bot->assertReply(trans('verify.reward'));
         
         // \Queue::assertPushed(\App\Jobs\SendUserInvitation::class);   
     }

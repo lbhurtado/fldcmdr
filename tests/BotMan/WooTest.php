@@ -6,7 +6,6 @@ use Tests\TestCase;
 
 use App\{User, Stub};
 use App\Eloquent\Phone;
-use Spatie\Permission\Models\Role;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;

@@ -3,20 +3,17 @@
 namespace Tests\BotMan;
 
 use Tests\TestCase;
-
-use App\{User, TapZone, Checkin};
 use App\Eloquent\Phone;
+use App\{User, TapZone, Checkin};
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
-use Spatie\Permission\Models\{Role, Permission};
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class FenceTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
-    // use WithFaker;
 
     private $keyword = '/fence';
 
@@ -30,14 +27,6 @@ class FenceTest extends TestCase
         $this->channel_id = $this->faker->randomNumber(8);
 
         $this->center = ['longitude' => 121.030962, 'latitude' => 14.644346];
-
-        collect(config('chatbot.permissions'))->each(function ($permissions, $role) {
-            $role = Role::create(['name' => $role]);
-            foreach ($permissions as $permission) {
-                $p = Permission::firstOrCreate(['name' => $permission]);
-                $role->givePermissionTo($p); 
-              }
-        });
 
         tap(factory(User::class)->make(), function ($user) {
             $user->driver = $this->driver;

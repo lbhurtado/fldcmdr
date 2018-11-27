@@ -24,7 +24,7 @@ class SurveyTest extends TestCase
         parent::setUp();
         $this->withoutEvents();
         $this->faker = $this->makeFaker('en_PH');
-        // $this->artisan('db:seed', ['--class' => 'DatabaseSeeder']);
+
         $survey = $this->getData();
 
         $survey->each(function ($category) {
@@ -76,12 +76,6 @@ class SurveyTest extends TestCase
             ->assertReply(trans('survey.answer', ['answer' => 'Tondo']))
             ->assertReply(trans('survey.finished'))
             ;
-
-        // $qanda = "Gender? Male\nAge Group? 18 to 30\nDistrict? Tondo\n";
-
-        // $this->bot
-        //     ->assertReply(trans('survey.result', compact('qanda')))
-        //     ;
 
         \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
     }

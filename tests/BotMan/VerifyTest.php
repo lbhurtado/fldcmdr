@@ -11,8 +11,6 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 
 class VerifyTest extends TestCase
 {
@@ -30,23 +28,6 @@ class VerifyTest extends TestCase
         $mobile = Phone::number('09178251991');
         $role = 'worker';
         $invitation = $admin->invitations()->create(compact('mobile', 'role'));
-
-        $permissions = [
-            'admin'      => ['send reward'],
-            'operator'   => ['send reward', 'accept reward'],
-            'staff'      => ['accept reward'],
-            'worker'     => ['accept reward'],
-            'subscriber' => ['accept reward'],
-        ];
-
-        collect($permissions)->each(function ($permissions, $role) {
-            $role = Role::create(['name' => $role]);
-            foreach ($permissions as $permission) {
-                $p = Permission::firstOrCreate(['name' => $permission]);
-                $role->givePermissionTo($p); 
-              }
-        });
-
     }
 
     /** @test */
