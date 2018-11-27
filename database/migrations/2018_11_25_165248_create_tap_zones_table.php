@@ -19,6 +19,8 @@ class CreateTapZonesTable extends Migration
             $table->double('latitude');
             $table->integer('user_id')->unsigned();
             $table->string('role')->default('subscriber');
+            $table->timestamp('enabled_at')->nullable()->default(now());
+            $table->timestamp('expired_at')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

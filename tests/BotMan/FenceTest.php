@@ -4,17 +4,19 @@ namespace Tests\BotMan;
 
 use Tests\TestCase;
 
-use App\{User, Stub};
+use App\{User, TapZone, Checkin};
 use App\Eloquent\Phone;
 use Spatie\Permission\Models\Role;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class FenceTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    // use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     private $keyword = '/fence';
 
@@ -26,6 +28,7 @@ class FenceTest extends TestCase
 
         $this->driver = 'Telegram';
         $this->channel_id = $this->faker->randomNumber(8);
+
         $this->center = ['longitude' => 121.030962, 'latitude' => 14.644346];
 
         tap(factory(User::class)->make(), function ($user) {
@@ -37,12 +40,86 @@ class FenceTest extends TestCase
 
 
     /** @test */
-    public function signup_success_run()
+    public function fence_success_run()
     {
-        User::where(compact('driver', 'channel_id'))
-            ->first()
-            ->checkin($this->center);
-        
+        $driver = 'Telegram';
+        $admin_channel_id = $this->faker->randomNumber(8);
+        $admin = tap(factory(User::class)->make(), function ($user) use ($driver, $admin_channel_id) {
+            $user->driver = $driver;
+            $user->channel_id = $admin_channel_id;
+            $user->save();
+        });
+
+        $center = [
+            'latitude' => 14.644346,
+            'longitude' => 121.030962,
+        ];
+
+        \Queue::fake();
+        $this->bot
+            ->setUser(['id' => $admin_channel_id])
+            ->setDriver(TelegramDriver::class)
+            ->receives("/checkin")
+            ->assertReply(trans('checkin.introduction'))
+            ->assertTemplate(OutgoingMessage::class)
+            ->receivesLocation($center['latitude'], $center['longitude'])
+            ->assertTemplate(Question::class)
+            ->receives("#fence")
+            ->assertReply(trans('checkin.processing'))
+            ->assertReply(trans('checkin.processed'))
+            ->assertReply(trans('signup.fence.center', $center))
+            ;
+
+        \Queue::assertPushed(\App\Jobs\ReverseGeocode::class);
+
+        $attributes = array_merge(['user_id' => $admin->id, 'role' => 'subscriber'], $center);
+        $this->assertDatabaseHas('tap_zones', $attributes);
+        $tap_zone = TapZone::where($attributes)->first();
+
+        $location = [
+            'latitude' => 14.618562,
+            'longitude' => 121.052468,
+        ];
+
+        $channel_id = $this->faker->randomNumber(8);
+        $this->bot
+            ->setUser(['id' => $channel_id])
+            ->setDriver(TelegramDriver::class)
+            ->receives("/checkin")
+            ->assertReply(trans('checkin.introduction'))
+            ->assertTemplate(OutgoingMessage::class)
+            ->receivesLocation($location['latitude'], $location['longitude'])
+            ->assertTemplate(Question::class)
+            ->receives("signup")
+            ->assertReply(trans('checkin.processing'))
+            ->assertReply(trans('checkin.processed'))
+            ->assertReplyNothing()
+            ;
+
+        $user = User::where(compact('driver', 'channel_id'))->first();
+
+        $attributes = array_merge(['user_id' => $user->id, 'remarks' => 'signup'], $location);
+        $this->assertDatabaseHas('checkins', $attributes);
+        $checkin = Checkin::where($attributes)->first();
+
+        $this->assertEquals(optional($checkin->user->parent)->id, $admin->id);
+
+        \Queue::assertPushed(\App\Jobs\ReverseGeocode::class);
+    }
+
+    /** @rest */
+    public function checkin_within_tapzone_registers_user()
+    {
+        $admin = factory(User::class)->create();
+        $admin->checkin($this->center);
+        TapZone::generate($admin);
+
+        //farmers
+        $lon = 121.052468;
+        $lat = 14.618562;
+
+        $keyword = "/checkin";
+
         $this->bot
             ->setUser(['id' => $this->channel_id])
             ->setDriver(TelegramDriver::class)
@@ -50,4 +127,5 @@ class FenceTest extends TestCase
             ->assertReply(trans('signup.fence.center', $this->center))
             ;
     }
+
 }

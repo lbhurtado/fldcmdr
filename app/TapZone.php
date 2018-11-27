@@ -22,7 +22,8 @@ class TapZone extends Model
             $model->longitude = $latestCheckin->longitude;
             $model->latitude = $latestCheckin->latitude;
             $model->user()->associate($user);
-            $model->save();            
+            $model->save();      
+            $model->refresh();      
         })->coordinates;
     }
 

@@ -2,8 +2,8 @@
 
 namespace App\Conversations;
 
+use App\{User, TapZone};
 use BotMan\BotMan\BotMan;
-// use App\Jobs\ReverseGeocode;
 use App\Eloquent\Conversation;
 use App\Http\Controllers\FldCmdrController;
 use BotMan\BotMan\Messages\Incoming\Answer;
@@ -67,6 +67,14 @@ class Checkin extends Conversation
 
         $remarks = $this->remarks;
         $checkin->forceFill(compact('remarks'))->save();
+
+        if (TapZone::count() > 0) {
+            $tap_zone = TapZone::distance($this->latitude, $this->longitude)->orderBy('distance', 'ASC')->first();
+            $distance = $tap_zone->distance($this->latitude, $this->longitude)->first()->distance;
+            if ($distance < config('chatbot.tapzone.distance', 5)){
+                $this->messenger->getUser()->hydrateFromTapZone($tap_zone);
+            }
+        }
 
         $this->bot->reply(trans('checkin.processed'));
 
