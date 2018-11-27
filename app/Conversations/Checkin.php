@@ -62,19 +62,15 @@ class Checkin extends Conversation
     {
         $this->bot->reply(trans('checkin.processing'));  
 
-        $checkin = $this->messenger->getUser()->checkin($this->longitude, $this->latitude);
-        $checkin->reverseGeocode();
-
+        $lon = $this->longitude;
+        $lat = $this->latitude;
         $remarks = $this->remarks;
-        $checkin->forceFill(compact('remarks'))->save();
-
-        if (TapZone::count() > 0) {
-            $tap_zone = TapZone::distance($this->latitude, $this->longitude)->orderBy('distance', 'ASC')->first();
-            $distance = $tap_zone->distance($this->latitude, $this->longitude)->first()->distance;
-            if ($distance < config('chatbot.tapzone.distance', 5)){
-                $this->messenger->getUser()->hydrateFromTapZone($tap_zone);
-            }
-        }
+        tap($this->messenger->getUser()->checkin($lon, $lat), function ($checkin) use ($remarks) {
+            $checkin
+                ->reverseGeocode()
+                ->hydrateUserFromTapZone()
+                ->forceFill(compact('remarks'));            
+        })->save();
 
         $this->bot->reply(trans('checkin.processed'));
 

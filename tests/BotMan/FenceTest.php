@@ -6,17 +6,17 @@ use Tests\TestCase;
 
 use App\{User, TapZone, Checkin};
 use App\Eloquent\Phone;
-use Spatie\Permission\Models\Role;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
+use Spatie\Permission\Models\{Role, Permission};
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class FenceTest extends TestCase
 {
-    // use RefreshDatabase, WithFaker;
-    use WithFaker;
+    use RefreshDatabase, WithFaker;
+    // use WithFaker;
 
     private $keyword = '/fence';
 
@@ -30,6 +30,14 @@ class FenceTest extends TestCase
         $this->channel_id = $this->faker->randomNumber(8);
 
         $this->center = ['longitude' => 121.030962, 'latitude' => 14.644346];
+
+        collect(config('chatbot.permissions'))->each(function ($permissions, $role) {
+            $role = Role::create(['name' => $role]);
+            foreach ($permissions as $permission) {
+                $p = Permission::firstOrCreate(['name' => $permission]);
+                $role->givePermissionTo($p); 
+              }
+        });
 
         tap(factory(User::class)->make(), function ($user) {
             $user->driver = $this->driver;
@@ -100,32 +108,10 @@ class FenceTest extends TestCase
 
         $attributes = array_merge(['user_id' => $user->id, 'remarks' => 'signup'], $location);
         $this->assertDatabaseHas('checkins', $attributes);
-        $checkin = Checkin::where($attributes)->first();
 
-        $this->assertEquals(optional($checkin->user->parent)->id, $admin->id);
+        $checkin = Checkin::where($attributes)->first();
+        $this->assertEquals($checkin->user->parent->id, $admin->id);
 
         \Queue::assertPushed(\App\Jobs\ReverseGeocode::class);
     }
-
-    /** @rest */
-    public function checkin_within_tapzone_registers_user()
-    {
-        $admin = factory(User::class)->create();
-        $admin->checkin($this->center);
-        TapZone::generate($admin);
-
-        //farmers
-        $lon = 121.052468;
-        $lat = 14.618562;
-
-        $keyword = "/checkin";
-
-        $this->bot
-            ->setUser(['id' => $this->channel_id])
-            ->setDriver(TelegramDriver::class)
-            ->receives($this->keyword)
-            ->assertReply(trans('signup.fence.center', $this->center))
-            ;
-    }
-
 }

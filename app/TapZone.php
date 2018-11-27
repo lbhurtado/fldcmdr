@@ -53,4 +53,14 @@ class TapZone extends Model
 
         return $query->where(compact('user_id'));
     }
+
+    public function scopeNearest($query)
+    {
+        return $query->orderBy('distance', 'ASC');
+    }
+
+    public function getDistanceFrom($checkin)
+    {
+        return $this->distance($checkin->latitude, $checkin->longitude)->first()->distance;
+    }
 }

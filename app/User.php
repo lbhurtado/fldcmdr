@@ -61,14 +61,4 @@ class User extends Authenticatable
 
         return $this;
     }
-
-    public function hydrateFromTapZone($tap_zone)
-    {
-        // $this->assignRole('subscriber');
-        $upline = $tap_zone->user; 
-        $upline->appendNode($this);
-        $this->save();
-
-        return $this;
-    }
 }
