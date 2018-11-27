@@ -11,7 +11,7 @@ use BotMan\BotMan\Interfaces\Middleware\Matching;
 use BotMan\BotMan\Interfaces\Middleware\Received;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 
-class Messenger implements Received, Captured, Matching, Heard, Sending
+class HookMessenger implements Received, Captured, Matching, Heard, Sending
 {
     /**
      * Handle a captured message.

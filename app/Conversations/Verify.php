@@ -76,11 +76,12 @@ class Verify extends Conversation
         return $this->ask($question, function (Answer $answer) {
             $otp = $answer->getText();
 
-            if (! tap($this->getUser(), function ($user) use ($otp) {
-            	$user->verify($otp); 
-            	$user->refresh();
-            })->isVerified())
-            	return $this->inputPIN();
+            $user = tap($this->getUser(), function ($user) use ($otp) {
+            	   $user->verify($otp)->refresh();
+                });
+
+            if (! $user->isVerified())
+                return $this->inputPIN();
 
             return $this->sendReward();
         });   
@@ -90,10 +91,10 @@ class Verify extends Conversation
     {
         if (config('chatbot.reward.enabled')) {
             // dd ($this->getUser()->getPermissionsViaRoles());
-            if ($this->getUser()->hasPermissionTo('accept reward')){
+            // if ($this->getUser()->hasPermissionTo('accept reward')){
                 $this->getUser()->sendReward(config('chatbot.reward.amount'));
                 $this->say(trans('verify.reward'));                  
-            }
+            // }
         }
 
         return $this->finish();

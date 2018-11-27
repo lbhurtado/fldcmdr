@@ -1,7 +1,7 @@
 <?php
 
 use BotMan\BotMan\BotMan;
-use App\Http\Middleware\Messenger;
+use App\Http\Middleware\HookMessenger;
 use BotMan\BotMan\Middleware\Dialogflow;
 use App\Conversations\{Survey, Verify, Checkin, Invite, Signup};
 use App\Http\Controllers\{BotManController, FldCmdrController};
@@ -11,8 +11,7 @@ $botman = resolve('botman');
 $dialogflow = Dialogflow::create('2a7576f8e70d445c89b6db456e0c3555')->listenForAction();
 $botman->middleware->received($dialogflow);
 
-$messenger = new Messenger;
-$botman->middleware->received($messenger);
+$botman->middleware->received(new HookMessenger);
 
 $botman->hears('test', function ($bot) {
     $bot->reply('It works!');

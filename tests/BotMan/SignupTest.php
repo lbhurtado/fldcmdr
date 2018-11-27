@@ -25,7 +25,7 @@ class SignupTest extends TestCase
         $this->faker = $this->makeFaker('en_PH');
     }
 
-    /** @test */
+    /** @rest */
     public function signup_success_run()
     {
         $admin = factory(User::class)->create();
@@ -56,7 +56,7 @@ class SignupTest extends TestCase
             ;
 
         $user = User::withMobile($mobile)->first();
-        dd($user);
+   
         $this->assertTrue($user->isVerified());
         if (config('chatbot.reward.enabled'))
             $this->bot->assertReply(trans('verify.reward'))
