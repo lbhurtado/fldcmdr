@@ -2,8 +2,7 @@
 
 namespace App;
 
-// use App\Eloquent\Phone;
-use App\Invitation;
+use App\Invitee;
 use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -35,9 +34,9 @@ class User extends Authenticatable
         return $this->hasMany(Checkin::class);
     }
     
-    public function invitations()
+    public function invitees()
     {
-        return $this->hasMany(Invitation::class);
+        return $this->hasMany(Invitee::class);
     }
 
     public function checkin(...$coordinates)
@@ -53,7 +52,7 @@ class User extends Authenticatable
 
     public function hydrateFromInvitee()
     {
-        optional(Invitation::withMobile($this->mobile)->first(), function ($invitee) {
+        optional(Invitee::withMobile($this->mobile)->first(), function ($invitee) {
             $this->assignRole($invitee->role);
             $upline = $invitee->user; 
             $upline->appendNode($this);

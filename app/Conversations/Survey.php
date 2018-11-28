@@ -119,7 +119,7 @@ class Survey extends Conversation
                 return $this->repeat(trans('invite.input.mobile'));
             
             $invitee = $this->user
-                    ->invitations()
+                    ->invitees()
                     ->firstOrCreate([
                         'mobile' => $this->mobile
                     ],[

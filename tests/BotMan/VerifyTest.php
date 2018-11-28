@@ -5,7 +5,7 @@ namespace Tests\BotMan;
 use Tests\TestCase;
 
 use App\User;
-use App\Invitation;
+use App\Invitee;
 use App\Eloquent\Phone;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -27,7 +27,7 @@ class VerifyTest extends TestCase
         $admin = factory(User::class)->create();
         $mobile = Phone::number('09178251991');
         $role = 'worker';
-        $invitation = $admin->invitations()->create(compact('mobile', 'role'));
+        $invitee = $admin->invitees()->create(compact('mobile', 'role'));
     }
 
     /** @test */

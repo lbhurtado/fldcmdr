@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Traits\{HasNotifications, HasMobile, Askable};
 
-class Invitation extends Model
+class Invitee extends Model
 {
     use Notifiable;
 
 	use HasNotifications, HasMobile, Askable;
 	
+    protected $table = 'invitees';
+
     protected $fillable = [
     	'mobile',
     	'role',
