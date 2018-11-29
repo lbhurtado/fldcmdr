@@ -1,9 +1,9 @@
 <?php
 
 use BotMan\BotMan\BotMan;
-use App\Http\Middleware\HookMessenger;
+use App\Http\Middleware\{HookMessenger, AddTyping};
 use BotMan\BotMan\Middleware\Dialogflow;
-use App\Conversations\{Survey, Verify, Checkin, Invite, Signup};
+use App\Conversations\{Survey, Verify, Checkin, Invite, Signup, Onboarding};
 use App\Http\Controllers\{BotManController, FldCmdrController};
 
 $botman = resolve('botman');
@@ -11,6 +11,7 @@ $botman = resolve('botman');
 $dialogflow = Dialogflow::create('2a7576f8e70d445c89b6db456e0c3555')->listenForAction();
 $botman->middleware->received($dialogflow);
 
+$botman->middleware->sending(new AddTyping);
 $botman->middleware->received(new HookMessenger);
 
 $botman->hears('test', function ($bot) {
@@ -36,7 +37,7 @@ $botman->hears('/verify', function (BotMan $bot) {
 })->stopsConversation();
 
 $botman->hears('/start|GET_STARTED', function (BotMan $bot) {
-    $bot->startConversation(new Verify());
+    $bot->startConversation(new Onboarding());
 })->stopsConversation();
 
 $botman->hears('/woo', FldCmdrController::class.'@woo');
@@ -54,6 +55,9 @@ $botman->hears('/stop|\s', function(BotMan $bot) {
 $botman->hears('/bored', BotManController::class.'@startConversation');
 
 $botman->fallback(function (BotMan $bot){
+    if ($bot->getMessage()->getExtras('is_new_user'))
+        return $bot->startConversation(new Onboarding);
+
     return $bot->reply($bot->getMessage()->getExtras('apiReply'));
 });
 

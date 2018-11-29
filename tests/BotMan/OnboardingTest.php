@@ -3,19 +3,16 @@
 namespace Tests\BotMan;
 
 use Tests\TestCase;
-
-use App\{User, Stub};
-use App\Eloquent\Phone;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class WooTest extends TestCase
+class OnboardingTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    private $keyword = '/woo';
+    private $keyword = '/start';
 
     function setUp()
     {
@@ -25,23 +22,20 @@ class WooTest extends TestCase
     }
 
     /** @test */
-    public function woo_success_run()
+    public function onboarding_success_run()
     {
         $driver = 'Telegram';
         $channel_id = $this->faker->randomNumber(8);
-        $stub = $this->faker->shuffle('LESTER');
 
         $this->bot
             ->setUser(['id' => $channel_id])
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
+            ->assertReply(trans('onboarding.introduction.1'))
+            ->assertReply(trans('onboarding.introduction.2'))
+            ->assertReply(trans('onboarding.introduction.3'))
+            ->assertReply(trans('onboarding.introduction.4'))
+            ->assertQuestion(trans('onboarding.input.optin'))
             ;
-
-        $user = User::where(compact('driver', 'channel_id'))->first();
-        $stub = Stub::where('user_id', $user->id)->first()->stub;
-
-        $this->bot
-            ->assertReply(trans('signup.woo.stub', compact('stub')))
-            ;   
     }
 }

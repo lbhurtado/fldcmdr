@@ -45,6 +45,17 @@ class SurveySeeder extends Seeder
         		],
         		'questions' => [
 					[
+		                'question' => 'Registered Voter?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Yes',
+			                    'No'
+		                	],
+		                ],
+		            ],
+					[
 		                'question' => 'Gender?',
 		                'type' => 'radio',
 		                'options' => [
@@ -52,6 +63,20 @@ class SurveySeeder extends Seeder
 		                	'values' => [
 			                    'Male',
 			                    'Female'
+		                	],
+		                ],
+		            ],
+		            [
+		                'question' => 'Social Economic Class?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Class A',
+			                    'Class B',
+			                    'Class C',
+			                    'Class D',
+			                    'Class E',
 		                	],
 		                ],
 		            ],
@@ -114,6 +139,71 @@ class SurveySeeder extends Seeder
 			                    'Isko Moreno',
 			                    'Lito Atienza',
 			                    'Alfredo Lim',
+		                	],
+		                ],
+		            ],
+		            [
+		                'question' => 'Why?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Honest',
+			                    'Track Record',
+			                    'Popular',
+			                    'Rich',
+		                	],
+		                ],
+		            ],
+					[
+		                'question' => 'Why is Erap Estrada not your #1?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Corrupt',
+			                    'Gay',
+			                    'Tamad',
+			                    'Killer',
+		                	],
+		                ],
+		            ],
+					[
+		                'question' => 'Why is Isko Moreno not your #1?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Corrupt',
+			                    'Gay',
+			                    'Tamad',
+			                    'Killer',
+		                	],
+		                ],
+		            ],
+					[
+		                'question' => 'Why is Lito Atienza not your #1?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Corrupt',
+			                    'Gay',
+			                    'Tamad',
+			                    'Killer',
+		                	],
+		                ],
+		            ],
+					[
+		                'question' => 'Why is Alfredo Lim not your #1?',
+		                'type' => 'radio',
+		                'options' => [
+		                	'required' => false,
+		                	'values' => [
+			                    'Corrupt',
+			                    'Gay',
+			                    'Tamad',
+			                    'Killer',
 		                	],
 		                ],
 		            ],

@@ -12,6 +12,7 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
 class SurveyTest extends TestCase
 {
@@ -52,6 +53,7 @@ class SurveyTest extends TestCase
         $mobile = Phone::number('09178251991');
         $category = 'Demographics';
         $count = 3;
+        $coordinate = ['longitude' => 121.030962, 'latitude' => 14.644346];
 
         \Queue::fake();
 
@@ -62,6 +64,8 @@ class SurveyTest extends TestCase
             ->assertReply(trans('survey.intro'))
             ->assertQuestion(trans('survey.input.category'))
             ->receives(1)
+            ->assertTemplate(OutgoingMessage::class)
+            ->receivesLocation($coordinate['latitude'], $coordinate['longitude'])
             ->assertReply(trans('survey.info', compact('category', 'count')))
             ->assertQuestion(trans('survey.input.mobile'))
             ->receives($mobile)

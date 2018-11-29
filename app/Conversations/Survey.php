@@ -5,12 +5,11 @@ namespace App\Conversations;
 use BotMan\BotMan\BotMan;
 use App\Conversations\Invite;
 use App\Eloquent\{Conversation, Phone};
-use App\{Category, Question, Answer, Invitation as Invitee};
-use BotMan\BotMan\Messages\Incoming\Answer as BotManAnswer;
-use BotMan\BotMan\Messages\Outgoing\Question as BotManQuestion;
+use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-
-
+use BotMan\BotMan\Messages\Incoming\Answer as BotManAnswer;
+use App\{Category, Question, Answer, Invitation as Invitee};
+use BotMan\BotMan\Messages\Outgoing\Question as BotManQuestion;
 
 class Survey extends Conversation
 {
@@ -91,8 +90,18 @@ class Survey extends Conversation
         return $this->ask($question, function (BotManAnswer $answer) {
             $this->processCategoryQuestions($answer->getValue());         
 
-            return $this->survey();
+            return $this->inputLocation();
         });
+    }
+
+    protected function inputLocation()
+    {
+        return $this->askForLocation(trans('survey.input.location'), function (Location $location) {
+            $lat = $location->getLatitude();
+            $lon = $location->getLongitude();
+
+            return $this->survey();
+        });   
     }
 
     protected function survey()

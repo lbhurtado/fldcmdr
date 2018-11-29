@@ -16,7 +16,7 @@ class VerifyTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    private $keyword = '/start';
+    private $keyword = '/verify';
 
     function setUp()
     {

@@ -4,11 +4,11 @@ namespace App\Conversations;
 
 use App\User;
 use App\Conversations\Survey;
+use App\Eloquent\Conversation;
 use App\Eloquent\{Phone, Messenger};
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
-use App\Eloquent\Conversation;
 
 class Verify extends Conversation
 {
