@@ -9,7 +9,7 @@ return [
 	],
 	'introduction' => "You are invited. Enter /stop anywhere to break the loop.",
 	'processing' => "Please stand by. Processing...",
-	'processed' => "Signup is complete.",
+	'processed' => "Signup finished.",
 	'fence' => [
 		'center' => "longitude = :longitude, latitude = :latitude",
 	],
