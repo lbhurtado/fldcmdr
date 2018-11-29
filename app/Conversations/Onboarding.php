@@ -55,5 +55,6 @@ class Onboarding extends Conversation
     {
     	$this->say(trans('onboarding.processing'));
     	$this->say(trans('onboarding.processed'));
+        $this->bot->startConversation(new Verify());
     }
 }
