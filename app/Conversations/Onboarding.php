@@ -10,9 +10,11 @@ use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 
 class Onboarding extends Conversation
 {
+    protected $user; 
+
     public function ready()
     {
-        $this->introduction()->start();
+        $this->setup()->introduction()->start();
     }
 
     public function introduction()
@@ -27,6 +29,13 @@ class Onboarding extends Conversation
 
     	return $this;
     }
+    
+    protected function setup()
+    {
+        $this->user = $this->getMessenger()->getUser();
+
+        return $this;
+    }
 
     protected function start()
     {
@@ -35,20 +44,20 @@ class Onboarding extends Conversation
 
     protected function optin()
     {
-        $question = Question::create(trans('onboarding.input.optin'))
-            ->fallback(trans('onboarding.input.error'))
-            ->callbackId('onboarding.input.optin')
-            ->addButton(Button::create(trans('onboarding.optin.affirmative'))->value(true))
-            ->addButton(Button::create(trans('onboarding.optin.negative'))->value(false))
+        $question = Question::create(trans('onboarding.question.optin'))
+            ->fallback(trans('onboarding.question.error'))
+            ->callbackId('onboarding.question.optin')
+            ->addButton(Button::create(trans('onboarding.answer.optin.affirmative'))->value('yes'))
+            ->addButton(Button::create(trans('onboarding.answer.optin.negative'))->value('no'))
             ;
 
         return $this->ask($question, function (Answer $answer) {
-            if ($answer->isInteractiveMessageReply()) {
-                if ($answer->getValue())
-                	return $this->process();
-            }
-            else 
+            if (! $answer->isInteractiveMessageReply())
                 return $this->repeat();
+
+            return ($answer->getValue() == 'yes')
+                    ? $this->process()
+                    : $this->regrets();
         });
     }
 
@@ -57,5 +66,12 @@ class Onboarding extends Conversation
     	$this->say(trans('onboarding.processing'));
     	$this->say(trans('onboarding.processed'));
         $this->bot->startConversation(new Verify());
+    }
+
+    protected function regrets()
+    {
+        $this->say(trans('onboarding.regrets'));
+        $this->user->delete();
+        $this->say(trans('onboarding.expunge'));
     }
 }

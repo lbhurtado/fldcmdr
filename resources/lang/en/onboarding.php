@@ -1,9 +1,6 @@
 <?php
 
 return [
-	'input' => [
-		'optin' => "",
-	],
 	'introduction' => [
 		'1' => "
 		Welcome to the realm of automated private messaging!\n\n 
@@ -25,8 +22,18 @@ return [
 		It can even ask for the exact location of the subscriber for an even granular provisioning of services.
 		",
 	],
+	'question' => [
+		'optin' => "Continue interacting with messenger system?",
+		'error' => "Something is wrong. Please notify the system administrator.",
+	],
+	'answer' => [
+		'optin' => [
+			'affirmative' => 'Yes',
+			'negative' => 'No',
+		],
+	],
 	'processing' => "Please stand by. Processing...",
 	'processed' => "Invitation has been sent.",
-
-	'fail' => "Something is wrong. Please notify the system administrator.",
+	'regrets' => "Discontinuing? That's ok. Hope to see you again soon.",
+	'expunge' => "The system will no longer track your activities.",
 ];
