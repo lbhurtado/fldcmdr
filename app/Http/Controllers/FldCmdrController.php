@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use BotMan\BotMan\BotMan;
-use App\{PollCount, Stub, TapZone};
+use App\{PollCount, Stub, TapZone, User};
 use App\Eloquent\Messenger;
 use Illuminate\Http\Request;
 
@@ -35,5 +35,14 @@ class FldCmdrController extends Controller
         $center = TapZone::generate($user);
 
         $bot->reply(trans('signup.fence.center', $center));
+    }
+
+    public function broadcast(BotMan $bot, $message)
+    {
+        $users = User::all();
+        $users->each(function($user) use ($bot, $message) {
+            $bot->say($message, $user->channel_id, $user->driver);
+        });
+        $bot->reply(trans('broadcast.sent', ['count' => $users->count()]));
     }
 }
