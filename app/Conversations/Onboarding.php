@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\Conversations\Verify;
 use App\Eloquent\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
