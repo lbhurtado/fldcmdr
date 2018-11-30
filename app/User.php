@@ -68,6 +68,6 @@ class User extends Authenticatable
 
     public function setNameAttribute($value)
     {
-        $this->attributes['name'] = ucfirst(trim($value));
+        $this->attributes['name'] = trim(ucfirst($value));
     }
 }
