@@ -24,9 +24,8 @@ class Messenger
     {
         return tap($this->getUser(), function ($user) {
             if (! ($user->extra_attributes->first_name || $user->extra_attributes->last_name)) {
-                
-                $first_name = trim(ucfirst($this->getBot()->getUser()->getFirstName()));
-                $last_name = trim(ucfirst($this->getBot()->getUser()->getLastName()));
+                $first_name = $this->getBot()->getUser()->getFirstName();
+                $last_name = $this->getBot()->getUser()->getLastName();
 
                 $user->extra_attributes->first_name = $first_name;
                 $user->extra_attributes->last_name = $last_name;

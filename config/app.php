@@ -169,6 +169,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Providers\TelerivetServiceProvider::class,
+        App\Providers\MessengerServiceProvider::class,
 
     ],
 

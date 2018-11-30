@@ -60,4 +60,14 @@ class User extends Authenticatable
 
         return $this;
     }
+
+    public function getHandleAttribute()
+    {
+        return $this->extra_attributes['handle'];
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = ucfirst(trim($value));
+    }
 }

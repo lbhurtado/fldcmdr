@@ -7,6 +7,8 @@ use App\{PollCount, Stub, TapZone, User};
 use App\Eloquent\Messenger;
 use Illuminate\Http\Request;
 
+use App\Notifications\UserBroadcast;
+
 class FldCmdrController extends Controller
 {
     public function poll(BotMan $bot)
@@ -41,8 +43,12 @@ class FldCmdrController extends Controller
     {
         $users = User::all();
         $users->each(function($user) use ($bot, $message) {
-            $bot->say($message, $user->channel_id, $user->driver);
+            // $bot->say($message, $user->channel_id, $user->driver);
+            $user->notify(new UserBroadcast($message));
         });
+
+
+
         $bot->reply(trans('broadcast.sent', ['count' => $users->count()]));
     }
 }

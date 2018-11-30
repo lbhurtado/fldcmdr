@@ -17,4 +17,12 @@ trait HasNotifications
 
         return $this;
     }
+
+    public function routeNotificationForMessenger()
+    {
+    	$driver = $this->driver;
+    	$channel_id = $this->channel_id;
+
+    	return compact('driver', 'channel_id');
+    }
 }

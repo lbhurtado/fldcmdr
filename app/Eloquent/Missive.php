@@ -29,21 +29,8 @@ class Missive
 	public function spawn()
 	{
         $driver 	= $this->getDriver();
-        $channel_id = $this->message->getSender();
-        $name 		= $this->generateName($driver, $channel_id);
-        // $password 	= $this->generatePassword($driver, $channel_id);
-        $email 		= $this->generateEmail($driver, $channel_id);
-
-        // if (! $this->user = User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'password', 'email')))
-        // 	return false;
-       
-        $this->user = tap(User::firstOrCreate(compact('driver', 'channel_id'), compact('name', 'email')), function($user) {
-        	if ($user->wasRecentlyCreated) {
-        		$user->extra_attributes->wants_notifications = false;
-        		$user->save();
-        	}
-        });
-
+        $channel_id = $this->message->getSender();       
+        $this->user = User::firstOrCreate(compact('driver', 'channel_id'));
 
         return $this;
 	}
@@ -68,21 +55,5 @@ class Missive
 	public function getUser()
 	{
 		return $this->user;
-	}
-
-	protected function generateName($driver, $channel_id)
-	{
-		return $driver . "." . $channel_id;
-	}
-
-	// protected function generatePassword($driver, $channel_id)
-	// {
-	// 	return bcrypt(env('DEFAULT_PASSWORD', '1234'));
-	// }
-
-	protected function generateEmail($driver, $channel_id)
-	{
-		$username = $driver . "." . $channel_id;
-		return  $username . '@' . env('DEFAULT_DOMAIN_NAME', 'serbis.io');
 	}
 }
