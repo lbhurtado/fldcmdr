@@ -81,7 +81,7 @@ class FldCmdrController extends Controller
             if ($value === false)
                 $value = 'false';
 
-            $attributes_str .= $attribute . ': ' . $value . '\n' ;
+            $attributes_str .= $attribute . ': ' . $value . "\n" ;
         }
         $attributes_str .= 'Copyright: Applester 2018';
 
