@@ -13,15 +13,16 @@ class FldCmdrController extends Controller
 {
     public function status(BotMan $bot)
     {
-        // $status = [
-        //     'verified' => true,
-        //     'roles' => ['admin', 'subscriber'],
-        //     'balance' => 0,
-        // ];
-
         $user = Messenger::hook($bot)->getUser();
-        // dd($user->status);
+
         $bot->reply($this->array_to_attributes($user->status));
+    }
+
+    public function info(BotMan $bot)
+    {
+        $user = Messenger::hook($bot)->getUser();
+
+        $bot->reply($this->array_to_attributes($user->info));
     }
 
     public function poll(BotMan $bot)
@@ -74,7 +75,9 @@ class FldCmdrController extends Controller
                 else
                     $value = 'nil';
             }
-
+            if (empty($value))
+                $value = 'nil';
+            
             if ($value === true)
                 $value = 'true';
 
@@ -83,7 +86,7 @@ class FldCmdrController extends Controller
 
             $attributes_str .= $attribute . ': ' . $value . "\n" ;
         }
-        $attributes_str .= 'Copyright: Applester 2018';
+        $attributes_str .= "\nCopyright Applester 2018";
 
         return $attributes_str;
     }
