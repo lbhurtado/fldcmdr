@@ -18,6 +18,8 @@ $botman->hears('test', function ($bot) {
     $bot->reply('It works!');
 });
 
+$botman->hears('/status', FldCmdrController::class.'@status');
+
 $botman->hears('/invite', function (BotMan $bot) {
     $bot->startConversation(new Invite());
 })->stopsConversation();

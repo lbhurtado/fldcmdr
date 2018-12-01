@@ -58,8 +58,8 @@ return [
     //     ],
     // ],
     'permissions' => [
-        'admin'      => ['send reward'],
-        'operator'   => ['send reward'],
+        'admin'      => ['send reward', 'broadcast message'],
+        'operator'   => ['send reward', 'broadcast message'],
         'staff'      => ['accept reward'],
         'worker'     => ['send reward', 'accept reward'],
         'subscriber' => ['accept reward'],

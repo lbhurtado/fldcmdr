@@ -25,6 +25,7 @@ class User extends Authenticatable
 
     public $casts = [
         'extra_attributes' => 'array',
+        'status' => 'array',
     ];
 
     protected $guard_name = 'web';
@@ -69,5 +70,13 @@ class User extends Authenticatable
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = trim(ucfirst($value));
+    }
+
+    public function getStatusAttribute()
+    {
+        return [
+            'verified' => $this->isVerified(),
+            'roles' => $this->roles->pluck('name')->toArray(),
+        ];
     }
 }
