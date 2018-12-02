@@ -103,6 +103,11 @@ class Question extends Model implements QuestionContract
         return $this->extra_attributes["values"];
     }
 
+    public function getAnchoredAttribute(): bool
+    {
+        return $this->extra_attributes["anchored"] ?? false;
+    }
+
     public function default(string $old): string
     {
         if(isset($old)){

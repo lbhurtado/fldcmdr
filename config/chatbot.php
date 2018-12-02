@@ -67,4 +67,7 @@ return [
     'tap_zone' => [
         'distance' => env('TAP_ZONE_DISTANCE', 5),
     ],
+    'survey' => [
+        'location' => env('SURVEY_LOCATION', true),
+    ],
 ];

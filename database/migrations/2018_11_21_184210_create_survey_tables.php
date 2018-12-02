@@ -41,7 +41,7 @@ class CreateSurveyTables extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['user_id', 'question_id']);
+            // $table->unique(['user_id', 'question_id']);
         });
     }
 

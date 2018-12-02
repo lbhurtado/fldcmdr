@@ -41,6 +41,8 @@ class Survey extends Conversation
 
     public $qanda;
 
+    public $anchor;
+
     public function ready()
     {
         $this->setup()->introduction()->start();
@@ -71,12 +73,13 @@ class Survey extends Conversation
 
     public function inputCategory()
     {
-        // if ($this->categories->count() == 1) {
-        //     $category_id = $this->categories->first()->id;
-        //     $this->processCategoryQuestions($category_id);     
+        // skip input category if there's just one category
+        if ($this->categories->count() == 1) {
+            $category_id = $this->categories->first()->id;
+            $this->processCategoryQuestions($category_id);     
 
-        //     return $this->survey();
-        // }
+            return $this->survey();
+        }
 
         $question = BotManQuestion::create(trans('survey.input.category'))
             ->fallback(trans('survey.category.error'))
@@ -88,7 +91,14 @@ class Survey extends Conversation
         });
 
         return $this->ask($question, function (BotManAnswer $answer) {
-            $this->processCategoryQuestions($answer->getValue());         
+            $category_id = $answer->getValue();
+            $this->processCategoryQuestions($category_id);         
+
+            //sometimes you want to skip the location
+            //to try out from the web
+            //edit from .env SURVEY_LOCATION=FALSE
+            if (! config('chatbot.survey.location'))
+                return $this->survey();
 
             return $this->inputLocation();
         });
@@ -106,9 +116,12 @@ class Survey extends Conversation
 
     protected function survey()
     {
-        $this->say(trans('survey.info', ['category' => $this->category->title, 'count' => $this->questionCount]));
+        $category = $this->category->title;
+        $count = $this->questionCount;
 
-        if ($this->category->twosome) {
+        $this->say(trans('survey.info', compact('category', 'count')));
+
+        if ($this->category->twosome){
             return $this->inputMobile();
         }
         else
@@ -173,6 +186,19 @@ class Survey extends Conversation
 
     protected function askQuestion(Question $question)
     {
+        //skip question if matches regex
+        if ($question->extra_attributes->anchor_regex) {
+            $regex = str_replace(':anchor', $this->anchor, $question->extra_attributes->anchor_regex);
+            if (preg_match($regex, $question->question)) {
+                if ($question->extra_attributes->anchor_action == 'skip') {
+                    $this->surveyQuestions->forget($question->id);
+                    $this->currentQuestion++;
+                    return $this->checkForNextQuestion();                    
+                }
+
+            }
+        }
+
         $this->ask($this->createQuestionTemplate($question), function (BotManAnswer $answer) use ($question) {
 
             $surveyAnswer = $this->category->type == 'numeric' 
@@ -182,11 +208,15 @@ class Survey extends Conversation
 
             $q = $question->question;            
             $a = $surveyAnswer; 
-            $this->qanda .= $q . " " . $a . "\n"; //refactor this!
+
+            if ($question->anchored)
+                $this->anchor = $a;
+
+            // $this->qanda .= $q . " " . $a . "\n"; //refactor this!
 
             $askable_type = get_class($this->askable);
             $askable_id = $this->askable->id;
-            $ans = $question->answers()->firstOrNew(compact('askable_type','askable_id'));
+            $ans = $question->answers()->firstOrNew(compact('askable_type', 'askable_id'));
             $ans->user()->associate($this->user); //remove this in the future
             $ans->answer = $surveyAnswer;
 
@@ -198,6 +228,13 @@ class Survey extends Conversation
                 $this->say(trans('survey.fallback'));
                 
                 return $this->checkForNextQuestion();
+            }
+
+            // this is not yet working,
+            // check this out.
+            if ($question->required){
+                if ($answer->getValue() == 'No')
+                    return $this->abort(); 
             }
 
             $this->surveyQuestions->forget($question->id);
@@ -215,10 +252,15 @@ class Survey extends Conversation
 
     protected function createQuestionTemplate(Question $question)
     {
+        $text = empty($this->anchor) 
+                ? $question->question
+                : str_replace(':anchor', $this->anchor, $question->question)
+                ;
+
         $questionTemplate = BotManQuestion::create(trans('survey.question', [
             'current' => $this->currentQuestion,
             'count' => $this->questionCount,
-            'text' => $question->question
+            'text' => $text
         ]));
 
         foreach ($question->values as $answer) {
@@ -231,9 +273,9 @@ class Survey extends Conversation
 
     protected function processCategoryQuestions($category_id)
     {
-        $this->category = $this->categories->find($category_id);
-        $this->surveyQuestions = $this->category->questions;
-        $this->questionCount = $this->surveyQuestions->count();
-        $this->surveyQuestions = $this->surveyQuestions->keyBy('id');  
+        $this->category         = $this->categories->find($category_id);
+        $this->surveyQuestions  = $this->category->questions;
+        $this->questionCount    = $this->surveyQuestions->count();
+        $this->surveyQuestions  = $this->surveyQuestions->keyBy('id');  
     }
 }

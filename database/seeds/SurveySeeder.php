@@ -48,7 +48,7 @@ class SurveySeeder extends Seeder
 		                'question' => 'Registered Voter?',
 		                'type' => 'radio',
 		                'options' => [
-		                	'required' => false,
+		                	'required' => true,
 		                	'values' => [
 			                    'Yes',
 			                    'No'
@@ -140,11 +140,13 @@ class SurveySeeder extends Seeder
 			                    'Lito Atienza',
 			                    'Alfredo Lim',
 		                	],
+			                'anchored' => true,
 		                ],
 		            ],
 		            [
-		                'question' => 'Why?',
+		                'question' => 'Why :anchor?',
 		                'type' => 'radio',
+		                
 		                'options' => [
 		                	'required' => false,
 		                	'values' => [
@@ -156,7 +158,7 @@ class SurveySeeder extends Seeder
 		                ],
 		            ],
 					[
-		                'question' => 'Why is Erap Estrada not your #1?',
+		                'question' => 'Why is <Erap Estrada> not your #1?',
 		                'type' => 'radio',
 		                'options' => [
 		                	'required' => false,
@@ -166,10 +168,12 @@ class SurveySeeder extends Seeder
 			                    'Tamad',
 			                    'Killer',
 		                	],
+		                	'anchor_regex' => '<:anchor>',
+            				'anchor_action' => 'skip',
 		                ],
 		            ],
 					[
-		                'question' => 'Why is Isko Moreno not your #1?',
+		                'question' => 'Why is <Isko Moreno> not your #1?',
 		                'type' => 'radio',
 		                'options' => [
 		                	'required' => false,
@@ -179,10 +183,12 @@ class SurveySeeder extends Seeder
 			                    'Tamad',
 			                    'Killer',
 		                	],
+		                	'anchor_regex' => '<:anchor>',
+		                	'anchor_action' => 'skip',
 		                ],
 		            ],
 					[
-		                'question' => 'Why is Lito Atienza not your #1?',
+		                'question' => 'Why is <Lito Atienza> not your #1?',
 		                'type' => 'radio',
 		                'options' => [
 		                	'required' => false,
@@ -192,10 +198,12 @@ class SurveySeeder extends Seeder
 			                    'Tamad',
 			                    'Killer',
 		                	],
+		                	'anchor_regex' => '<:anchor>',
+		                	'anchor_action' => 'skip',
 		                ],
 		            ],
 					[
-		                'question' => 'Why is Alfredo Lim not your #1?',
+		                'question' => 'Why is <Alfredo Lim> not your #1?',
 		                'type' => 'radio',
 		                'options' => [
 		                	'required' => false,
@@ -205,6 +213,8 @@ class SurveySeeder extends Seeder
 			                    'Tamad',
 			                    'Killer',
 		                	],
+		                	'anchor_regex' => '<:anchor>',
+		                	'anchor_action' => 'skip',
 		                ],
 		            ],
 		            [

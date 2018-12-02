@@ -50,38 +50,115 @@ class SurveyTest extends TestCase
     public function survey_success_run()
     {
         $channel_id = $this->faker->randomNumber(8);
-        $mobile = Phone::number('09178251991');
+        $mobiles = [
+            Phone::number('09178251991'),
+            Phone::number('09189362340'),
+        ];
+        // $mobile = Phone::number('09178251991');
         $category = 'Demographics';
-        $count = 3;
+        $count = 4;
         $coordinate = ['longitude' => 121.030962, 'latitude' => 14.644346];
+        $categories = Category::all();
 
         \Queue::fake();
 
-        $this->bot
-            ->setUser(['id' => $channel_id])
-            ->setDriver(TelegramDriver::class)
-            ->receives($this->keyword)
-            ->assertReply(trans('survey.intro'))
-            ->assertQuestion(trans('survey.input.category'))
-            ->receives(1)
-            ->assertTemplate(OutgoingMessage::class)
-            ->receivesLocation($coordinate['latitude'], $coordinate['longitude'])
-            ->assertReply(trans('survey.info', compact('category', 'count')))
-            ->assertQuestion(trans('survey.input.mobile'))
-            ->receives($mobile)
-            ->assertTemplate(Question::class)
-            ->receives('Male')
-            ->assertReply(trans('survey.answer', ['answer' => 'Male']))
-            ->assertTemplate(Question::class)
-            ->receives('18 to 30')
-            ->assertReply(trans('survey.answer', ['answer' => '18 to 30']))
-            ->assertTemplate(Question::class)
-            ->receives('Tondo')
-            ->assertReply(trans('survey.answer', ['answer' => 'Tondo']))
-            ->assertReply(trans('survey.finished'))
-            ;
+        foreach ($mobiles as $mobile) {
+            $this->bot
+                ->setUser(['id' => $channel_id])
+                ->setDriver(TelegramDriver::class)
+                ->receives($this->keyword)
+                ->assertReply(trans('survey.intro'))
+                ;
 
-        \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
+            if ($categories->count() == 0) {
+                $this->bot->assertReply(trans('survey.abort'));
+            }
+            else {
+                if ($categories->count() > 1) {
+                    $this->bot
+                        ->assertQuestion(trans('survey.input.category'))
+                        ->receives(1)
+                        ;
+                }  
+
+                if (config('chatbot.survey.location'))
+                $this->bot
+                    ->assertTemplate(OutgoingMessage::class)
+                    ->receivesLocation($coordinate['latitude'], $coordinate['longitude'])
+                    ;
+
+                $this->bot
+                    ->assertReply(trans('survey.info', compact('category', 'count')))
+                    ->assertQuestion(trans('survey.input.mobile'))
+                    ->receives($mobile)
+                    ->assertTemplate(Question::class)
+                    ->receives('Yes')
+                    ->assertReply(trans('survey.answer', ['answer' => 'Yes']))
+                    ->assertTemplate(Question::class)
+                    ->receives('Male')
+                    ->assertReply(trans('survey.answer', ['answer' => 'Male']))
+                    ->assertTemplate(Question::class)
+                    ->receives('18 to 30')
+                    ->assertReply(trans('survey.answer', ['answer' => '18 to 30']))
+                    ->assertTemplate(Question::class)
+                    ->receives('Tondo')
+                    ->assertReply(trans('survey.answer', ['answer' => 'Tondo']))
+                    ->assertReply(trans('survey.finished'))
+                    ;
+
+                \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
+            } 
+        }
+        
+    }
+
+/** @test */
+    public function survey_required_question_run()
+    {
+        $channel_id = $this->faker->randomNumber(8);
+        $mobiles = [
+            Phone::number('09178251991'),
+            Phone::number('09189362340'),
+        ];
+        $category = 'Demographics';
+        $count = 4;
+        $coordinate = ['longitude' => 121.030962, 'latitude' => 14.644346];
+        $categories = Category::all();
+
+        \Queue::fake();
+        foreach ($mobiles as $mobile) {
+            $this->bot
+                ->setUser(['id' => $channel_id])
+                ->setDriver(TelegramDriver::class)
+                ->receives($this->keyword)
+                ->assertReply(trans('survey.intro'))
+                ;
+
+            if ($categories->count() > 1) {
+                $this->bot
+                    ->assertQuestion(trans('survey.input.category'))
+                    ->receives(1)
+                    ;
+            }  
+
+            if (config('chatbot.survey.location'))
+            $this->bot
+                ->assertTemplate(OutgoingMessage::class)
+                ->receivesLocation($coordinate['latitude'], $coordinate['longitude'])
+                ;
+
+            $this->bot
+                ->assertReply(trans('survey.info', compact('category', 'count')))
+                ->assertQuestion(trans('survey.input.mobile'))
+                ->receives($mobile)
+                ->assertTemplate(Question::class)
+                ->receives('No')
+                ->assertReply(trans('survey.abort'))
+                ;
+
+            $this->assertDatabaseHas('answers', ['answer' => 'No']);
+            \Queue::assertNotPushed(\App\Jobs\SendAskableReward::class);
+        }
     }
 
     public function survey_pollcount()
@@ -137,6 +214,17 @@ class SurveyTest extends TestCase
                 ],
                 'questions' => [
                     [
+                        'question' => 'Poll watcher?',
+                        'type' => 'radio',
+                        'options' => [
+                            'required' => true,
+                            'values' => [
+                                'Yes',
+                                'No'
+                            ],
+                        ],
+                    ],
+                    [
                         'question' => 'Gender?',
                         'type' => 'radio',
                         'options' => [
@@ -186,92 +274,120 @@ class SurveyTest extends TestCase
                     ],
                 ],
             ],
+            // [
+            //     'category' => 'Popular',
+            //     'type' => 'text',
+            //     'enabled_at' => now(),
+            //     'options' => [
+            //         'twosome' => false,
+            //         'reward' => 0,
+            //         'pollcount' => false,
+            //     ],
+            //     'questions' => [
+            //         [
+            //             'question' => 'Who will you vote for in the 2019 elections?',
+            //             'type' => 'radio',
+            //             'options' => [
+            //                 'required' => false,
+            //                 'values' => [
+            //                     'Erap Estrada',
+            //                     'Isko Moreno',
+            //                     'Lito Atienza',
+            //                     'Alfredo Lim',
+            //                 ],
+            //             ],
+            //         ],
+            //         [
+            //             'question' => 'Why?',
+            //             'type' => 'radio',
+            //             'options' => [
+            //                 'required' => false,
+            //                 'values' => [
+            //                     'Honest',
+            //                     'Track Record',
+            //                     'Popular',
+            //                     'Rich',
+            //                 ],
+            //             ],
+            //         ],
+            //         [
+            //             'question' => 'Why is Erap Estrada not your #1?',
+            //             'type' => 'radio',
+            //             'options' => [
+            //                 'required' => false,
+            //                 'values' => [
+            //                     'Corrupt',
+            //                     'Gay',
+            //                     'Tamad',
+            //                     'Killer',
+            //                 ],
+            //             ],
+            //         ],
+            //         [
+            //             'question' => 'Why is Isko Moreno not your #1?',
+            //             'type' => 'radio',
+            //             'options' => [
+            //                 'required' => false,
+            //                 'values' => [
+            //                     'Corrupt',
+            //                     'Gay',
+            //                     'Tamad',
+            //                     'Killer',
+            //                 ],
+            //             ],
+            //         ],
+            //         [
+            //             'question' => 'Why is Lito Atienza not your #1?',
+            //             'type' => 'radio',
+            //             'options' => [
+            //                 'required' => false,
+            //                 'values' => [
+            //                     'Corrupt',
+            //                     'Gay',
+            //                     'Tamad',
+            //                     'Killer',
+            //                 ],
+            //             ],
+            //         ],
+            //         [
+            //             'question' => 'Why is Alfredo Lim not your #1?',
+            //             'type' => 'radio',
+            //             'options' => [
+            //                 'required' => false,
+            //                 'values' => [
+            //                     'Corrupt',
+            //                     'Gay',
+            //                     'Tamad',
+            //                     'Killer',
+            //                 ],
+            //             ],
+            //         ],
+            //         [
+            //             'question' => 'What is the most important issue?',
+            //             'type' => 'radio',
+            //             'options' => [
+            //                 'required' => false,
+            //                 'values' => [
+            //                     'Crime',
+            //                     'Corruption',
+            //                     'Environment',
+            //                 ],
+            //             ],
+            //         ],
+            //         [
+            //             'question' => 'What is your problem?',
+            //             'type' => 'radio',
+            //             'options' => [
+            //                 'required' => false,
+            //                 'values' => [
+            //                     'Health',
+            //                     'Labor',
+            //                     'Education',
+            //                 ],
+            //             ],
+            //         ],
+            //     ],
+            // ],
         ]);
-    }
-
-    public function dbseed()
-    {
-        $node = User::create([
-            'name' => 'Lester',
-            'mobile' => '09173011987',
-            'email' => 'lester@chicozen.com',
-            'password' => bcrypt('1234'),
-            'children' => [
-                [
-                    'name' => 'Nicolo',
-                    'mobile' => '09178251991',
-                    'email' => 'nicolo@hurtado.ph',
-                    'password' => bcrypt('1234'),
-                    'children' => [
-                      [ 
-                            'name' => 'Retsel',
-                            'mobile' => '09189362340', 
-                            'email' => 'lester@applester.co',
-                            'password' => bcrypt('1234'),
-                      ],
-                  ],
-                ],
-                [
-                    'name' => 'Apple',
-                    'mobile' => '09088882786',
-                    'email' => 'apple@hurtado.ph',
-                    'password' => bcrypt('1234'),
-                     'children' => [
-                        [ 
-                            'name' => 'Ruth',
-                            'mobile' => '09175180722', 
-                            'email' => 'raphurtado@me.com',
-                            'password' => bcrypt('1234'),
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
-        $category = tap(Category::make(['title' => 'Poll Count']), function ($category) {
-            $category->extra_attributes = [
-                'twosome' => false,
-                'reward' => 0,
-                'pollcount' => true,
-            ];
-            $category->save();
-        });
-
-        $questions = [
-            'Erap #Estrada',
-            'Lito #Atienza',
-            'Alfredo #Lim',
-            'Isko #Moreno',
-        ];
-
-        $answers = [
-            'Erap #Estrada' => 4,
-            'Lito #Atienza' => 3,
-            'Alfredo #Lim' => 2,
-            'Isko #Moreno' => 1,
-        ];
-
-
-        foreach ($questions as $question) {
-            $type = "string";
-            $extra_attributes = ['values' => [0]];
-            $question = tap(SurveyQuestion::make(compact('question', 'type', 'extra_attributes')), function ($question) use ($category) {
-                $question->category()->associate($category);
-                $question->save();
-            });
-        }
-
-        $questions = SurveyQuestion::all();
-        $node->each(function ($user) use ($questions, $answers) {
-            $questions->each(function ($question) use ($user, $answers) {
-                $votes = $answers[$question->question];
-                $a = tap(Answer::make(['answer' => [$votes]]), function ($answer) use ($question, $user) {
-                    $answer->question()->associate($question);
-                    $answer->user()->associate($user);
-                    $answer->askable()->associate($user);
-                    $answer->save();
-                });
-            });
-        });
     }
 }

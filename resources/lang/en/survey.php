@@ -10,5 +10,6 @@ return [
     'answer' => "Answered: :answer",
     'finished' => "Finished: Thank you for participating.",
     'result' => "Your answers are:\n:qanda",
-    'reward' => "Reward was sent online."
+    'reward' => "Reward was sent online.",
+    'abort' => "Survey aborted.",
 ];
