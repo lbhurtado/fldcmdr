@@ -7,10 +7,10 @@ use Tests\TestCase;
 use App\Category;
 use App\{User, Invitee};
 use App\Question as SurveyQuestion;
-use App\Eloquent\Phone;
+use App\Eloquent\{Phone, Messenger};
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
-use BotMan\BotMan\Messages\Outgoing\Question;
+// use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
@@ -67,113 +67,80 @@ class SurveyTest extends TestCase
     /** @test */
     public function survey_success_run()
     {
-        $channel_id = $this->faker->randomNumber(8);
-        $mobiles = [
-            Phone::number('09178251991'),
-            Phone::number('09189362340'),
-        ];
-
-        $category = 'Demographics';
-        $count = 5;
-        $c = Category::where('title', $category)->first();
-
-        $coordinate = ['longitude' => 121.030962, 'latitude' => 14.644346];
-        $categories = Category::all();
-
         \Queue::fake();
 
-        foreach ($mobiles as $mobile) {
+        // $channel_id = $this->faker->randomNumber(8);
+
+        $input = collect([
+            'category' => Category::where('title', 'Demographics')->first(),
+            'coordinates' => [
+                'lat' => $this->faker->latitude,
+                'lon' => $this->faker->longitude,
+            ],
+            'mobiles' => [
+                Phone::number('09178251991'),
+                Phone::number('09189362340'),
+            ],
+        ]);
+
+        foreach ($input->get('mobiles') as $mobile) {
             $this->bot
-                ->setUser(['id' => $channel_id])
+                ->setUser(['id' => $channel_id = $this->faker->randomNumber(8)])
                 ->setDriver(TelegramDriver::class)
                 ->receives($this->keyword)
+                ;
+
+            $user_id = tap(Messenger::hook($this->botman)->getUser(), function ($user) use ($channel_id) {
+                $this->assertEquals($user->channel_id, $channel_id);
+            })->id;
+            
+            $this->bot
                 ->assertReply(trans('survey.intro'))
                 ->assertQuestion(trans('survey.input.category'))
-                ->receives($c->id)
+                ->receives($input->get('category')->id)
                 ;
 
             if (config('chatbot.survey.location'))
                 $this->bot
                     ->assertReply(trans('survey.input.location'))
-                    ->receivesLocation($coordinate['latitude'], $coordinate['longitude'])
+                    ->receivesLocation($input->get('coordinates')['lat'], $input->get('coordinates')['lon'])
                     ;
 
             $this->bot
-                ->assertReply(trans('survey.info', compact('category', 'count')))
+                ->assertReply(trans('survey.info', [
+                    'category' => $input->get('category')->title,
+                    'count' => $input->get('category')->questions->count()
+                ]))
                 ->assertQuestion(trans('survey.input.mobile'))
                 ->receives($mobile)
                 ;
 
             $this->assertDatabaseHas('invitees', compact('mobile'));
 
-            $askable = Invitee::withMobile($mobile)->first();
-            $askable_id = $askable->id;
+            \Queue::assertPushed(\App\Jobs\SendUserInvitation::class); 
+
+            $askable      = Invitee::withMobile($mobile)->first();
+            $askable_id   = $askable->id;
             $askable_type = get_class($askable);
 
-            $answer = 'Yes';
-            $this->bot
-                ->assertQuestion(trans('survey.question', [
-                    'current'   => 1,
-                    'count'     => 5,
-                    'text'      => 'Registered Voter?'
-                ]))
-                ->receivesInteractiveMessage($answer)
-                ->assertReply(trans('survey.answer', compact('answer')))
-                ;
+            $count = $input->get('category')->questions->count();
+            $input->get('category')->questions->each(function ($question, $key) use ($count) {
+                $answer = $question->required 
+                            ? $question->values[$affirmative_index = 0] 
+                            : array_random($question->values)
+                            ;
+                $this->bot
+                    ->assertQuestion(trans('survey.question', [
+                        'current'   => $key+1,
+                        'count'     => $count,
+                        'text'      => $question->question,
+                    ]))
+                    ->receivesInteractiveMessage($answer)
+                    ->assertReply(trans('survey.answer', compact('answer')))
+                    ;
 
-            $this->assertDatabaseHas('answers', compact('answer', 'askable_id', 'askable_type')); //add user_id
-
-            $answer = 'Male';
-            $this->bot
-                ->assertQuestion(trans('survey.question', [
-                    'current'   => 2,
-                    'count'     => 5,
-                    'text'      => 'Gender?'
-                ]))
-                ->receivesInteractiveMessage($answer)
-                ->assertReply(trans('survey.answer', compact('answer')))
-                ;
-
-            $this->assertDatabaseHas('answers', compact('answer', 'askable_id', 'askable_type'));
-
-            $answer = 'Class A';
-            $this->bot
-                ->assertQuestion(trans('survey.question', [
-                    'current'   => 3,
-                    'count'     => 5,
-                    'text'      => 'Social Economic Class?'
-                ]))
-                ->receivesInteractiveMessage($answer)
-                ->assertReply(trans('survey.answer', compact('answer')))
-                ;
-
-            $this->assertDatabaseHas('answers', compact('answer', 'askable_id', 'askable_type'));
-
-            $answer = '18 to 30';
-            $this->bot
-                ->assertQuestion(trans('survey.question', [
-                    'current'   => 4,
-                    'count'     => 5,
-                    'text'      => 'Age Group?'
-                ]))
-                ->receivesInteractiveMessage($answer)
-                ->assertReply(trans('survey.answer', compact('answer')))
-                ;
-
-            $this->assertDatabaseHas('answers', compact('answer', 'askable_id', 'askable_type'));
-
-            $answer = 'Tondo';
-            $this->bot
-                ->assertQuestion(trans('survey.question', [
-                    'current'   => 5,
-                    'count'     => 5,
-                    'text'      => 'District in Manila?'
-                ]))
-                ->receivesInteractiveMessage($answer)
-                ->assertReply(trans('survey.answer', compact('answer')))
-                ;
-
-            $this->assertDatabaseHas('answers', compact('answer', 'askable_id', 'askable_type'));
+                $this->assertDatabaseHas('answers', compact('user_id', 'answer', 'askable_id', 'askable_type'));
+            });
             
             $this->bot
                 ->assertReply(trans('survey.finished'))
@@ -181,7 +148,6 @@ class SurveyTest extends TestCase
 
             \Queue::assertPushed(\App\Jobs\SendAskableReward::class); 
         }
-        
     }
 
     public function survey_required_question_run()
