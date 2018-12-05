@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Channels\{TelerivetChannel, TelerivetMessage};
+use NotificationChannels\Twilio\{TwilioChannel, TwilioSmsMessage};
 
 class PhoneVerification extends Notification
 {
@@ -22,12 +23,20 @@ class PhoneVerification extends Notification
 
     public function via($notifiable)
     {
+        return [TwilioChannel::class];
         return [TelerivetChannel::class];
     }
 
     public function toTelerivet($notifiable)
     {
         return TelerivetMessage::create()
+            ->content($this->content)
+            ;
+    }
+
+    public function toTwilio($notifiable)
+    {
+        return (new TwilioSmsMessage())
             ->content($this->content)
             ;
     }

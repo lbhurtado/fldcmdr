@@ -19,6 +19,7 @@
         "botman/tinker": "~1.0",
         "fideloper/proxy": "~4.0",
         "kalnoy/nestedset": "^4.3",
+        "laravel-notification-channels/twilio": "^2.0",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
         "malhal/laravel-geographical": "^1.0",

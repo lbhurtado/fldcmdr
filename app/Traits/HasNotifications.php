@@ -25,4 +25,9 @@ trait HasNotifications
 
     	return compact('driver', 'channel_id');
     }
+
+    public function routeNotificationForTwilio()
+    {
+        return $this->mobile;
+    }
 }
