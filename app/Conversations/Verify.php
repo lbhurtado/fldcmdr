@@ -39,7 +39,7 @@ class Verify extends Conversation
     	if (empty($this->getUser()->mobile))
     		return $this->inputMobile();
     	else 
-    		return $this->inputPIN($this->getUser());
+    		return $this->inputPIN();
     }
 
     protected function inputMobile()
@@ -58,7 +58,7 @@ class Verify extends Conversation
         		$user->setMobile($mobile)
                      ->hydrateFromInvitee()
         		     ->save();
-            })->refresh;
+            })->refresh();
     		
             return $this->inputPIN();
         });
@@ -72,7 +72,7 @@ class Verify extends Conversation
             ->fallback(trans('verify.pin.error'))
             ->callbackId('verify.input.pin')
             ;
-                	
+
         return $this->ask($question, function (Answer $answer) {
             $otp = $answer->getText();
 
