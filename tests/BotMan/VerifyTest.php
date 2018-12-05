@@ -106,6 +106,8 @@ class VerifyTest extends TestCase
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('verify.introduction'))
+            ->assertQuestion(trans('verify.input.mobile'))
+            ->receives($this->admin->mobile)
             ;
         
         $this->admin->verify('123456', false);
