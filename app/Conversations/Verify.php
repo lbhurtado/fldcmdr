@@ -36,10 +36,10 @@ class Verify extends Conversation
 
     protected function start()
     {
-    	// if (empty($this->getUser()->mobile))
+    	if (empty($this->getUser()->mobile))
     		return $this->inputMobile();
-    	// else 
-    		// return $this->inputPIN();
+    	else 
+    		return $this->inputPIN();
     }
 
     protected function inputMobile()
