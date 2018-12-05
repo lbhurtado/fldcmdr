@@ -169,8 +169,6 @@ class Survey extends Conversation
     protected function showResult()
     {
         $this->say(trans('survey.finished'));
-
-        $qanda = $this->qanda;
         $this->say(trans('survey.result', ['qanda' => $this->qanda]));
 
         $this->sendReward();
@@ -212,7 +210,7 @@ class Survey extends Conversation
             if ($question->anchored)
                 $this->anchor = $a;
 
-            // $this->qanda .= $q . " " . $a . "\n"; //refactor this!
+            $this->qanda .= $q . " " . $a . "\n"; //refactor this!
 
             $askable_type = get_class($this->askable);
             $askable_id = $this->askable->id;

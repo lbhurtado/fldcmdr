@@ -95,7 +95,7 @@ class Question extends Model implements QuestionContract
 
     public function getRequiredAttribute(): bool
     {
-        return $this->extra_attributes["required"];
+        return $this->extra_attributes["required"] ?? false;
     }
 
     public function getValuesAttribute(): array

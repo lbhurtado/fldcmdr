@@ -94,11 +94,16 @@ class SurveyTest extends TestCase
                     'category' => $input->get('category')->title,
                     'count' => $input->get('category')->questions->count()
                 ]))
-                ->assertQuestion(trans('survey.input.mobile'))
-                ->receives($mobile)
                 ;
 
-            $this->assertDatabaseHas('invitees', compact('mobile'));
+            if ($input->get('category')->twosome) {
+                $this->bot
+                    ->assertQuestion(trans('survey.input.mobile'))
+                    ->receives($mobile)
+                    ;
+
+                $this->assertDatabaseHas('invitees', compact('mobile'));                
+            }
 
             \Queue::assertPushed(\App\Jobs\SendUserInvitation::class); 
 
@@ -107,7 +112,8 @@ class SurveyTest extends TestCase
             $askable_type = get_class($askable);
 
             $count = $input->get('category')->questions->count();
-            $input->get('category')->questions->each(function ($question, $key) use ($count) {
+            $qanda = '';
+            $input->get('category')->questions->each(function ($question, $key) use ($count, &$qanda) {
                 $answer = $question->required 
                             ? $question->values[$affirmative_index = 0] 
                             : array_random($question->values)
@@ -122,11 +128,13 @@ class SurveyTest extends TestCase
                     ->assertReply(trans('survey.answer', compact('answer')))
                     ;
 
+                $qanda .= $question->question . " " . $answer . "\n";
                 $this->assertDatabaseHas('answers', compact('user_id', 'answer', 'askable_id', 'askable_type'));
             });
-            
+                        
             $this->bot
                 ->assertReply(trans('survey.finished'))
+                ->assertReply(trans('survey.result', compact('qanda')))
                 ;                    
 
             \Queue::assertPushed(\App\Jobs\SendUserInvitation::class);
@@ -141,7 +149,6 @@ class SurveyTest extends TestCase
 
         $input = $this->getInput('Demographics');
         config(['chatbot.survey.location' => false]);
-        $mobile = $input->get('mobiles')[0];
 
         $this->bot
             ->setUser(['id' => $channel_id = $this->faker->randomNumber(8)])
@@ -155,54 +162,62 @@ class SurveyTest extends TestCase
                 'count' => $input->get('category')->questions->count()
             ]))
             ->assertQuestion(trans('survey.input.mobile'))
-            ->receives($mobile)
+            ->receives($input->get('mobiles')[0])
             ->assertTemplate(Question::class)
             ->receives('No')
             ->assertReply(trans('survey.abort'))
             ;
-        
+
+        \Queue::assertPushed(\App\Jobs\SendUserInvitation::class);
         \Queue::assertNotPushed(\App\Jobs\SendAskableReward::class);
     }
 
+    /** @test */
     public function survey_pollcount()
     {
-        $channel_id = $this->faker->randomNumber(8);
-        $category = 'Poll Count';
-        $count = 4;
-
-        $this->dbseed();
-
         \Queue::fake();
 
+        $input = $this->getInput('D-Day Poll Count');
+        config(['chatbot.survey.location' => false]);
+
         $this->bot
-            ->setUser(['id' => $channel_id])
+            ->setUser(['id' => $channel_id = $this->faker->randomNumber(8)])
             ->setDriver(TelegramDriver::class)
             ->receives($this->keyword)
             ->assertReply(trans('survey.intro'))
             ->assertQuestion(trans('survey.input.category'))
-            ->receives(2)
-            ->assertReply(trans('survey.info', compact('category', 'count')))
-            ->assertQuestion(trans('survey.input.mobile'))
-            ->receives($mobile)
-            ->assertTemplate(Question::class)
-            ->receives('Male')
-            ->assertReply(trans('survey.answer', ['answer' => 'Male']))
-            ->assertTemplate(Question::class)
-            ->receives('18 to 30')
-            ->assertReply(trans('survey.answer', ['answer' => '18 to 30']))
-            ->assertTemplate(Question::class)
-            ->receives('Tondo')
-            ->assertReply(trans('survey.answer', ['answer' => 'Tondo']))
-            ->assertReply(trans('survey.finished'))
+            ->receives($input->get('category')->id)
+            ->assertReply(trans('survey.info', [
+                'category' => $input->get('category')->title,
+                'count' => $input->get('category')->questions->count()
+            ]))
             ;
 
-        $qanda = "Gender? Male\nAge Group? 18 to 30\nDistrict? Tondo\n";
+            $count = $input->get('category')->questions->count();
+            $qanda = '';
+            $input->get('category')->questions->each(function ($question, $key) use ($count, &$qanda) {
+                $answer = rand(10,100);
+                $this->bot
+                    ->assertQuestion(trans('survey.question', [
+                        'current'   => $key+1,
+                        'count'     => $count,
+                        'text'      => $question->question,
+                    ]))
+                    ->receivesInteractiveMessage($answer)
+                    ->assertReply(trans('survey.answer', compact('answer')))
+                    ;
 
-        $this->bot
-            ->assertReply(trans('survey.result', compact('qanda')))
-            ;
+                $qanda .= $question->question . " " . $answer . "\n";
+                $this->assertDatabaseHas('answers', compact('answer', 'askable_id', 'askable_type'));
+            });
 
-        \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
+            $this->bot
+                ->assertReply(trans('survey.finished'))
+                ->assertReply(trans('survey.result', compact('qanda')))
+                ;  
+                
+        \Queue::assertNotPushed(\App\Jobs\SendUserInvitation::class); //category twosome is false
+        \Queue::assertNotPushed(\App\Jobs\SendAskableReward::class); //category reward is zero
     }
 
     private function getInput($title = 'Demographics')
@@ -223,7 +238,7 @@ class SurveyTest extends TestCase
     private function getData()
     {
         return collect([
-[
+            [
                 'category' => 'Demographics',
                 'type' => 'text',
                 'enabled_at' => now(),
@@ -308,7 +323,7 @@ class SurveyTest extends TestCase
                     ],
                 ],
             ],
-[
+            [
                 'category' => 'Popular',
                 'type' => 'text',
                 'enabled_at' => now(),
@@ -346,275 +361,134 @@ class SurveyTest extends TestCase
                             ],
                         ],
                     ],
+
+                ],
+                [
+                    'question' => 'Why is <Erap Estrada> not your #1?',
+                    'type' => 'radio',
+                    'options' => [
+                        'required' => false,
+                        'values' => [
+                            'Corrupt',
+                            'Gay',
+                            'Tamad',
+                            'Killer',
+                        ],
+                        'anchor_regex' => '<:anchor>',
+                        'anchor_action' => 'skip',
+                    ],
+                ],
+                [
+                    'question' => 'Why is <Isko Moreno> not your #1?',
+                    'type' => 'radio',
+                    'options' => [
+                        'required' => false,
+                        'values' => [
+                            'Corrupt',
+                            'Gay',
+                            'Tamad',
+                            'Killer',
+                        ],
+                        'anchor_regex' => '<:anchor>',
+                        'anchor_action' => 'skip',
+                    ],
+                ],
+                [
+                    'question' => 'Why is <Lito Atienza> not your #1?',
+                    'type' => 'radio',
+                    'options' => [
+                        'required' => false,
+                        'values' => [
+                            'Corrupt',
+                            'Gay',
+                            'Tamad',
+                            'Killer',
+                        ],
+                        'anchor_regex' => '<:anchor>',
+                        'anchor_action' => 'skip',
+                    ],
+                ],   
+                [
+                    'question' => 'Why is <Alfredo Lim> not your #1?',
+                    'type' => 'radio',
+                    'options' => [
+                        'required' => false,
+                        'values' => [
+                            'Corrupt',
+                            'Gay',
+                            'Tamad',
+                            'Killer',
+                        ],
+                        'anchor_regex' => '<:anchor>',
+                        'anchor_action' => 'skip',
+                    ],
+                ],
+                [
+                    'question' => 'What is the most important issue?',
+                    'type' => 'radio',
+                    'options' => [
+                        'required' => false,
+                        'values' => [
+                            'Crime',
+                            'Corruption',
+                            'Environment',
+                        ],
+                    ],
+                ],
+                [
+                    'question' => 'What is your problem?',
+                    'type' => 'radio',
+                    'options' => [
+                        'required' => false,
+                        'values' => [
+                            'Health',
+                            'Labor',
+                            'Education',
+                        ],
+                    ],
+                ],                  
+            ],
+            [
+                'category' => 'D-Day Poll Count',
+                'type' => 'numeric',
+                'enabled_at' => now(),
+                'options' => [
+                    'twosome' => false,
+                    'reward' => 0,
+                    'pollcount' => true,
+                ],
+                'questions' => [
                     [
-                        'question' => 'Why is <Erap Estrada> not your #1?',
-                        'type' => 'radio',
+                        'question' => 'How many votes for Erap #Estrada?',
+                        'type' => 'string',
                         'options' => [
-                            'required' => false,
-                            'values' => [
-                                'Corrupt',
-                                'Gay',
-                                'Tamad',
-                                'Killer',
-                            ],
-                            'anchor_regex' => '<:anchor>',
-                            'anchor_action' => 'skip',
+                            'values' => [0],
+                        ],
+
+                    ],
+                    [
+                        'question' => 'How many votes for Lito #Atienza?',
+                        'type' => 'string',
+                        'options' => [
+                            'values' => [0],
                         ],
                     ],
                     [
-                        'question' => 'Why is <Isko Moreno> not your #1?',
-                        'type' => 'radio',
+                        'question' => 'How many votes for Alfredo #Lim?',
+                        'type' => 'string',
                         'options' => [
-                            'required' => false,
-                            'values' => [
-                                'Corrupt',
-                                'Gay',
-                                'Tamad',
-                                'Killer',
-                            ],
-                            'anchor_regex' => '<:anchor>',
-                            'anchor_action' => 'skip',
+                            'values' => [0],
                         ],
                     ],
                     [
-                        'question' => 'Why is <Lito Atienza> not your #1?',
-                        'type' => 'radio',
+                        'question' => 'How many votes for Isko #Moreno?',
+                        'type' => 'string',
                         'options' => [
-                            'required' => false,
-                            'values' => [
-                                'Corrupt',
-                                'Gay',
-                                'Tamad',
-                                'Killer',
-                            ],
-                            'anchor_regex' => '<:anchor>',
-                            'anchor_action' => 'skip',
-                        ],
-                    ],
-                    [
-                        'question' => 'Why is <Alfredo Lim> not your #1?',
-                        'type' => 'radio',
-                        'options' => [
-                            'required' => false,
-                            'values' => [
-                                'Corrupt',
-                                'Gay',
-                                'Tamad',
-                                'Killer',
-                            ],
-                            'anchor_regex' => '<:anchor>',
-                            'anchor_action' => 'skip',
-                        ],
-                    ],
-                    [
-                        'question' => 'What is the most important issue?',
-                        'type' => 'radio',
-                        'options' => [
-                            'required' => false,
-                            'values' => [
-                                'Crime',
-                                'Corruption',
-                                'Environment',
-                            ],
-                        ],
-                    ],
-                    [
-                        'question' => 'What is your problem?',
-                        'type' => 'radio',
-                        'options' => [
-                            'required' => false,
-                            'values' => [
-                                'Health',
-                                'Labor',
-                                'Education',
-                            ],
+                            'values' => [0],
                         ],
                     ],
                 ],
             ],
-            // [
-            //     'category' => 'Demographics',
-            //     'options' => [
-            //         'twosome' => true,
-            //         'reward' => 25,
-            //         'pollcount' => false,
-            //     ],
-            //     'questions' => [
-            //         [
-            //             'question' => 'Poll watcher?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => true,
-            //                 'values' => [
-            //                     'Yes',
-            //                     'No'
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'Gender?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Male',
-            //                     'Female'
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'Age Group?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     '18 to 30',
-            //                     '31 to 40',
-            //                     '41 to 50',
-            //                     '51 and above',
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'District?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Intramuros',
-            //                     'Tondo',
-            //                     'Paco',
-            //                     'Sampaloc',
-            //                     'Sta. Ana',
-            //                     'San Nicolas',
-            //                     'Santa Cruz',
-            //                     'Binondo',
-            //                     'Port Area',
-            //                     'Malate',
-            //                     'Ermita',
-            //                     'San Miguel',
-            //                     'Pandacan',
-            //                     'San Andres',
-            //                     'Santa Mesa',
-            //                 ],
-            //             ],
-            //         ],
-            //     ],
-            // ],
-            // [
-            //     'category' => 'Popular',
-            //     'type' => 'text',
-            //     'enabled_at' => now(),
-            //     'options' => [
-            //         'twosome' => false,
-            //         'reward' => 0,
-            //         'pollcount' => false,
-            //     ],
-            //     'questions' => [
-            //         [
-            //             'question' => 'Who will you vote for in the 2019 elections?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Erap Estrada',
-            //                     'Isko Moreno',
-            //                     'Lito Atienza',
-            //                     'Alfredo Lim',
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'Why?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Honest',
-            //                     'Track Record',
-            //                     'Popular',
-            //                     'Rich',
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'Why is Erap Estrada not your #1?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Corrupt',
-            //                     'Gay',
-            //                     'Tamad',
-            //                     'Killer',
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'Why is Isko Moreno not your #1?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Corrupt',
-            //                     'Gay',
-            //                     'Tamad',
-            //                     'Killer',
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'Why is Lito Atienza not your #1?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Corrupt',
-            //                     'Gay',
-            //                     'Tamad',
-            //                     'Killer',
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'Why is Alfredo Lim not your #1?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Corrupt',
-            //                     'Gay',
-            //                     'Tamad',
-            //                     'Killer',
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'What is the most important issue?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Crime',
-            //                     'Corruption',
-            //                     'Environment',
-            //                 ],
-            //             ],
-            //         ],
-            //         [
-            //             'question' => 'What is your problem?',
-            //             'type' => 'radio',
-            //             'options' => [
-            //                 'required' => false,
-            //                 'values' => [
-            //                     'Health',
-            //                     'Labor',
-            //                     'Education',
-            //                 ],
-            //             ],
-            //         ],
-            //     ],
-            // ],
         ]);
     }
 }
