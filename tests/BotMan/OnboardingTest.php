@@ -38,6 +38,32 @@ class OnboardingTest extends TestCase
             ->assertReply(trans('onboarding.introduction.4'))
             ->assertQuestion(trans('onboarding.question.optin'))
             ->receivesInteractiveMessage('yes')
+            ->assertQuestion(trans('onboarding.question.stub'))
+            ->receivesInteractiveMessage('yes')
+            ->assertReply(trans('onboarding.processing'))
+            ->assertReply(trans('onboarding.processed'))
+            ->assertReply(trans('signup.introduction'))
+            ;
+    }
+
+    /** @test */
+    public function onboarding_success_run_no_stub()
+    {
+        $driver = 'Telegram';
+        $channel_id = $this->faker->randomNumber(8);
+
+        $this->bot
+            ->setUser(['id' => $channel_id])
+            ->setDriver(TelegramDriver::class)
+            ->receives($this->random_keyword)
+            ->assertReply(trans('onboarding.introduction.1'))
+            ->assertReply(trans('onboarding.introduction.2'))
+            ->assertReply(trans('onboarding.introduction.3'))
+            ->assertReply(trans('onboarding.introduction.4'))
+            ->assertQuestion(trans('onboarding.question.optin'))
+            ->receivesInteractiveMessage('yes')
+            ->assertQuestion(trans('onboarding.question.stub'))
+            ->receivesInteractiveMessage('no')
             ->assertReply(trans('onboarding.processing'))
             ->assertReply(trans('onboarding.processed'))
             ->assertReply(trans('verify.introduction'))

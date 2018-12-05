@@ -24,13 +24,19 @@ return [
 	],
 	'question' => [
 		'optin' => "Continue interacting with messenger system?",
+		'stub' => "Do you have a stub?",
 		'error' => "Something is wrong. Please notify the system administrator.",
 	],
 	'answer' => [
 		'optin' => [
-			'affirmative' => 'Yes',
-			'negative' => 'No',
+			'affirmative' => 'Yes, I want to continue.',
+			'negative' => 'No, thanks.',
 		],
+		'stub' => [
+			'affirmative' => 'Yes, I have a stub.',
+			'negative' => 'No, I have no stub.',
+		],
+
 	],
 	'processing' => "Please stand by. Processing...",
 	'processed' => "Invitation has been sent.",

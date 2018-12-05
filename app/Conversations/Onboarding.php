@@ -2,14 +2,18 @@
 
 namespace App\Conversations;
 
-use App\Conversations\Verify;
 use App\Eloquent\Conversation;
+use App\Conversations\{Verify, Signup};
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 
 class Onboarding extends Conversation
 {
+    const SIGNUP = true;
+
+    const VERIFY = false;
+
     protected $user; 
 
     public function ready()
@@ -56,16 +60,38 @@ class Onboarding extends Conversation
                 return $this->repeat();
 
             return ($answer->getValue() == 'yes')
-                    ? $this->process()
+                    ? $this->withStub()
                     : $this->regrets();
         });
     }
 
-    protected function process()
+    protected function withStub()
+    {
+        $question = Question::create(trans('onboarding.question.stub'))
+            ->fallback(trans('onboarding.question.error'))
+            ->callbackId('onboarding.question.stub')
+            ->addButton(Button::create(trans('onboarding.answer.stub.affirmative'))->value('yes'))
+            ->addButton(Button::create(trans('onboarding.answer.stub.negative'))->value('no'))
+            ;
+
+        return $this->ask($question, function (Answer $answer) {
+            if (! $answer->isInteractiveMessageReply())
+                return $this->repeat();
+
+            return ($answer->getValue() == 'yes')
+                    ? $this->process(self::SIGNUP)
+                    : $this->process(self::VERIFY);
+        });    
+    }
+
+    protected function process($signup = false)
     {
     	$this->say(trans('onboarding.processing'));
     	$this->say(trans('onboarding.processed'));
-        $this->bot->startConversation(new Verify());
+        if ($signup == true)
+            $this->bot->startConversation(new Signup());
+        else    
+            $this->bot->startConversation(new Verify());
     }
 
     protected function regrets()
