@@ -10,7 +10,7 @@ use App\Question as SurveyQuestion;
 use App\Eloquent\{Phone, Messenger};
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Testing\WithFaker;
-// use BotMan\BotMan\Messages\Outgoing\Question;
+use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 
@@ -46,22 +46,17 @@ class SurveyTest extends TestCase
             });
         });
 
-        // $survey->each(function ($category) {
-        //     $createdCategory = Category::create([
-        //         'title' => $category['category'],
-        //         'extra_attributes' => $category['options'] ?? [],
-        //     ]);
-        //     collect($category['questions'])->each(function ($question) use ($createdCategory) {
-        //         $createdQuestion = SurveyQuestion::create([
-        //             'category_id' => $createdCategory->id,
-        //             'question' => $question['question'],
-        //             'type' => $question['type'],
-        //             'extra_attributes' => $question['options'] ?? [],
-        //             'options' => $question['options'] ?? [],
-        //         ]);
-        //     });
-        // });
-
+        // $this->input = collect([
+        //     'category' => Category::where('title', 'Demographics')->first(),
+        //     'coordinates' => [
+        //         'lat' => $this->faker->latitude,
+        //         'lon' => $this->faker->longitude,
+        //     ],
+        //     'mobiles' => [
+        //         Phone::number('09178251991'),
+        //         Phone::number('09189362340'),
+        //     ],
+        // ]);
     }
 
     /** @test */
@@ -69,19 +64,7 @@ class SurveyTest extends TestCase
     {
         \Queue::fake();
 
-        // $channel_id = $this->faker->randomNumber(8);
-
-        $input = collect([
-            'category' => Category::where('title', 'Demographics')->first(),
-            'coordinates' => [
-                'lat' => $this->faker->latitude,
-                'lon' => $this->faker->longitude,
-            ],
-            'mobiles' => [
-                Phone::number('09178251991'),
-                Phone::number('09189362340'),
-            ],
-        ]);
+        $input = $this->getInput('Demographics');
 
         foreach ($input->get('mobiles') as $mobile) {
             $this->bot
@@ -146,59 +129,39 @@ class SurveyTest extends TestCase
                 ->assertReply(trans('survey.finished'))
                 ;                    
 
+            \Queue::assertPushed(\App\Jobs\SendUserInvitation::class);
             \Queue::assertPushed(\App\Jobs\SendAskableReward::class); 
         }
     }
 
+    /** @test */
     public function survey_required_question_run()
-    {
-        $channel_id = $this->faker->randomNumber(8);
-        $mobiles = [
-            Phone::number('09178251991'),
-            Phone::number('09189362340'),
-        ];
-        $c = Category::first();
-        $category = $c->title;
-        $count = $c->count();
-        // $category = 'Demographics';
-        // $count = 4;
-        $coordinate = ['longitude' => 121.030962, 'latitude' => 14.644346];
-        $categories = Category::all();
-
+    {                
         \Queue::fake();
-        foreach ($mobiles as $mobile) {
-            $this->bot
-                ->setUser(['id' => $channel_id])
-                ->setDriver(TelegramDriver::class)
-                ->receives($this->keyword)
-                ->assertReply(trans('survey.intro'))
-                ;
 
-            if ($categories->count() > 1) {
-                $this->bot
-                    ->assertQuestion(trans('survey.input.category'))
-                    ->receives(1)
-                    ;
-            }  
+        $input = $this->getInput('Demographics');
+        config(['chatbot.survey.location' => false]);
+        $mobile = $input->get('mobiles')[0];
 
-            if (config('chatbot.survey.location'))
-            $this->bot
-                ->assertTemplate(OutgoingMessage::class)
-                ->receivesLocation($coordinate['latitude'], $coordinate['longitude'])
-                ;
-
-            $this->bot
-                ->assertReply(trans('survey.info', compact('category', 'count')))
-                ->assertQuestion(trans('survey.input.mobile'))
-                ->receives($mobile)
-                ->assertTemplate(Question::class)
-                ->receives('No')
-                ->assertReply(trans('survey.abort'))
-                ;
-
-            $this->assertDatabaseHas('answers', ['answer' => 'No']);
-            \Queue::assertNotPushed(\App\Jobs\SendAskableReward::class);
-        }
+        $this->bot
+            ->setUser(['id' => $channel_id = $this->faker->randomNumber(8)])
+            ->setDriver(TelegramDriver::class)
+            ->receives($this->keyword)
+            ->assertReply(trans('survey.intro'))
+            ->assertQuestion(trans('survey.input.category'))
+            ->receives($input->get('category')->id)
+            ->assertReply(trans('survey.info', [
+                'category' => $input->get('category')->title,
+                'count' => $input->get('category')->questions->count()
+            ]))
+            ->assertQuestion(trans('survey.input.mobile'))
+            ->receives($mobile)
+            ->assertTemplate(Question::class)
+            ->receives('No')
+            ->assertReply(trans('survey.abort'))
+            ;
+        
+        \Queue::assertNotPushed(\App\Jobs\SendAskableReward::class);
     }
 
     public function survey_pollcount()
@@ -240,6 +203,21 @@ class SurveyTest extends TestCase
             ;
 
         \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
+    }
+
+    private function getInput($title = 'Demographics')
+    {
+        return collect([
+            'category' => Category::where(compact('title'))->first(),
+            'coordinates' => [
+                'lat' => $this->faker->latitude,
+                'lon' => $this->faker->longitude,
+            ],
+            'mobiles' => [
+                Phone::number('09178251991'),
+                Phone::number('09189362340'),
+            ],
+        ]);
     }
 
     private function getData()
