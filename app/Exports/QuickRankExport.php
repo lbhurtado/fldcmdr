@@ -8,8 +8,9 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Contracts\Support\Responsable;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class QuickRankExport implements FromCollection, Responsable, WithHeadings
+class QuickRankExport implements FromCollection, Responsable, WithHeadings, ShouldAutoSize
 {
 	use Exportable;
 

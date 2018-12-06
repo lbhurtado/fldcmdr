@@ -47,7 +47,7 @@ inner join invitees i on i.id = a.askable_id
 where
     c.title='Quick Rank'
 order by
-    c.id, a.askable_id, a.question_id
+    c.id, a.id
 SQL;
     }
 
