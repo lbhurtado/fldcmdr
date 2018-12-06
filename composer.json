@@ -22,6 +22,7 @@
         "laravel-notification-channels/twilio": "^2.0",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
+        "maatwebsite/excel": "^3.1",
         "malhal/laravel-geographical": "^1.0",
         "propaganistas/laravel-intl": "^2.1",
         "propaganistas/laravel-phone": "^4.0",

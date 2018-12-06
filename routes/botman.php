@@ -60,6 +60,8 @@ $botman->hears('/bored', BotManController::class.'@startConversation');
 
 $botman->hears('@all {message}', FldCmdrController::class.'@broadcast');
 
+$botman->hears('/reports', FldCmdrController::class.'@reports');
+
 $botman->fallback(function (BotMan $bot){
     if ($bot->getMessage()->getExtras('is_new_user'))
         return $bot->startConversation(new Onboarding);

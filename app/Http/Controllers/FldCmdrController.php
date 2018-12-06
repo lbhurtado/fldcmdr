@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use BotMan\BotMan\BotMan;
-use App\{PollCount, Stub, TapZone, User};
 use App\Eloquent\Messenger;
 use Illuminate\Http\Request;
-
+use App\Exports\RolesExport;
 use App\Notifications\UserBroadcast;
+use Maatwebsite\Excel\Facades\Excel;
+use App\{PollCount, Stub, TapZone, User};
+
 
 class FldCmdrController extends Controller
 {
@@ -60,9 +62,12 @@ class FldCmdrController extends Controller
             $user->notify(new UserBroadcast($message));
         });
 
-
-
         $bot->reply(trans('broadcast.sent', ['count' => $users->count()]));
+    }
+
+    public function reports(BotMan $bot)
+    {
+        $bot->reply(trans('chatbot.list.reports'));
     }
 
     protected function array_to_attributes($array_attributes)
