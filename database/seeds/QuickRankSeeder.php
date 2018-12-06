@@ -174,6 +174,15 @@ class QuickRankSeeder extends Seeder
 		                	],
 		                ],
 		            ],
+		            [
+		                'question' => 'Would you like to participate in follow-up surveys in the future?',
+		                'options' => [
+		                	'values' => [
+			                    'Yes',
+								'No',
+		                	],
+		                ],
+		            ],
         		],
         	],
 			[

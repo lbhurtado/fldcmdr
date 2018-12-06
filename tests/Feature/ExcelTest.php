@@ -29,10 +29,10 @@ class ExcelTest extends TestCase
         $user = factory(User::class)->create();
 
         $response = $this->actingAs($user)
-                         ->get('/test');
+                         ->get('/qrank');
 
         $response->assertStatus(200);
 
-	    Excel::assertDownloaded('users.xlsx');
+	    Excel::assertDownloaded('quick_rank.xlsx');
 	}
 }

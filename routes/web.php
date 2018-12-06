@@ -18,6 +18,6 @@ Route::get('/', function () {
 Route::match(['get', 'post'], '/botman', 'BotManController@handle');
 Route::get('/botman/tinker', 'BotManController@tinker');
 
-Route::get('/test', function() {
-	return (new \App\Exports\UsersExport);
+Route::get('/qrank', function() {
+	return (new \App\Exports\QuickRankExport);
 });
