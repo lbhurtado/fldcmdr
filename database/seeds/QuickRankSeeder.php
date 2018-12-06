@@ -109,7 +109,7 @@ class QuickRankSeeder extends Seeder
 		                ],
 		            ],
 					[
-		                'question' => 'Why not Erap Estrada?',
+		                'question' => 'Why not <Erap Estrada>?',
 		                'options' => [
 		                	'values' => [
 			                    'Corrupt',
@@ -117,12 +117,12 @@ class QuickRankSeeder extends Seeder
 			                    'Controversial',
 			                    'No Track Record',
 		                	],
-		                	'anchor_regex' => ':anchor',
+		                	'anchor_regex' => '<:anchor>',
             				'anchor_action' => 'skip',
 		                ],
 		            ],
 					[
-		                'question' => 'Why not Isko Moreno?',
+		                'question' => 'Why not <Isko Moreno>?',
 		                'options' => [
 		                	'values' => [
 			                    'Corrupt',
@@ -130,12 +130,12 @@ class QuickRankSeeder extends Seeder
 			                    'Controversial',
 			                    'No Track Record',
 		                	],
-		                	'anchor_regex' => ':anchor',
+		                	'anchor_regex' => '<:anchor>',
 		                	'anchor_action' => 'skip',
 		                ],
 		            ],
 					[
-		                'question' => 'Why not Lito Atienza?',
+		                'question' => 'Why not <Lito Atienza>?',
 		                'options' => [
 		                	'values' => [
 			                    'Corrupt',
@@ -143,12 +143,12 @@ class QuickRankSeeder extends Seeder
 			                    'Controversial',
 			                    'No Track Record',
 		                	],
-		                	'anchor_regex' => ':anchor',
+		                	'anchor_regex' => '<:anchor>',
 		                	'anchor_action' => 'skip',
 		                ],
 		            ],
 					[
-		                'question' => 'Why not Alfredo Lim?',
+		                'question' => 'Why not <Alfredo Lim>?',
 		                'options' => [
 		                	'values' => [
 			                    'Corrupt',
@@ -156,7 +156,7 @@ class QuickRankSeeder extends Seeder
 			                    'Controversial',
 			                    'No Track Record',
 		                	],
-		                	'anchor_regex' => ':anchor',
+		                	'anchor_regex' => '<:anchor>',
 		                	'anchor_action' => 'skip',
 		                ],
 		            ],
