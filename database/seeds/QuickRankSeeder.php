@@ -37,6 +37,7 @@ class QuickRankSeeder extends Seeder
         		'category' => 'Quick Rank',
         		'options' => [
         			'twosome' => true,
+        			'reward' => env('SURVEY_REWARD', 0),
         		],
         		'questions' => [
 					[
@@ -45,17 +46,6 @@ class QuickRankSeeder extends Seeder
 		                	'values' => [
 			                    'Male',
 			                    'Female'
-		                	],
-		                ],
-		            ],
-					[
-		                'question' => 'Age Group?',
-		                'options' => [
-		                	'values' => [
-			                    '18 to 34',
-			                    '35 to 49',
-			                    '50 to 60',
-			                    '61 and above',
 		                	],
 		                ],
 		            ],
@@ -89,7 +79,7 @@ class QuickRankSeeder extends Seeder
 		                	'values' => [
 			                    '150k',
 			                    '50k',
-			                    '6k',
+			                    '16k',
 			                    '5k', 
 		                	],
 		                ],
@@ -119,7 +109,7 @@ class QuickRankSeeder extends Seeder
 		                ],
 		            ],
 					[
-		                'question' => 'Why not <Erap Estrada>?',
+		                'question' => 'Why not Erap Estrada?',
 		                'options' => [
 		                	'values' => [
 			                    'Corrupt',
@@ -127,12 +117,12 @@ class QuickRankSeeder extends Seeder
 			                    'Controversial',
 			                    'No Track Record',
 		                	],
-		                	'anchor_regex' => '<:anchor>',
+		                	'anchor_regex' => ':anchor',
             				'anchor_action' => 'skip',
 		                ],
 		            ],
 					[
-		                'question' => 'Why not <Isko Moreno>?',
+		                'question' => 'Why not Isko Moreno?',
 		                'options' => [
 		                	'values' => [
 			                    'Corrupt',
@@ -140,12 +130,12 @@ class QuickRankSeeder extends Seeder
 			                    'Controversial',
 			                    'No Track Record',
 		                	],
-		                	'anchor_regex' => '<:anchor>',
+		                	'anchor_regex' => ':anchor',
 		                	'anchor_action' => 'skip',
 		                ],
 		            ],
 					[
-		                'question' => 'Why not <Lito Atienza>?',
+		                'question' => 'Why not Lito Atienza?',
 		                'options' => [
 		                	'values' => [
 			                    'Corrupt',
@@ -153,12 +143,12 @@ class QuickRankSeeder extends Seeder
 			                    'Controversial',
 			                    'No Track Record',
 		                	],
-		                	'anchor_regex' => '<:anchor>',
+		                	'anchor_regex' => ':anchor',
 		                	'anchor_action' => 'skip',
 		                ],
 		            ],
 					[
-		                'question' => 'Why not <Alfredo Lim>?',
+		                'question' => 'Why not Alfredo Lim?',
 		                'options' => [
 		                	'values' => [
 			                    'Corrupt',
@@ -166,7 +156,7 @@ class QuickRankSeeder extends Seeder
 			                    'Controversial',
 			                    'No Track Record',
 		                	],
-		                	'anchor_regex' => '<:anchor>',
+		                	'anchor_regex' => ':anchor',
 		                	'anchor_action' => 'skip',
 		                ],
 		            ],
