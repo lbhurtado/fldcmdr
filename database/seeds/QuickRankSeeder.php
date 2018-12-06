@@ -5,7 +5,7 @@ use App\{Category, Question, Answer};
 
 class QuickRankSeeder extends Seeder
 {
- public function run()
+ 	public function run()
     {
         DB::table('answers')->delete();
         DB::table('questions')->delete();

@@ -18,13 +18,17 @@ class QuickRankExport implements FromCollection, Responsable, WithHeadings, Shou
 
     public function collection()
     {
-        return QuickRank::all();
+        return QuickRank::all([
+            'question',
+            'answer',
+            'interviewer',
+            'respondent'
+        ]);
     }
 
     public function headings(): array
     {
         return [
-            'Category',
             'Question',
             'Answer',
             'Interviewer',
