@@ -3,7 +3,7 @@
 return [
 	'input' => [
 		'category' => "Please choose a category:",
-        'location' => "Please check-in your current location:"
+        'location' => "Please check-in your current location:",
         'mobile' => "Please ask mobile number:"
 	],
 	'intro' => "Welcome!",
