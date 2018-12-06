@@ -3,6 +3,8 @@
 return [
 	'input' => [
 		'category' => "Please choose a category:",
+        'location' => "Please check-in your current location:"
+        'mobile' => "Please ask mobile number:"
 	],
 	'intro' => "Welcome!",
     'info' => ":category: There will be :count questions for this category.",
