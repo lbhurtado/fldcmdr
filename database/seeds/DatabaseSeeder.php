@@ -14,8 +14,9 @@ class DatabaseSeeder extends Seeder
     	Schema::disableForeignKeyConstraints();
         
         $this->call(RolePermissionSeeder::class);
-        $this->call(SurveySeeder::class);
+        $this->call(QuickRankSeeder::class);
         $this->call(UserSeeder::class);
+        // $this->call(SurveySeeder::class);
         // $this->call(FakeAnswerSeeder::class);
 
         Schema::enableForeignKeyConstraints();
