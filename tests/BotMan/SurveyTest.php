@@ -109,7 +109,7 @@ class SurveyTest extends TestCase
                     'user_id' => $user_id,
                     'askable_id' => $invitee->id,
                     'askable_type' => get_class($invitee),
-                    'started_at' => now(),
+                    // 'started_at' => now(),
                 ]);
 
                 $askable = Invitee::withMobile($mobile)->first();
@@ -118,7 +118,7 @@ class SurveyTest extends TestCase
             else {
                 $this->assertDatabaseHas('surveys', [
                     'user_id' => $user_id,
-                    'started_at' => now(),
+                    // 'started_at' => now(),
                 ]);   
                 $askable = Messenger::hook($this->botman)->getUser();
             }
