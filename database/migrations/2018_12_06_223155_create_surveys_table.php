@@ -15,13 +15,12 @@ class CreateSurveysTable extends Migration
     {
         Schema::create('surveys', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->integer('checkin_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->nullableMorphs('askable');
             $table->timestamp('started_at')->nullable();
             $table->timestamp('ended_at')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('checkin_id')->references('id')->on('checkin')->onDelete('cascade');
         });
     }
 

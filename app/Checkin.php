@@ -61,4 +61,9 @@ class Checkin extends Model
 
         return $this;
     }
+
+    public function locatable():MorphTo
+    {
+        return $this->morphTo();
+    }
 }

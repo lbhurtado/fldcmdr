@@ -8,7 +8,7 @@ use App\Eloquent\{Conversation, Phone};
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Incoming\Answer as BotManAnswer;
-use App\{Category, Question, Answer, Invitation as Invitee};
+use App\{Category, Question, Answer, Invitee, Survey as SurveyModel};
 use BotMan\BotMan\Messages\Outgoing\Question as BotManQuestion;
 
 class Survey extends Conversation
@@ -42,6 +42,8 @@ class Survey extends Conversation
     public $qanda;
 
     public $anchor;
+
+    protected $survey;
 
     public function ready()
     {
@@ -121,6 +123,10 @@ class Survey extends Conversation
 
         $this->say(trans('survey.info', compact('category', 'count')));
 
+        $this->survey = SurveyModel::make(['started_at' => now()])
+            ->user()->associate($this->user);
+        $this->survey->save();
+
         if ($this->category->twosome){
             return $this->inputMobile();
         }
@@ -149,8 +155,10 @@ class Survey extends Conversation
                         'message' => trans('invite.message'),
                     ]);
 
-            if ($invitee->wasRecentlyCreated)
+            if ($invitee->wasRecentlyCreated){
+                $this->survey->askable()->associate($invitee)->save();
                 $invitee->send();
+            }
 
             $this->askable = $invitee;
 

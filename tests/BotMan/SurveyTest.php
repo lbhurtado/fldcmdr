@@ -76,7 +76,7 @@ class SurveyTest extends TestCase
             $user_id = tap(Messenger::hook($this->botman)->getUser(), function ($user) use ($channel_id) {
                 $this->assertEquals($user->channel_id, $channel_id);
             })->id;
-            
+
             $this->bot
                 ->assertReply(trans('survey.intro'))
                 ->assertQuestion(trans('survey.input.category'))
@@ -102,12 +102,28 @@ class SurveyTest extends TestCase
                     ->receives($mobile)
                     ;
 
-                $this->assertDatabaseHas('invitees', compact('mobile'));                
+                $this->assertDatabaseHas('invitees', compact('mobile')); 
+                $invitee = Invitee::withMobile($mobile)->first();
+
+                $this->assertDatabaseHas('surveys', [
+                    'user_id' => $user_id,
+                    'askable_id' => $invitee->id,
+                    'askable_type' => get_class($invitee),
+                    'started_at' => now(),
+                ]);
+
+                $askable = Invitee::withMobile($mobile)->first();
+                \Queue::assertPushed(\App\Jobs\SendUserInvitation::class); 
+            }
+            else {
+                $this->assertDatabaseHas('surveys', [
+                    'user_id' => $user_id,
+                    'started_at' => now(),
+                ]);   
+                $askable = Messenger::hook($this->botman)->getUser();
             }
 
-            \Queue::assertPushed(\App\Jobs\SendUserInvitation::class); 
-
-            $askable      = Invitee::withMobile($mobile)->first();
+            // $askable      = Invitee::withMobile($mobile)->first();
             $askable_id   = $askable->id;
             $askable_type = get_class($askable);
 
@@ -137,7 +153,7 @@ class SurveyTest extends TestCase
                 ->assertReply(trans('survey.result', compact('qanda')))
                 ;                    
 
-            \Queue::assertPushed(\App\Jobs\SendUserInvitation::class);
+            // \Queue::assertPushed(\App\Jobs\SendUserInvitation::class);
             \Queue::assertPushed(\App\Jobs\SendAskableReward::class); 
         }
     }
