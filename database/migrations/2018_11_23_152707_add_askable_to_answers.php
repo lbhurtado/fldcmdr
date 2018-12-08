@@ -26,7 +26,7 @@ class AddAskableToAnswers extends Migration
     public function down()
     {
         Schema::table('answers', function (Blueprint $table) {
-            $table->dropNullableMorphs('askable');
+            $table->dropMorphs('askable');
         });
     }
 }

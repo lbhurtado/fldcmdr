@@ -21,3 +21,5 @@ Route::get('/botman/tinker', 'BotManController@tinker');
 Route::get('/qrank', function() {
 	return (new \App\Exports\QuickRankExport);
 });
+
+Route::match(['get', 'post'], '/webhook/telerivet','StubController@handle');

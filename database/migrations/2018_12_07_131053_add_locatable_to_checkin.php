@@ -26,7 +26,7 @@ class AddLocatableToCheckin extends Migration
     public function down()
     {
         Schema::table('checkins', function (Blueprint $table) {
-            $table->dropNullableMorphs('locatable');
+            $table->dropMorphs('locatable');
         });
     }
 }
