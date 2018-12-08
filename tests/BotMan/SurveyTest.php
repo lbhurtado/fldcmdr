@@ -119,7 +119,12 @@ class SurveyTest extends TestCase
                 $this->assertDatabaseHas('surveys', [
                     'user_id' => $user_id,
                     // 'started_at' => now(),
+                ]);  
+                $this->assertDatabaseMissing('surveys', [
+                    'askable_id' => $invitee->id,
+                    'askable_type' => get_class($invitee),
                 ]);   
+
                 $askable = Messenger::hook($this->botman)->getUser();
             }
 
