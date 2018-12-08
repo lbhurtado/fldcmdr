@@ -6,7 +6,7 @@ use App\SMS;
 use Illuminate\Http\Request;
 use \Log;
 
-class StubController extends Controller
+class SMSController extends Controller
 {
     public function handle(Request $request)
     {

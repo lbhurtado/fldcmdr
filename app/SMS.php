@@ -33,7 +33,6 @@ class SMS extends Model
     public function setFromNumberAttribute($value)
     {
         $this->attributes['from_number'] = Phone::validate($value) ?: $value;
-        // $this->attributes['from_number'] = $this->attributes['simulated'] ? $value : Phone::validate($value);
     }
 
     public function setToNumberAttribute($value)
