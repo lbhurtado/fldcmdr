@@ -12,6 +12,14 @@ class Survey extends Model
 		'started_at',
 		'ended_at',
 	];
+
+    protected $dates = [
+        'started_at',
+        'ended_at',
+        'created_at',
+        'updated_at',
+    ];
+    
     public function user():BelongsTo
     {
     	return $this->belongsTo(User::class);
