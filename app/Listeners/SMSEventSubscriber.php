@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use \Log;
+use App\{User, Stub};
 use App\Events\{SMSEvent, SMSEvents};
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,7 +16,16 @@ class SMSEventSubscriber
 
     public function onSMSCreated(SMSEvent $event)
     {
-        Log::info($event->getSMS()->toArray());
+        optional(Stub::validate($event->getSMS()->content), function ($stub) use ($event) {
+            $stub->user
+                ->invitees()
+                ->updateOrCreate([
+                    'mobile' => $event->getSMS()->from_number
+                ],[
+                    'role' => $stub->role,
+                    'message' => trans('invite.message'),
+                ]);
+        });
     }
 
     public function subscribe($events)
