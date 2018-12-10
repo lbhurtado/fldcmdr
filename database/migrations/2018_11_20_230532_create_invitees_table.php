@@ -16,9 +16,9 @@ class CreateInviteesTable extends Migration
         Schema::create('invitees', function (Blueprint $table) {
             $table->increments('id');
             $table->string('mobile');
-            $table->string('role');
+            // $table->string('role');
             $table->integer('user_id')->unsigned();
-            $table->text('message')->nullable();
+            // $table->text('message')->nullable();
             $table->string('telerivet_id')->unique()->nullable();
             $table->timestamp('accepted_at')->nullable();
             $table->timestamps();

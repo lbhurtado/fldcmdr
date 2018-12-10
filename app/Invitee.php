@@ -53,4 +53,28 @@ class Invitee extends Model
 
         return $this;
     }
+
+    public function getRoleAttribute()
+    {
+        return $this->extra_attributes['role'] ?? null;
+    }
+
+    public function setRoleAttribute($value)
+    {
+        $this->extra_attributes['role'] = $value;
+
+        return $this;
+    }
+
+    public function getMessageAttribute()
+    {
+        return $this->extra_attributes['message'] ?? null;
+    }
+
+    public function setMessageAttribute($value)
+    {
+        $this->extra_attributes['message'] = $value;
+
+        return $this;
+    }
 }

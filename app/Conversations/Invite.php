@@ -89,10 +89,15 @@ class Invite extends Conversation
     			->invitees()
 				->updateOrCreate([
 					'mobile' => $this->mobile
-				],[
-					'role' => $this->role,
-					'message' => trans('invite.message'),
-				]);
+				]
+    //             ,[
+				// 	'role' => $this->role,
+				// 	'message' => trans('invite.message'),
+				// ]
+            );
+        $invitee->role = $this->role;
+        $invitee->message = trans('invite.message');
+        $invitee->save();
 
 		$invitee->send();
 
