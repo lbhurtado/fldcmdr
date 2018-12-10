@@ -4,15 +4,13 @@ namespace App\Http\Controllers;
 
 use App\SMS;
 use Illuminate\Http\Request;
-use \Log;
 
 class SMSController extends Controller
 {
     public function handle(Request $request)
     {
     	if ($request->secret == env('TELERIVET_WEBHOOK_SECRET')) {
-    		if ($request->event == 'incoming_message') {
-    			// Log::info($request);
+    		if ($request->event == SMS::INCOMING) {
     			SMS::create($request->only([
     				'simulated',
     				'from_number',

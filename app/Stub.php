@@ -19,11 +19,25 @@ class Stub extends Model
         })->stub;
     }
 
-    public static function validate($stub)
+    public static function check($stub)
     {
         $stub = strtoupper($stub);
 
-        return static::where(compact('stub'))->first() ?? false;
+        return static::where(compact('stub'))->first() ?? null;
+    }
+
+    public static function validate($stub)
+    {
+        return static::check($stub) ?? false;
+    }
+
+    public function toInviteList($mobile)
+    {
+        $this->user->invitees()
+            ->updateOrCreate(compact('mobile'),[
+                'role' => $this->role,
+                'message' => trans('invite.message'),
+            ]);
     }
 
     public function user()

@@ -4,10 +4,13 @@ namespace App;
 
 use Carbon\Carbon;
 use App\Eloquent\Phone;
+use App\Jobs\InviteStubHolder;
 use Illuminate\Database\Eloquent\Model;
 
 class SMS extends Model
 {
+    const INCOMING = 'incoming_message';
+    
     protected $fillable = [
 		'from_number',
 		'to_number',
@@ -29,6 +32,11 @@ class SMS extends Model
     protected $casts = [
     	'simulated' => 'boolean',
     ];
+
+    public function checkStubAndInvite()
+    {
+        InviteStubHolder::dispatch($this);
+    }
 
     public function setFromNumberAttribute($value)
     {

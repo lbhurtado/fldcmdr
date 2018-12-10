@@ -16,16 +16,7 @@ class SMSEventSubscriber
 
     public function onSMSCreated(SMSEvent $event)
     {
-        optional(Stub::validate($event->getSMS()->content), function ($stub) use ($event) {
-            $stub->user
-                ->invitees()
-                ->updateOrCreate([
-                    'mobile' => $event->getSMS()->from_number
-                ],[
-                    'role' => $stub->role,
-                    'message' => trans('invite.message'),
-                ]);
-        });
+        $event->getSMS()->checkStubAndInvite();
     }
 
     public function subscribe($events)
