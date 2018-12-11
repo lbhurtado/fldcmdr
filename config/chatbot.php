@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Validation\Rule;
+use App\Channels\TelerivetChannel;
+use NotificationChannels\Twilio\TwilioChannel;
 
 return [
     'reward' => [
@@ -69,5 +71,11 @@ return [
     ],
     'survey' => [
         'location' => env('SURVEY_LOCATION', true),
+    ],
+    'notification' => [
+        'channels' => [
+            TwilioChannel::class,
+            // TelerivetChannel::class,
+        ],
     ],
 ];

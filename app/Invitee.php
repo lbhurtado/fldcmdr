@@ -77,4 +77,16 @@ class Invitee extends Model
 
         return $this;
     }
+
+    public function getTelerivetIdAttribute()
+    {
+        return $this->extra_attributes['telerivet_id'] ?? null;
+    }
+
+    public function setTelerivetIdAttribute($value): Invitee
+    {
+        $this->extra_attributes['telerivet_id'] = $value;
+
+        return $this;
+    }
 }

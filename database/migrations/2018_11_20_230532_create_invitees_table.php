@@ -19,7 +19,7 @@ class CreateInviteesTable extends Migration
             // $table->string('role');
             $table->integer('user_id')->unsigned();
             // $table->text('message')->nullable();
-            $table->string('telerivet_id')->unique()->nullable();
+            // $table->string('telerivet_id')->unique()->nullable();
             $table->timestamp('accepted_at')->nullable();
             $table->timestamps();
             $table->unique(['mobile', 'user_id']);
