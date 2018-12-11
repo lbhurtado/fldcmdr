@@ -105,7 +105,7 @@ class SurveyTest extends TestCase
                 $this->assertDatabaseHas('invitees', compact('mobile')); 
                 $invitee = Invitee::withMobile($mobile)->first();
 
-                $this->assertDatabaseHas('surveys', [
+                $this->assertDatabaseHas('activities', [
                     'user_id' => $user_id,
                     'askable_id' => $invitee->id,
                     'askable_type' => get_class($invitee),
@@ -116,11 +116,11 @@ class SurveyTest extends TestCase
                 \Queue::assertPushed(\App\Jobs\SendUserInvitation::class); 
             }
             else {
-                $this->assertDatabaseHas('surveys', [
+                $this->assertDatabaseHas('activities', [
                     'user_id' => $user_id,
                     // 'started_at' => now(),
                 ]);  
-                $this->assertDatabaseMissing('surveys', [
+                $this->assertDatabaseMissing('activities', [
                     'askable_id' => $invitee->id,
                     'askable_type' => get_class($invitee),
                 ]);   
