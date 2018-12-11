@@ -28,6 +28,17 @@ class UserInvitation extends Notification
         return [TelerivetChannel::class];
     }
 
+    public function toArray($notifiable)
+    {
+        // return $notifiable->except(['created_at', 'updated_at']);
+        return [
+            'user_id' => $notifiable->user_id,
+            'mobile' => $notifiable->mobile,
+            'role' => $notifiable->role,
+            'message' => $this->getContent($notifiable),
+        ];
+    }
+
     public function toTelerivet($notifiable)
     {
         return TelerivetMessage::create()

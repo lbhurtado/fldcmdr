@@ -74,6 +74,7 @@ return [
     ],
     'notification' => [
         'channels' => [
+            'database',
             TwilioChannel::class,
             // TelerivetChannel::class,
         ],
