@@ -79,4 +79,8 @@ return [
             // TelerivetChannel::class,
         ],
     ],
+    'default' => [
+           'password' => env('DEFAULT_PASSWORD', '1234'),
+        'domain_name' => env('DEFAULT_DOMAIN_NAME', 'serbis.io'),
+    ],
 ];

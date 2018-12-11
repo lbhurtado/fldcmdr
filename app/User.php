@@ -25,20 +25,23 @@ class User extends Authenticatable
 
     public $casts = [
         'extra_attributes' => 'array',
-        'status' => 'array',
-        'info' => 'array',
+                 'status'  => 'array',
+                    'info' => 'array',
     ];
 
     protected $guard_name = 'web';
 
-    public function checkins()
+    protected static function boot()
     {
-        return $this->hasMany(Checkin::class);
-    }
-    
-    public function invitees()
-    {
-        return $this->hasMany(Invitee::class);
+        parent::boot();
+
+        static::creating(function($user) {
+            $user->name     = $user->name ?? "$user->driver.$user->channel_id";
+            $user->email    = $user->name . '@' . config('chatbot.default.domain_name');
+            $user->password = $user->password ?? bcrypt(config('chatbot.default.password'));
+            $user->extra_attributes->handle = str_slug($user->name, '.'); 
+            $user->extra_attributes->wants_notifications = false;
+        });
     }
 
     public function checkin(...$coordinates)
@@ -88,5 +91,15 @@ class User extends Authenticatable
             'handle' => $this->handle,
             'mobile' => $this->mobile,
         ];
+    }
+
+    public function checkins()
+    {
+        return $this->hasMany(Checkin::class);
+    }
+    
+    public function invitees()
+    {
+        return $this->hasMany(Invitee::class);
     }
 }
