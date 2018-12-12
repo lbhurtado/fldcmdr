@@ -29,7 +29,7 @@ class Messenger
 
                 $user->extra_attributes->first_name = $first_name;
                 $user->extra_attributes->last_name = $last_name;
-                $user->name = $first_name . ' ' . $last_name;
+                // $user->name = $first_name . ' ' . $last_name;
                 $user->save();                    
             }
         });

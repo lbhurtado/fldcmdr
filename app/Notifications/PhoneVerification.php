@@ -28,6 +28,14 @@ class PhoneVerification extends Notification
         return [TelerivetChannel::class];
     }
 
+    public function toArray($notifiable)
+    {
+        return [
+            'mobile'      => $notifiable->mobile,
+            'verified_at' => $notifiable->verified_at,
+        ];
+    }
+
     public function toTelerivet($notifiable)
     {
         return TelerivetMessage::create()
