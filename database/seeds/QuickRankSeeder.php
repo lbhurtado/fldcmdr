@@ -37,7 +37,7 @@ class QuickRankSeeder extends Seeder
         		'category' => 'Quick Rank',
         		'options' => [
         			'twosome' => true,
-        			'reward' => env('SURVEY_REWARD', 0),
+        			'reward' => config('chatbot.seed.survey.reward'),
         		],
         		'questions' => [
 					[
