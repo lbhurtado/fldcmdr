@@ -10,11 +10,38 @@ class Telerivet
 
     private $service_id;
 
-    public function __construct($api_key, $project_id, $service_id = null)
+    public function __construct()
+    {
+        $config = config('broadcasting.connections.telerivet');
+
+        $this->setApi($config['api_key']);
+        $this->setProject($config['project_id']);
+    }
+
+    protected function setApi($api_key)
     {
         $this->api = new \Telerivet_API($api_key);
-        $this->project = $this->api->initProjectById($project_id);
-        $this->service_id = $service_id;
+
+        return $this;
+    }
+
+    protected function getApi()
+    {
+        return $this->api;
+    }
+
+    protected function setProject($project_id)
+    {
+        $this->project = $this->getApi()->initProjectById($project_id);
+
+        return $this;
+    }
+
+    public function setCampaign($campaign)
+    {
+        $this->service_id = config("chatbot.campaigns.{$campaign}");
+
+        return $this;
     }
 
     public function getProject()

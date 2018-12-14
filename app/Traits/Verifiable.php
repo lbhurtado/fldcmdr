@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use OTPHP\TOTP;
 use App\Jobs\RequestOTP;
+use App\Events\{UserEvent, UserEvents};
 
 trait Verifiable
 {
@@ -23,7 +24,11 @@ trait Verifiable
     {
         $verified = ! $notSimulated || $this->totp->verify($otp);
 
-        if ($verified) $this->forceFill(['verified_at' => now()])->save(); 
+        if ($verified) {
+            $this->forceFill(['verified_at' => now()])->save(); 
+            
+            event(UserEvents::VERIFIED, new UserEvent($this));
+        }
 
         return $this;
     }

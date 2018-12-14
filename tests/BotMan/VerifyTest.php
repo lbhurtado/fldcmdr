@@ -23,7 +23,7 @@ class VerifyTest extends TestCase
     function setUp()
     {
         parent::setUp();
-        $this->withoutEvents();
+        // $this->withoutEvents();
         $this->faker = $this->makeFaker('en_PH');
         $mobile = env('ADMIN_MOBILE', decrypt(
             'eyJpdiI6InBNQzljQVZiaUd4Vk1LUmlcL1orMG5BPT0iLCJ2YWx1ZSI6IkFxRnZLWnI2RlpaWXNFU2hGV3N5S0hKdUgzSEtlWVFIQTJqd1dDcnNSMGs9IiwibWFjIjoiNzEzM2ZlZmI2NTE2ZWFiY2Y5MWMzYzYyMjc5ODRmMGVhOTgxZDcyNGJlMTYzYmM5NmY1ZWMzYjYxMjcwZDliNSJ9'));
@@ -85,9 +85,9 @@ class VerifyTest extends TestCase
             ;
 
         $this->assertTrue($user->isVerified());
-        if (config('chatbot.reward.enabled'))
-            $this->bot->assertReply(trans('verify.reward'))
-            ;  
+        // if (config('chatbot.reward.enabled'))
+        //     $this->bot->assertReply(trans('verify.reward'))
+        //     ;  
             
         \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
 
@@ -113,7 +113,7 @@ class VerifyTest extends TestCase
         $this->bot
             ->assertQuestion(trans('verify.input.pin'))
             ->receives('123456')
-            ->assertReply(trans('verify.reward'))
+            // ->assertReply(trans('verify.reward'))
             ->assertReply(trans('verify.success'))
             ;
         

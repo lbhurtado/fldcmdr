@@ -5,6 +5,13 @@ namespace App\Channels;
 class TelerivetMessage
 {
     /**
+     * Campaign name aka service id placeholder
+     *
+     * @var boolean
+     */
+    private $campaign;
+
+    /**
      * Load credits.
      *
      * @var boolean
@@ -102,6 +109,23 @@ class TelerivetMessage
     public function getFrom()
     {
         return $this->from;
+    }
+
+    public function isCampaign()
+    {
+        return ! empty($this->campaign);
+    }
+
+    public function getCampaign()
+    {
+        return $this->campaign;
+    }
+
+    public function setCampaign($campaign)
+    {
+        $this->campaign = $campaign;
+
+        return $this;
     }
 
     /**

@@ -8,27 +8,16 @@ use Illuminate\Support\ServiceProvider;
 
 class TelerivetServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
     public function boot()
     {
-        $this->app->when(TelerivetChannel::class)
+        $this->app
+            ->when (TelerivetChannel::class)
             ->needs(Telerivet::class)
-            ->give(function () {
-                $config = config('broadcasting.connections.telerivet');
-
-                return new Telerivet($config['api_key'], $config['project_id'], $config['service_id']);
+            ->give (function () {
+                return new Telerivet();
             });
     }
 
-    /**
-     * Register services.
-     *
-     * @return void
-     */
     public function register()
     {
         //

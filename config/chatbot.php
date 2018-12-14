@@ -88,4 +88,13 @@ return [
             'reward' => env('SEED_SURVEY_REWARD', 0),
         ],
     ],
+    'verify' => [
+        'reward' => [
+            'enabled' => env('VERIFY_REWARD_ENABLED', true),
+            'amount' => env('VERIFY_REWARD_AMOUNT', 25),
+        ],
+    ],
+    'campaigns' => [
+        'verified' => env('CAMPAIGN_VERIFIED', 'SVa8cc328a77a0db75'),
+    ],
 ];

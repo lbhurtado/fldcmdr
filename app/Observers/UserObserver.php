@@ -11,9 +11,4 @@ class UserObserver
     {
         event(UserEvents::CREATED, new UserEvent($user));
     }
-
-    public function verified(User $user)
-    {
-        event(UserEvents::VERIFIED, new UserEvent($user));
-    }
 }

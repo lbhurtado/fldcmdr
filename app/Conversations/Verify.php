@@ -83,7 +83,8 @@ class Verify extends Conversation
             if (! $user->isVerified())
                 return $this->inputPIN();
 
-            return $this->sendReward();
+            // return $this->sendReward();
+            return $this->finish();
         });   
     }
 

@@ -9,14 +9,19 @@ use Spatie\Permission\Models\Role;
 
 class UserEventSubscriber
 {
-    public function onUserCreated($event)
+    public function onUserCreated(UserEvent $event)
     {
 
     }
 
-    public function onUserVerified($event)
+    public function onUserVerified(UserEvent $event)
     {
-
+        if (config('chatbot.verify.reward.enabled')) {
+            $amount = config('chatbot.verify.reward.amount');
+            if ($amount > 0) {
+                $event->getUser()->sendReward($amount);
+            }
+        }
     }
 
     public function subscribe($events)
