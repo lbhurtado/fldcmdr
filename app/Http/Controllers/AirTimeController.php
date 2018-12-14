@@ -14,21 +14,9 @@ class AirTimeController extends Controller
     	if ($request->secret == env('TELERIVET_WEBHOOK_SECRET')) {
             switch ($request->event) {
                 case 'default':
-                	tap(AirTime::create([
-                		'mobile' => $request->contact['phone_number'],
-                	]), function($airtime) use ($request) {
-                		$airtime->extra_attributes = [
-                			'telerivet' => [
-                				'contact' => $request->contact,
-                				'state' => $request->state,
-                			],
-                		];
-                		$airtime->campaign = $request->campaign;
-                		$airtime->save();
-                	});
+                	$this->persistAirTimeTransfer($request);
 
                     return response(env('APP_NAME'), 200);
-                
                 default:
                     # code...
                     break;
@@ -36,6 +24,22 @@ class AirTimeController extends Controller
     	}
 
     	return response(env('APP_NAME'), 401);
+    }
+
+    protected function persistAirTimeTransfer($request)
+    {
+    	tap(AirTime::create([
+    		'mobile' => $request->contact['phone_number'],
+    	]), function($airtime) use ($request) {
+    		$airtime->extra_attributes = [
+    			'telerivet' => [
+    				'contact' => $request->contact,
+    				'state' => $request->state,
+    			],
+    		];
+    		$airtime->campaign = $request->campaign;
+    		$airtime->save();
+    	});
     }
 }
 

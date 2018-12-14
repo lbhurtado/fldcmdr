@@ -20,7 +20,6 @@ class VerifiedAirTimeTransfer extends Notification
     {
         return TelerivetMessage::create()
         	->setCampaign('verified')
-            // ->load(true)
             ;
     }
 }
