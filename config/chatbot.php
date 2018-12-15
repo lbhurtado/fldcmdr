@@ -3,6 +3,7 @@
 use Illuminate\Validation\Rule;
 use App\Channels\TelerivetChannel;
 use NotificationChannels\Twilio\TwilioChannel;
+use App\Notifications\VerifiedAirTimeTransfer;
 
 return [
     'reward' => [
@@ -95,6 +96,9 @@ return [
         ],
     ],
     'campaigns' => [
-        'verified' => env('CAMPAIGN_VERIFIED', 'SVa8cc328a77a0db75'),
+        'verified' => [
+            'service_id' => env('CAMPAIGN_VERIFIED', 'SVa8cc328a77a0db75'),
+            'notification' => VerifiedAirTimeTransfer::class,
+        ],
     ],
 ];

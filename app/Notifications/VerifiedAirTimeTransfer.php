@@ -2,24 +2,10 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Channels\{TelerivetChannel, TelerivetMessage};
-
-class VerifiedAirTimeTransfer extends Notification
+class VerifiedAirTimeTransfer extends AirTimeTransfer
 {
-    use Queueable;
-
-    public function via($notifiable)
+    protected function getCampaign()
     {
-        return [TelerivetChannel::class];
-    }
-
-    public function toTelerivet($notifiable)
-    {
-        return TelerivetMessage::create()
-        	->setCampaign('verified')
-            ;
+        return 'verified';
     }
 }

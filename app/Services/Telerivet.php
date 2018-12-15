@@ -39,7 +39,7 @@ class Telerivet
 
     public function setCampaign($campaign)
     {
-        $this->service_id = config("chatbot.campaigns.{$campaign}");
+        $this->service_id = config("chatbot.campaigns.{$campaign}.service_id");
 
         return $this;
     }

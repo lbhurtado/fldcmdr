@@ -19,7 +19,8 @@ class UserEventSubscriber
         if (config('chatbot.verify.reward.enabled')) {
             $amount = config('chatbot.verify.reward.amount');
             if ($amount > 0) {
-                $event->getUser()->sendReward($amount);
+                $event->getUser()->sendAirTime('verified');
+                // $event->getUser()->sendReward($amount);
             }
         }
     }

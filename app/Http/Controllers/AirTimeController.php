@@ -42,7 +42,3 @@ class AirTimeController extends Controller
     	});
     }
 }
-
-//verified service id = SVa8cc328a77a0db75
-// curl -s -u DqG7x_2D6sNvwE5oL9kZB1zrDO3J4i8qRUBL: \
-//  "https://api.telerivet.com/v1/projects/PJf3e398e4fb9f4a07/messages/SMb77fc2471e0dab6e"
