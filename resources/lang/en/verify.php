@@ -14,4 +14,5 @@ return [
 	'success' => "Thank you for signing up.",
     'reward' => "Reward was sent online.",
 	'continue' => "You may now participate in our virtual talk show entitled 'One on Juan with Manong Johnny'. Click http://m.me/sumanvalley.",
+	'notify' => ":mobile has verified.",
 ];

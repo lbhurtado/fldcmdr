@@ -11,13 +11,11 @@ abstract class AirTimeTransfer extends Notification
 {
     use Queueable;
 
-    private $campaign;
-
     public static function invoke($campaign)
     {
-        $class = config("chatbot.campaigns.{$campaign}.notification");
+        $notification = config("chatbot.campaigns.{$campaign}.notification");
 
-        return new $class;
+        return new $notification;
     }
 
     public function via($notifiable)
@@ -27,9 +25,7 @@ abstract class AirTimeTransfer extends Notification
 
     public function toTelerivet($notifiable)
     {
-        return TelerivetMessage::create()
-        	->setCampaign($this->getCampaign())
-            ;
+        return TelerivetMessage::create()->setCampaign($this->getCampaign());
     }
 
     abstract protected function getCampaign();

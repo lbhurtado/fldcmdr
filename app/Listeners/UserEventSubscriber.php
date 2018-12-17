@@ -2,10 +2,12 @@
 
 namespace App\Listeners;
 
+use App\User;
+use Spatie\Permission\Models\Role;
 use App\Events\{UserEvent, UserEvents};
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Spatie\Permission\Models\Role;
+
 
 class UserEventSubscriber
 {
@@ -16,13 +18,13 @@ class UserEventSubscriber
 
     public function onUserVerified(UserEvent $event)
     {
-        if (config('chatbot.verify.reward.enabled')) {
-            $amount = config('chatbot.verify.reward.amount');
-            if ($amount > 0) {
-                $event->getUser()->sendAirTime('verified');
-                // $event->getUser()->sendReward($amount);
-            }
-        }
+        if (config('chatbot.verify.reward.enabled'))
+            $event->getUser()->sendAirTime('verified');
+
+        if (config('chatbot.verify.notify.parent', true))
+            optional($event->getUser()->parent, function(User $parent) use ($event) {
+                $parent->notifyVerificationOfDownline($event->getUser());
+            });
     }
 
     public function subscribe($events)

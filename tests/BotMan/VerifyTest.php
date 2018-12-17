@@ -43,6 +43,8 @@ class VerifyTest extends TestCase
         $mobile = Phone::number('09178251991');
         $role = 'worker';
         $invitee = $this->admin->invitees()->create(compact('mobile', 'role'));
+
+        config(['chatbot.verify.reward.enabled' => true]);
     }
 
     /** @test */
@@ -85,11 +87,9 @@ class VerifyTest extends TestCase
             ;
 
         $this->assertTrue($user->isVerified());
-        // if (config('chatbot.reward.enabled'))
-        //     $this->bot->assertReply(trans('verify.reward'))
-        //     ;  
             
-        \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
+        \Queue::assertPushed(\App\Jobs\SendAirTime::class);
+        \Queue::assertPushed(\App\Jobs\VerificationOfDownline::class);
 
         $this->bot
             ->assertReply(trans('verify.success'))
@@ -113,12 +113,11 @@ class VerifyTest extends TestCase
         $this->bot
             ->assertQuestion(trans('verify.input.pin'))
             ->receives('123456')
-            // ->assertReply(trans('verify.reward'))
             ->assertReply(trans('verify.success'))
             ;
         
         $this->assertTrue($this->admin->isVerified());
 
-        \Queue::assertPushed(\App\Jobs\SendAskableReward::class);
+        \Queue::assertPushed(\App\Jobs\SendAirTime::class);
     } 
 }

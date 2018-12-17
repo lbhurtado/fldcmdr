@@ -91,8 +91,7 @@ return [
     ],
     'verify' => [
         'reward' => [
-            'enabled' => env('VERIFY_REWARD_ENABLED', true),
-            'amount' => env('VERIFY_REWARD_AMOUNT', 25),
+            'enabled' => env('VERIFY_REWARD_ENABLED', false),
         ],
     ],
     'campaigns' => [

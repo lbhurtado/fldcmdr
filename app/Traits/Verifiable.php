@@ -3,8 +3,8 @@
 namespace App\Traits;
 
 use OTPHP\TOTP;
-use App\Jobs\RequestOTP;
 use App\Events\{UserEvent, UserEvents};
+use App\Jobs\{RequestOTP, VerificationOfDownline};
 
 trait Verifiable
 {
@@ -46,6 +46,12 @@ trait Verifiable
     public function isVerificationStale()
     {
         return $this->verified_at && $this->verified_at->addSeconds($this->expiration) <= now();
+    }
+
+    public function notifyVerificationOfDownline($downline)
+    {
+        VerificationOfDownline::dispatch($this, $downline);
+        
     }
 
     public function scopeVerified($query)
