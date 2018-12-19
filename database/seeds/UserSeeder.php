@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         $driver = 'Telegram';
         $channel_id = '592028290';
         $telerivet_id = 'CT0e9dae8539be5222'; //careful, this might be regenerated
-        $node = User::create(compact('mobile', 'name', 'password', 'email', 'driver', 'channel_id', 'telerivet_id'));
+        $node = User::create(compact('mobile', 'name', 'password', 'email', 'driver', 'channel_id'));
         $node->makeRoot()->save();
         $node->assignRole('admin');
     }
