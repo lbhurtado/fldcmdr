@@ -9,7 +9,14 @@ abstract class Conversation extends BaseConversation
 {
 	private $messenger;
 
+    protected $intro;
+
     abstract public function ready();
+
+    public function __construct($intro = true)
+    {
+        $this->intro = $intro;
+    }
 
     public function run()
     {

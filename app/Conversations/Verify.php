@@ -29,7 +29,8 @@ class Verify extends Conversation
 
     public function introduction()
     {
-    	$this->bot->reply(trans('verify.introduction'));
+        if ($this->intro == true)
+    	   $this->bot->reply(trans('verify.introduction'));
 
     	return $this;
     }

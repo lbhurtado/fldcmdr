@@ -45,9 +45,9 @@ class SignupTest extends TestCase
             // ->receives($mode)
             ->assertQuestion(trans('signup.input.stub'))
             ->receivesInteractiveMessage($stub)
-            ->assertReply(trans('signup.processing'))
-            ->assertReply(trans('signup.processed'))
-            ->assertReply(trans('verify.introduction'))
+            // ->assertReply(trans('signup.processing'))
+            // ->assertReply(trans('signup.processed'))
+            // ->assertReply(trans('verify.introduction'))
             ->assertQuestion(trans('verify.input.mobile'))
             ->receives($mobile)
             ->assertQuestion(trans('verify.input.pin'))
@@ -58,9 +58,5 @@ class SignupTest extends TestCase
         $user->verify($pin, false);
 
         $this->assertTrue($user->isVerified());
-        // if (config('chatbot.reward.enabled'))
-            // $this->bot->assertReply(trans('verify.reward'));
-        
-        // \Queue::assertPushed(\App\Jobs\SendUserInvitation::class);   
     }
 }

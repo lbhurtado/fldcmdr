@@ -56,9 +56,10 @@ class UserInvitation extends Notification
     protected function getContent($notifiable)
     {
         $name = $notifiable->user->name;
+        $app = env('APP_NAME');
         $url = $this->getURL($notifiable);
 
-        return trans('invite.notification', compact('name', 'url'));
+        return trans('invite.notification', compact('name', 'app', 'url'));
     }
 
     protected function getURL($notifiable)

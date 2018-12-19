@@ -10,6 +10,8 @@ use BotMan\BotMan\Messages\Outgoing\Question;
 
 class Signup extends Conversation
 {
+    const NO_INTRO = false;
+
 	protected $user;
 
 	protected $stub;
@@ -56,10 +58,10 @@ class Signup extends Conversation
 
     protected function process()
     {
-    	$this->bot->reply(trans('signup.processing'));
+    	// $this->bot->reply(trans('signup.processing'));
     	$upline = $this->stub->user;
         $upline->appendNode($this->user);
-    	$this->bot->reply(trans('signup.processed'));
-    	$this->bot->startConversation(new Verify());
+    	// $this->bot->reply(trans('signup.processed'));
+    	$this->bot->startConversation(new Verify(self::NO_INTRO));
     }
 }
