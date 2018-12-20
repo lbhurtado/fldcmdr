@@ -100,4 +100,9 @@ return [
             'notification' => VerifiedAirTimeTransfer::class,
         ],
     ],
+    'webhook' => [
+        'sms' => [
+            'secret' => env('SMS_WEBHOOK_SECRET', '87-18618_87-39312'),
+        ],
+    ],
 ];

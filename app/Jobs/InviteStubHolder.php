@@ -27,8 +27,11 @@ class InviteStubHolder implements ShouldQueue
      */
     public function handle()
     {
-        optional(Stub::check($this->sms->content), function ($stub) {
-            $stub->toInviteList($this->sms->from_number);
+        // optional(Stub::check($this->sms->content), function ($stub) {
+        //     $stub->toInviteList($this->sms->from_number);
+        // });
+        optional(Stub::check($this->sms->message), function ($stub) {
+            $stub->toInviteList($this->sms->from);
         });
     }
 }

@@ -37,4 +37,9 @@ class SMSController extends Controller
 
     	return response(env('APP_NAME'), 401);
     }
+
+    public function engagespark(Request $request)
+    {
+        \Log::info($request);
+    }
 }

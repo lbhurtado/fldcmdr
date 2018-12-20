@@ -15,14 +15,17 @@ class CreateSMSTable extends Migration
     {
         Schema::create('s_m_s_s', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('from_number');
-            $table->string('to_number');
-            $table->string('message_type');
-            $table->string('direction');
-            $table->string('content')->nullable();
-            $table->boolean('simulated');
-            $table->timestamp('time_created')->nullable();
-            $table->timestamp('time_sent')->nullable();
+            $table->string('from');
+            $table->string('to');
+            $table->string('message')->nullable();
+            // $table->string('from_number');
+            // $table->string('to_number');
+            // $table->string('message_type');
+            // $table->string('direction');
+            // $table->string('content')->nullable();
+            // $table->boolean('simulated');
+            // $table->timestamp('time_created')->nullable();
+            // $table->timestamp('time_sent')->nullable();
             $table->timestamps();
         });
     }
