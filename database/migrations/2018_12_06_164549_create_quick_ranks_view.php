@@ -43,7 +43,7 @@ select c.title as category, q.question, a.answer, u.name as interviewer, i.mobil
 inner join questions q on q.id = a.question_id
 inner join categories c on c.id = q.category_id
 inner join users u on u.id = a.user_id
-inner join invitees i on i.id = a.askable_id
+inner join contacts i on i.id = a.askable_id
 where
     c.title='Quick Rank'
 order by

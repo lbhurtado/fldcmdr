@@ -8,13 +8,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\{HasNotifications, HasMobile, Askable, HasSchemalessAttributes};
 
-class Invitee extends Model
+class Contact extends Model
 {
     use Notifiable;
 
 	use HasNotifications, HasMobile, Askable, HasSchemalessAttributes;
 	
-    protected $table = 'invitees';
+    protected $table = 'contacts';
 
     protected $fillable = [
     	'mobile',

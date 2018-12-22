@@ -42,7 +42,7 @@ class VerifyTest extends TestCase
         // $admin = factory(User::class)->create(['mobile' => '+639173011987']);
         $mobile = Phone::number('09178251991');
         $role = 'worker';
-        $invitee = $this->admin->invitees()->create(compact('mobile', 'role'));
+        $invitee = $this->admin->contacts()->create(compact('mobile', 'role'));
 
         config(['chatbot.verify.reward.enabled' => true]);
     }
@@ -55,7 +55,7 @@ class VerifyTest extends TestCase
         $pin = $this->faker->randomNumber(6);
 
         $this->assertDatabaseMissing('users', compact('mobile'));
-        $this->assertDatabaseHas('invitees', compact('mobile'));
+        $this->assertDatabaseHas('contacts', compact('mobile'));
 
         \Queue::fake();
         $this->bot

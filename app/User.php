@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Invitee;
+use App\Contact;
 use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -57,7 +57,7 @@ class User extends Authenticatable
 
     public function hydrateFromInvitee()
     {
-        optional(Invitee::withMobile($this->mobile)->first(), function ($invitee) {
+        optional(Contact::withMobile($this->mobile)->first(), function ($invitee) {
             $this->assignRole($invitee->role);
             $upline = $invitee->user; 
             $upline->appendNode($this);
@@ -98,8 +98,8 @@ class User extends Authenticatable
         return $this->hasMany(Checkin::class);
     }
     
-    public function invitees()
+    public function contacts()
     {
-        return $this->hasMany(Invitee::class);
+        return $this->hasMany(Contact::class);
     }
 }

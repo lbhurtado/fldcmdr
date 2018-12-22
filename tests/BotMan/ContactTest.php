@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class InviteTest extends TestCase
+class ContactTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 

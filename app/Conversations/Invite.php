@@ -2,7 +2,7 @@
 
 namespace App\Conversations;
 
-use App\{User, Invitee};
+use App\{User, Contact};
 use App\Eloquent\Conversation;
 use Spatie\Permission\Models\Role;
 use App\Eloquent\{Phone, Messenger};
@@ -86,7 +86,7 @@ class Invite extends Conversation
         $this->bot->reply(trans('invite.processing'));
 
     	$invitee = $this->getUser()
-    			->invitees()
+    			->contacts()
 				->updateOrCreate([
 					'mobile' => $this->mobile
 				]

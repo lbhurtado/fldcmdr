@@ -5,7 +5,7 @@ namespace Tests\BotMan;
 use Tests\TestCase;
 
 use App\Category;
-use App\{User, Invitee};
+use App\{User, Contact};
 use App\Question as SurveyQuestion;
 use App\Eloquent\{Phone, Messenger};
 use BotMan\Drivers\Telegram\TelegramDriver;
@@ -102,8 +102,8 @@ class SurveyTest extends TestCase
                     ->receives($mobile)
                     ;
 
-                $this->assertDatabaseHas('invitees', compact('mobile')); 
-                $invitee = Invitee::withMobile($mobile)->first();
+                $this->assertDatabaseHas('contacts', compact('mobile')); 
+                $invitee = Contact::withMobile($mobile)->first();
 
                 $this->assertDatabaseHas('activities', [
                     'user_id' => $user_id,
@@ -112,7 +112,7 @@ class SurveyTest extends TestCase
                     // 'started_at' => now(),
                 ]);
 
-                $askable = Invitee::withMobile($mobile)->first();
+                $askable = Contact::withMobile($mobile)->first();
                 \Queue::assertPushed(\App\Jobs\SendUserInvitation::class); 
             }
             else {

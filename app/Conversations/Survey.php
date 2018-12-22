@@ -8,7 +8,7 @@ use App\Eloquent\{Conversation, Phone};
 use BotMan\BotMan\Messages\Attachments\Location;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Incoming\Answer as BotManAnswer;
-use App\{Category, Question, Answer, Invitee, Activity as SurveyModel};
+use App\{Category, Question, Answer, Contact, Activity as SurveyModel};
 use BotMan\BotMan\Messages\Outgoing\Question as BotManQuestion;
 
 class Survey extends Conversation
@@ -147,7 +147,7 @@ class Survey extends Conversation
                 return $this->repeat(trans('invite.input.mobile'));
             
             $invitee = $this->user
-                    ->invitees()
+                    ->contacts()
                     ->firstOrCreate([
                         'mobile' => $this->mobile
                     ],[
