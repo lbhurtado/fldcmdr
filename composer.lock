@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b431fafb297d32c3d15f0a7a372b2bcc",
+    "content-hash": "a8acf9da82e01ea2694d0d16df0eec66",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -3527,6 +3527,103 @@
                 "writable"
             ],
             "time": "2018-07-11T14:38:16+00:00"
+        },
+        {
+            "name": "shroophp/core",
+            "version": "v3.0",
+            "source": {
+                "type": "git",
+                "url": "https://gitlab.com/shroophp/core.git",
+                "reference": "941b7fe9d981ea202ace50b2e26a0d4fb5bd4590"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://gitlab.com/api/v4/projects/shroophp%2Fcore/repository/archive.zip?sha=941b7fe9d981ea202ace50b2e26a0d4fb5bd4590",
+                "reference": "941b7fe9d981ea202ace50b2e26a0d4fb5bd4590",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ShrooPHP\\Core\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Jonty Newman",
+                    "email": "jonty.newman@gmail.com",
+                    "homepage": "http://www.jontynewman.com"
+                }
+            ],
+            "description": "Core interfaces and functionality for libraries and applications relating to ShrooPHP.",
+            "homepage": "https://gitlab.com/shroophp/core",
+            "keywords": [
+                "core",
+                "shroophp"
+            ],
+            "time": "2018-11-01T22:37:46+00:00"
+        },
+        {
+            "name": "shroophp/pattern",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://gitlab.com/shroophp/pattern.git",
+                "reference": "c1bb562fe7149dd487a939f65cef7e807dd2c9b0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://gitlab.com/api/v4/projects/shroophp%2Fpattern/repository/archive.zip?sha=c1bb562fe7149dd487a939f65cef7e807dd2c9b0",
+                "reference": "c1bb562fe7149dd487a939f65cef7e807dd2c9b0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "shroophp/core": "^3.0 || ^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.3 || ^5.7 || ^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ShrooPHP\\Pattern\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonty Newman",
+                    "email": "jonty.newman@gmail.com",
+                    "homepage": "http://www.jontynewman.com"
+                }
+            ],
+            "description": "A library for simple pattern matching.",
+            "homepage": "https://gitlab.com/shroophp/pattern",
+            "keywords": [
+                "Match",
+                "matching",
+                "pattern",
+                "regex",
+                "route",
+                "routing",
+                "shroophp"
+            ],
+            "time": "2018-12-05T23:39:07+00:00"
         },
         {
             "name": "spatie/geocoder",

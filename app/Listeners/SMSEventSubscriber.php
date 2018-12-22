@@ -11,7 +11,16 @@ class SMSEventSubscriber
 {
     public function onSMSCreated(SMSEvent $event)
     {
-        $event->getSMS()->checkStubAndInvite();
+        $sms = $event->getSMS();
+        $sms->checkStubAndInvite();
+
+        $sms->match('#{tag}', function ($tag) {
+            \Log::info('tag = ' . $tag);
+        });
+
+        $sms->match('?{status}', function ($status) {
+            \Log::info('status = ' . $status);
+        });
     }
 
     public function subscribe($events)

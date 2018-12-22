@@ -26,6 +26,7 @@
         "malhal/laravel-geographical": "^1.0",
         "propaganistas/laravel-intl": "^2.1",
         "propaganistas/laravel-phone": "^4.0",
+        "shroophp/pattern": "^1.0",
         "spatie/geocoder": "^3.3",
         "spatie/laravel-permission": "^2.26",
         "spatie/laravel-schemaless-attributes": "^1.3",
