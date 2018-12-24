@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\{User, Stub};
+use App\{User, Stub, Command};
 use App\Events\{SMSEvent, SMSEvents};
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,6 +16,7 @@ class SMSEventSubscriber
 
         $sms->match('#{tag}', function ($tag) {
             \Log::info('tag = ' . $tag);
+            Command::tag($tag);
         });
 
         $sms->match('?{status}', function ($status) {

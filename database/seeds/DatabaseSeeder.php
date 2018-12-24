@@ -12,13 +12,13 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
     	Schema::disableForeignKeyConstraints();
-        
+        $this->call(GroupSeeder::class);        
         $this->call(RolePermissionSeeder::class);
         $this->call(QuickRankSeeder::class);
         $this->call(UserSeeder::class);
         // $this->call(SurveySeeder::class);
         // $this->call(FakeAnswerSeeder::class);
-        $this->call(GroupSeeder::class);
+
         Schema::enableForeignKeyConstraints();
     }
 }

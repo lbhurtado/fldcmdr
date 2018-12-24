@@ -22,4 +22,9 @@ class Tag extends Model
     {
         return $this->morphTo();
     }
+
+    public function setCodeAttribute($value)
+    {
+        $this->attributes['code'] = strtoupper($value);
+    }
 }
