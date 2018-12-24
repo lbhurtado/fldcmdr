@@ -7,13 +7,18 @@ use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Traits\{HasNotifications, Verifiable, HasSchemalessAttributes, HasMobile, Askable};
+use App\Traits\{HasNotifications, 
+                Verifiable, 
+                HasSchemalessAttributes, 
+                HasMobile, 
+                Askable,
+                HasGroups};
 
 class User extends Authenticatable
 {
     use Notifiable;
 
-    use HasNotifications, Verifiable, HasSchemalessAttributes, HasRoles, NodeTrait, HasMobile, Askable;
+    use HasNotifications, Verifiable, HasSchemalessAttributes, HasRoles, NodeTrait, HasMobile, Askable, HasGroups;
 
     protected $fillable = [
         'name', 'email', 'password', 'mobile', 'driver', 'channel_id',

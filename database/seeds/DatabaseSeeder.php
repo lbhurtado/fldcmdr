@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         // $this->call(SurveySeeder::class);
         // $this->call(FakeAnswerSeeder::class);
-
+        $this->call(GroupSeeder::class);
         Schema::enableForeignKeyConstraints();
     }
 }
