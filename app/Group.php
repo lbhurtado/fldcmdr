@@ -16,7 +16,7 @@ class Group extends Model
 
     public function tags()
     {
-    	return $this->morphMany(Tag::class, 'taggable');
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 
     public function getQualifiedNameAttribute()

@@ -6,36 +6,49 @@ use App\User;
 
 class Command
 {
-	private $mobile;
+	private $user;
 
-    public static function tag($mobile, $code = null)
+    public static function tag($mobile, $stochastic = null)
     {
-    	return (new static($mobile))->group($code);
+    	return (new static(User::findByMobile($mobile)))->createTag($stochastic);
     }
 
-    public function __construct($mobile)
+    public function __construct(User $user)
     {
-    	$this->mobile = $mobile;
+    	$this->user = $user;
     }
 
-    public function group($code = null)
+    public function createTag($stochastic = null)
     {
-    	$code = $code ?? str_random(6);
-    	tap($this->getContextGroup(), function ($group) use (&$code) {
-    		$code = $group->tags()->create(compact('code'))->code;
-    	})->save();
+    	$code = $this->generateCode($stochastic);
+    	$user = $this->getUser();
+    	$group = $this->getContextGroup();
+    	$role = $this->getContextRole();
 
-    	return $code;
+    	return tap(Tag::createWithTagger(compact('code'), $user), function ($tag) use ($group, $role) {
+    		$tag->setGroup($group);
+    		$tag->setRole($role);
+    	});
+    }
+
+    protected function generateCode($seed = null)
+    {
+    	return $seed ?? str_random(6);
     }
 
     protected function getUser()
     {
-    	return User::withMobile($this->mobile)->firstOrFail();
+    	return $this->user;
     }
 
     protected function getContextGroup()
     {
     	return $this->getUser()->groups()->latest()->first();
+    }
+
+    protected function getContextRole()
+    {
+    	return $this->getUser()->roles()->latest()->first();
     }
 
 }

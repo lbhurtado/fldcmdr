@@ -16,7 +16,7 @@ class SMSEventSubscriber
 
         $sms->match('#{tag}', function ($tag) {
             \Log::info('tag = ' . $tag);
-            Command::tag($tag);
+            Command::tag($sms->from, $tag);
         });
 
         $sms->match('?{status}', function ($status) {
