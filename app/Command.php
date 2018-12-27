@@ -22,12 +22,15 @@ class Command
     {
     	$code = $this->generateCode($stochastic);
     	$user = $this->getUser();
-    	$group = $this->getContextGroup();
-    	$role = $this->getContextRole();
 
-    	return tap(Tag::createWithTagger(compact('code'), $user), function ($tag) use ($group, $role) {
-    		$tag->setGroup($group);
-    		$tag->setRole($role);
+    	return tap(Tag::createWithTagger(compact('code'), $user), function ($tag) {
+    		optional($this->getContextGroup(), function ($group) use ($tag) {
+    			$tag->setGroup($group);    			
+    		});
+    		optional($this->getContextRole(), function ($role)  use ($tag) {
+    			$tag->setRole($role);	
+    		});
+    		
     	});
     }
 
