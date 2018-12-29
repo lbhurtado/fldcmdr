@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Eloquent\Phone;
 use App\Contracts\Sociable;
 use App\Jobs\SendUserInvitation;
 use Spatie\Permission\Traits\HasRoles;
@@ -28,6 +29,15 @@ class Contact extends Model implements Sociable
     public $casts = [
         'extra_attributes' => 'array',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function($user) {
+            $user->mobile   = Phone::number($user->mobile);
+        });
+    }
 
     public static function invite($mobile, $role, $driver = null) {
         return tap(static::create(compact('mobile', 'role')), function ($invitee) use ($driver) {

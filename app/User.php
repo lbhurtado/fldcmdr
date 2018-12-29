@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Contact;
+use App\Eloquent\Phone;
 use App\Contracts\Sociable;
 use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
@@ -42,6 +43,7 @@ class User extends Authenticatable implements Sociable
         parent::boot();
 
         static::creating(function($user) {
+            $user->mobile   = Phone::number($user->mobile);
             $user->name     = $user->name ?? "$user->driver.$user->channel_id";
             $user->email    = $user->name . '@' . config('chatbot.default.domain_name');
             $user->password = $user->password ?? bcrypt(config('chatbot.default.password'));

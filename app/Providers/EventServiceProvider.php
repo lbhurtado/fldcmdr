@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Event;
 use App\Listeners\SMSEventSubscriber;
 use App\Listeners\UserEventSubscriber;
+use App\Listeners\ContactEventSubscriber;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -12,6 +13,7 @@ class EventServiceProvider extends ServiceProvider
     protected $subscribe = [
         SMSEventSubscriber::class,
         UserEventSubscriber::class,
+        ContactEventSubscriber::class,
     ];
 
     /**
