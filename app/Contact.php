@@ -2,17 +2,20 @@
 
 namespace App;
 
+use App\Contracts\Sociable;
 use App\Jobs\SendUserInvitation;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\{HasNotifications, HasMobile, Askable, HasSchemalessAttributes};
+use App\Traits\{HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups};
 
-class Contact extends Model
+class Contact extends Model implements Sociable
 {
     use Notifiable;
 
-	use HasNotifications, HasMobile, Askable, HasSchemalessAttributes;
+	use HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups, HasRoles;
 	
     protected $table = 'contacts';
 
@@ -37,9 +40,14 @@ class Contact extends Model
         SendUserInvitation::dispatch($this, $driver);
     }
 
-    public function user(): BelongsTo
+    public function upline(): MorphTo
     {
-    	return $this->belongsTo(User::class);
+        return $this->morphTo();
+    }
+
+    public function contacts()
+    {
+        return $this->morphMany(Contact::class, 'upline');
     }
 
     public function getRewardAttribute(): int

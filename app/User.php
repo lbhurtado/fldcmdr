@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Contact;
+use App\Contracts\Sociable;
 use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +15,7 @@ use App\Traits\{HasNotifications,
                 Askable,
                 HasGroups};
 
-class User extends Authenticatable
+class User extends Authenticatable implements Sociable
 {
     use Notifiable;
 
@@ -64,7 +65,8 @@ class User extends Authenticatable
     {
         optional(Contact::withMobile($this->mobile)->first(), function ($invitee) {
             $this->assignRole($invitee->role);
-            $upline = $invitee->user; 
+            // $upline = $invitee->user; 
+            $upline = $invitee->upline; 
             $upline->appendNode($this);
         });
 
@@ -105,6 +107,7 @@ class User extends Authenticatable
     
     public function contacts()
     {
-        return $this->hasMany(Contact::class);
+        return $this->morphMany(Contact::class, 'upline');
+        // return $this->hasMany(Contact::class);
     }
 }

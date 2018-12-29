@@ -2,28 +2,34 @@
 
 namespace App;
 
-use App\User;
+use App\{User, Contact};
+use App\Contracts\Sociable;
 
 class Command
 {
 	private $user;
 
+	private $sociable;
+
     public static function tag($mobile, $stochastic = null)
     {
-    	return (new static(User::findByMobile($mobile)))->createTag($stochastic);
+    	//improve on this
+    	$sociable = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
+
+    	return (new static($sociable))->createTag($stochastic);
     }
 
-    public function __construct(User $user)
+    public function __construct(Sociable $sociable)
     {
-    	$this->user = $user;
+    	$this->sociable = $sociable;
     }
 
     public function createTag($stochastic = null)
     {
     	$code = $this->generateCode($stochastic);
-    	$user = $this->getUser();
+    	$sociable = $this->getSociable();
 
-    	return tap(Tag::createWithTagger(compact('code'), $user), function ($tag) {
+    	return tap(Tag::createWithTagger(compact('code'), $sociable), function ($tag) {
     		optional($this->getContextGroup(), function ($group) use ($tag) {
     			$tag->setGroup($group);    			
     		});
@@ -39,19 +45,21 @@ class Command
     	return $seed ?? str_random(6);
     }
 
-    protected function getUser()
+    protected function getSociable()
     {
-    	return $this->user;
+    	return $this->sociable;
     }
 
+    //improve on this
     protected function getContextGroup()
     {
-    	return $this->getUser()->groups()->latest()->first();
+    	return $this->getSociable()->groups()->latest()->first();
     }
 
+    //improve on this
     protected function getContextRole()
     {
-    	return $this->getUser()->roles()->latest()->first();
+    	return $this->getSociable()->roles()->latest()->first();
     }
 
 }

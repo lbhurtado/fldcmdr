@@ -17,14 +17,15 @@ class CreateContactsTable extends Migration
             $table->increments('id');
             $table->string('mobile');
             // $table->string('role');
-            $table->integer('user_id')->unsigned();
+            // $table->integer('upline_id')->unsigned();
+            $table->nullableMorphs('upline');
             // $table->text('message')->nullable();
             // $table->string('telerivet_id')->unique()->nullable();
             $table->timestamp('accepted_at')->nullable();
             $table->timestamps();
             $table->schemalessAttributes('extra_attributes');
-            $table->unique(['mobile', 'user_id']);
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unique(['mobile', 'upline_id']);
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
