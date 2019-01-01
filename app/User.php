@@ -43,7 +43,9 @@ class User extends Authenticatable implements Sociable
         parent::boot();
 
         static::creating(function($user) {
-            $user->mobile   = Phone::number($user->mobile);
+            // optional($user->mobile, function ($mobile) {
+            //     $user->mobile   = Phone::number($mobile);
+            // });
             $user->name     = $user->name ?? "$user->driver.$user->channel_id";
             $user->email    = $user->name . '@' . config('chatbot.default.domain_name');
             $user->password = $user->password ?? bcrypt(config('chatbot.default.password'));

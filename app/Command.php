@@ -19,12 +19,21 @@ class Command
     	return (new static($sociable))->createTag($stochastic);
     }
 
+
+    public static function claim($mobile, $stochastic)
+    {
+        //improve on this
+        $sociable = Contact::firstOrCreate(compact('mobile'));
+
+        return (new static($sociable))->claimTag($stochastic);
+    }
+
     public function __construct(Sociable $sociable)
     {
     	$this->sociable = $sociable;
     }
 
-    public function createTag($stochastic = null)
+    protected function createTag($stochastic = null)
     {
     	$code = $this->generateCode($stochastic);
     	$sociable = $this->getSociable();
@@ -38,6 +47,19 @@ class Command
     		});
     		
     	});
+    }
+
+    protected function claimTag($stochastic)
+    {
+        optional(Tag::whereCode($stochastic)->first(), function($tag) {
+            $sociable = $this->getSociable();
+            $tag->groups->each(function ($group) use ($sociable) {
+                $sociable->assignGroup($group);
+            });
+            // $tag->roles->each(function ($role) use ($sociable) {
+            //     $sociable->assignRole($role);
+            // });
+        });
     }
 
     protected function generateCode($seed = null)

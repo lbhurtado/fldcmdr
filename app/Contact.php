@@ -26,6 +26,8 @@ class Contact extends Model implements Sociable
         'message',
     ];
 
+    protected $guard_name = 'campaign';
+
     public $casts = [
         'extra_attributes' => 'array',
     ];

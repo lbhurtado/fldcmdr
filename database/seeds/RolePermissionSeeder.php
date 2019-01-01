@@ -17,7 +17,22 @@ class RolePermissionSeeder extends Seeder
         DB::table('roles')->delete();
 
         collect(config('chatbot.permissions'))->each(function ($permissions, $role) {
-            $role = Role::create(['name' => $role]);
+            foreach (explode(':', $role) as $key => $value) {
+                 switch ($key) {
+                     case 0:
+                         $name = $value;
+                         break;
+                      case 1:
+                         $guard_name = $value;
+                         break;
+                     
+                     default:
+                         $guard_name = 'web';
+                         break;
+                 }
+             } ;
+            // $role = Role::create(['name' => $name]);
+             $role = Role::create(compact('guard_name', 'name'));
             foreach ($permissions as $permission) {
                 $p = Permission::firstOrCreate(['name' => $permission]);
                 $role->givePermissionTo($p); 
