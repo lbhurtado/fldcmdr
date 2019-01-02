@@ -51,7 +51,8 @@ class Command
 
     protected function claimTag($stochastic)
     {
-        optional(Tag::whereCode($stochastic)->first(), function($tag) {
+        $sociable = null;
+        optional(Tag::whereCode($stochastic)->first(), function($tag) use (&$sociable) {
             // dd($this->getSociable()->mobile);
             $sociable = $this->getSociable();
             $sociable->upline()->associate($tag->tagger);
@@ -63,6 +64,8 @@ class Command
             //     $sociable->assignRole($role);
             // });
         });
+
+        return $sociable;
     }
 
     protected function generateCode($seed = null)

@@ -19,6 +19,11 @@ trait HasMobile
 		return $this;
 	}
 
+    public function setMobileAttribute($value)
+    {
+        $this->attributes['mobile'] = Phone::number($value);
+    }
+
     public function scopeWithMobile($query, $value)
     {
         return $query->where('mobile', Phone::number($value));
