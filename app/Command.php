@@ -52,7 +52,10 @@ class Command
     protected function claimTag($stochastic)
     {
         optional(Tag::whereCode($stochastic)->first(), function($tag) {
+            // dd($this->getSociable()->mobile);
             $sociable = $this->getSociable();
+            $sociable->upline()->associate($tag->tagger);
+            $sociable->save();
             $tag->groups->each(function ($group) use ($sociable) {
                 $sociable->assignGroup($group);
             });
