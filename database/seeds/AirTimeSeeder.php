@@ -14,6 +14,10 @@ class AirTimeSeeder extends Seeder
     public function run()
     {
         DB::table('air_times')->delete();
+        AirTime::create([   
+            'name' => 'ZERO',
+            'amount' => 0.00,
+        ]);
         AirTime::create([	
     		'name' => 'TEN',
     		'amount' => 10.00,

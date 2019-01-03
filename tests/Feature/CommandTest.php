@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\{Command, User, Contact, Group};
+use App\{Command, User, Contact, Group, AirTime};
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -17,6 +17,8 @@ class CommandTest extends TestCase
 
     private $group;
 
+    private $airtime;
+
     function setUp()
     {
         parent::setUp();
@@ -27,6 +29,7 @@ class CommandTest extends TestCase
         $this->contact = factory(Contact::class)->create(['mobile' => $this->mobile]);
         $this->group = factory(Group::class)->create();
         $this->contact->assignGroup($this->group);
+        $this->airtime = factory(AirTime::class)->create();
     }
 
     /** @test */
@@ -62,6 +65,13 @@ class CommandTest extends TestCase
 
         $tag = Command::tag($this->mobile);
         $this->assertEquals($this->group->name, $tag->groups()->first()->name);
+    }
+
+    /** @test */
+    public function tag_has_airtimes_as_taggables()
+    {
+        $tag = Command::tag($this->mobile);
+        $this->assertEquals($this->airtime->name, $tag->airtimes()->first()->name);
     }
 
     /** @test */

@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\{User, Contact};
+use App\{User, Contact, AirTime};
 use App\Contracts\Sociable;
 
 class Command
@@ -42,10 +42,12 @@ class Command
     		optional($this->getContextGroup(), function ($group) use ($tag) {
     			$tag->setGroup($group);    			
     		});
-    		optional($this->getContextRole(), function ($role)  use ($tag) {
-    			$tag->setRole($role);	
-    		});
-    		
+    		// optional($this->getContextRole(), function ($role)  use ($tag) {
+    		// 	$tag->setRole($role);	
+    		// });
+            optional($this->getContextAirTime(), function ($airtime) use ($tag) {
+                $tag->setAirTime($airtime);           
+            });
     	});
     }
 
@@ -88,6 +90,11 @@ class Command
     protected function getContextRole()
     {
     	return $this->getSociable()->roles()->latest()->first();
+    }
+
+    protected function getContextAirTime()
+    {
+        return AirTime::first();
     }
 
 }
