@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
     	Schema::disableForeignKeyConstraints();
+        $this->call(AirTimeSeeder::class); 
         $this->call(GroupSeeder::class);        
         $this->call(RolePermissionSeeder::class);
         $this->call(QuickRankSeeder::class);

@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\{User, Group};
+use App\{User, Group, AirTime};
 use Spatie\Permission\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasSchemalessAttributes;
@@ -27,6 +27,11 @@ class Tag extends Model
         });
     }
 
+    public function setCodeAttribute($value)
+    {
+        $this->attributes['code'] = strtoupper($value);
+    }
+
     public function tagger()
     {
         return $this->morphTo();
@@ -48,6 +53,14 @@ class Tag extends Model
         return $this;
     }
 
+    public function setAirTime(AirTime $airtime)
+    {
+        $this->airtimes()->save($airtime);
+        $this->save();
+
+        return $this;
+    }
+
     public function groups()
     {
         return $this->morphedByMany(Group::class, 'taggable');
@@ -58,8 +71,8 @@ class Tag extends Model
         return $this->morphedByMany(Role::class, 'taggable');
     }
 
-    public function setCodeAttribute($value)
+    public function airtimes()
     {
-        $this->attributes['code'] = strtoupper($value);
+        return $this->morphedByMany(AirTime::class, 'taggable');
     }
 }

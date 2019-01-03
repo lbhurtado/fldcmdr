@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Tag;
 use App\Eloquent\Phone;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasSchemalessAttributes;
@@ -11,17 +12,13 @@ class AirTime extends Model
     use HasSchemalessAttributes;
 
     protected $fillable = [
-    	'mobile',
+    	'name',
+        'amount'
     ];
 
     public $casts = [
         'extra_attributes' => 'array',
     ];
-
-    public function setMobileAttribute($value)
-    {
-    	$this->attributes['mobile'] = Phone::number($value);
-    }
 
     public function getCampaignAttribute()
     {

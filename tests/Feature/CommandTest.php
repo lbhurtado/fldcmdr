@@ -65,7 +65,7 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function claim()
+    public function claimer_has_upline_get_groups()
     {
         $tag = Command::tag($this->mobile);
         $code = $tag->code;

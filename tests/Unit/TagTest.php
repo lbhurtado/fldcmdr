@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\{Tag, Group, User};
+use App\{Tag, Group, User, AirTime};
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -35,18 +35,23 @@ class TagTest extends TestCase
         $tag = factory(Tag::class)->create();
         $group = factory(Group::class)->create();
         $role = factory(config('permission.models.role'))->create();
+        $airtime = factory(AirTime::class)->create();
         
         $this->assertEquals($tag->groups()->count(), 0);
         $this->assertEquals($tag->roles()->count(), 0);
+        $this->assertEquals($tag->airtimes()->count(), 0);
 
         $tag->setGroup($group);
         $tag->setRole($role);
+        $tag->setAirTime($airtime);
 
         $this->assertEquals($tag->groups()->count(), 1);
         $this->assertEquals($tag->roles()->count(), 1);
+        $this->assertEquals($tag->airtimes()->count(), 1);
 
         $this->assertEquals($tag->groups()->first()->name, $group->name);
         $this->assertEquals($tag->roles()->first()->name, $role->name);
+        $this->assertEquals($tag->airtimes()->first()->name, $airtime->name);
 
         $this->assertDatabaseHas('taggables', [
             'tag_id' => $tag->id,
@@ -60,5 +65,10 @@ class TagTest extends TestCase
             'taggable_type' => get_class($role),
         ]);
 
+        $this->assertDatabaseHas('taggables', [
+            'tag_id' => $tag->id,
+            'taggable_id' => $airtime->id,
+            'taggable_type' => get_class($airtime),
+        ]);
     }
 }

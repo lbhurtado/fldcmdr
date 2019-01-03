@@ -15,7 +15,8 @@ class CreateAirTimesTable extends Migration
     {
         Schema::create('air_times', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('mobile');
+            $table->string('name');
+            $table->double('amount')->default(0.00);
             $table->schemalessAttributes('extra_attributes');
             $table->timestamps();
         });
