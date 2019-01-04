@@ -18,3 +18,10 @@ if (!function_exists('build_nested_nodes')) {
     		return array($field => $name);
     } 
 }
+
+if (!function_exists('remove_non_ascii_for_smsc_consumption')) {
+
+    function remove_non_ascii_for_smsc_consumption($mobile) {
+        return preg_replace("/[^A-Za-z0-9]/", '', $mobile);
+    } 
+}

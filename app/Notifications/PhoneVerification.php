@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Channels\{TelerivetChannel, TelerivetMessage};
+use App\Channels\{EngageSparkChannel, EngageSparkMessage};
 use NotificationChannels\Twilio\{TwilioChannel, TwilioSmsMessage};
 
 class PhoneVerification extends Notification
@@ -24,6 +25,7 @@ class PhoneVerification extends Notification
     public function via($notifiable)
     {
         return config('chatbot.notification.channels');
+        return [EngageSparkChannel::class];
         return [TwilioChannel::class];
         return [TelerivetChannel::class];
     }
@@ -46,6 +48,13 @@ class PhoneVerification extends Notification
     public function toTwilio($notifiable)
     {
         return (new TwilioSmsMessage())
+            ->content($this->content)
+            ;
+    }
+
+    public function toEngageSpark($notifiable)
+    {
+        return (new EngageSparkMessage())
             ->content($this->content)
             ;
     }

@@ -170,6 +170,7 @@ return [
 
         App\Providers\TelerivetServiceProvider::class,
         App\Providers\MessengerServiceProvider::class,
+        App\Providers\EngageSparkServiceProvider::class,
 
     ],
 

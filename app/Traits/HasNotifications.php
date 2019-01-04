@@ -30,4 +30,9 @@ trait HasNotifications
     {
         return $this->mobile;
     }
+
+    public function routeNotificationForEngageSpark()
+    {
+        return $this->mobile;
+    }
 }

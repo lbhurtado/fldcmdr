@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Validation\Rule;
-use App\Channels\TelerivetChannel;
+use App\Channels\{EngageSparkChannel, TelerivetChannel};
 use NotificationChannels\Twilio\TwilioChannel;
 use App\Notifications\VerifiedAirTimeTransfer;
 
@@ -76,7 +76,8 @@ return [
     'notification' => [
         'channels' => [
             'database',
-            TwilioChannel::class,
+            EngageSparkChannel::class,
+            // TwilioChannel::class,
             // TelerivetChannel::class,
         ],
     ],

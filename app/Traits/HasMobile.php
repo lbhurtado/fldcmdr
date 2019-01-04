@@ -19,6 +19,13 @@ trait HasMobile
 		return $this;
 	}
 
+    public function getMobileAttribute()
+    {
+        //improve on this
+        //make this faster
+        return remove_non_ascii_for_smsc_consumption($this->attributes['mobile']);
+    }
+
     public function setMobileAttribute($value)
     {
         $this->attributes['mobile'] = Phone::number($value);

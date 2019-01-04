@@ -16,6 +16,11 @@ class Phone
         return $phone->getUtil()->format($phone->getProto(), $format);
     }
 
+    public static function smsc($number, $format = 0)
+    {
+        return remove_non_ascii_for_smsc_consumption(static::number($number, $format));
+    }
+
     public static function validate($number)
     {
         $validator = Validator::make(compact('number'), ['number' => 'required|phone:PH']);

@@ -48,4 +48,9 @@ return [
         'account_sid' => env('TWILIO_ACCOUNT_SID'),
         'from' => env('TWILIO_FROM'), // optional
     ],
+
+    'engagespark' => [
+        'api_key' => env('ENGAGESPARK_API_KEY'),
+        'org_id' => env('ENGAGESPARK_ORGANIZATION_ID'),
+    ],
 ];

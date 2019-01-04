@@ -71,7 +71,7 @@ class VerifyTest extends TestCase
 
         $user = User::withMobile($mobile)->first();
 
-        $this->assertEquals($user->mobile, $mobile);
+        $this->assertEquals($user->mobile, Phone::smsc($mobile));
         $this->assertFalse($user->isVerified());
 
         $this->bot

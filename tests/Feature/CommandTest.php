@@ -79,7 +79,7 @@ class CommandTest extends TestCase
     {
         $tag = Command::tag($this->mobile);
         $code = $tag->code;
-        $mobile = '+639171234567';
+        $mobile = '639171234567';
         $claimer = Command::claim($mobile, $code);
         $this->assertEquals($claimer->mobile, $mobile);
         $this->assertEquals($tag->tagger->mobile, $claimer->upline->mobile);
