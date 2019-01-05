@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Validation\Rule;
-use App\Channels\{EngageSparkChannel, TelerivetChannel};
 use NotificationChannels\Twilio\TwilioChannel;
 use App\Notifications\VerifiedAirTimeTransfer;
+use App\Channels\{EngageSparkChannel, TelerivetChannel};
 
 return [
     'reward' => [

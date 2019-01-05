@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\{Tag, Group, User, AirTime};
+use App\{Tag, Group, User, Area, Campaign};
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -34,24 +34,24 @@ class TagTest extends TestCase
     {
         $tag = factory(Tag::class)->create();
         $group = factory(Group::class)->create();
-        $role = factory(config('permission.models.role'))->create();
-        $airtime = factory(AirTime::class)->create();
+        $area = factory(Area::class)->create();
+        $campaign = factory(Campaign::class)->create();
         
         $this->assertEquals($tag->groups()->count(), 0);
-        $this->assertEquals($tag->roles()->count(), 0);
-        $this->assertEquals($tag->airtimes()->count(), 0);
+        $this->assertEquals($tag->areas()->count(), 0);
+        $this->assertEquals($tag->campaigns()->count(), 0);
 
         $tag->setGroup($group);
-        $tag->setRole($role);
-        $tag->setAirTime($airtime);
+        $tag->setArea($area);
+        $tag->setCampaign($campaign);
 
         $this->assertEquals($tag->groups()->count(), 1);
-        $this->assertEquals($tag->roles()->count(), 1);
-        $this->assertEquals($tag->airtimes()->count(), 1);
+        $this->assertEquals($tag->areas()->count(), 1);
+        $this->assertEquals($tag->campaigns()->count(), 1);
 
         $this->assertEquals($tag->groups()->first()->name, $group->name);
-        $this->assertEquals($tag->roles()->first()->name, $role->name);
-        $this->assertEquals($tag->airtimes()->first()->name, $airtime->name);
+        $this->assertEquals($tag->areas()->first()->name, $area->name);
+        $this->assertEquals($tag->campaigns()->first()->name, $campaign->name);
 
         $this->assertDatabaseHas('taggables', [
             'tag_id' => $tag->id,
@@ -61,14 +61,14 @@ class TagTest extends TestCase
 
         $this->assertDatabaseHas('taggables', [
             'tag_id' => $tag->id,
-            'taggable_id' => $role->id,
-            'taggable_type' => get_class($role),
+            'taggable_id' => $area->id,
+            'taggable_type' => get_class($area),
         ]);
 
         $this->assertDatabaseHas('taggables', [
             'tag_id' => $tag->id,
-            'taggable_id' => $airtime->id,
-            'taggable_type' => get_class($airtime),
+            'taggable_id' => $campaign->id,
+            'taggable_type' => get_class($campaign),
         ]);
     }
 }

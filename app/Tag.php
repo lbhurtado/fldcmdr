@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\{User, Group, AirTime};
+use App\{User, Group, Area, Campaign};
 use Spatie\Permission\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasSchemalessAttributes;
@@ -40,7 +40,20 @@ class Tag extends Model
     public function setGroup(Group $group)
     {
         $this->groups()->save($group);
-        $this->save();
+
+        return $this;
+    }
+
+    public function setArea(Area $area)
+    {
+        $this->areas()->save($area);
+
+        return $this;
+    }
+
+    public function setCampaign(Campaign $campaign)
+    {
+        $this->campaigns()->save($campaign);
 
         return $this;
     }
@@ -48,15 +61,6 @@ class Tag extends Model
     public function setRole(Role $role)
     {
         $this->roles()->save($role);
-        $this->save();
-
-        return $this;
-    }
-
-    public function setAirTime(AirTime $airtime)
-    {
-        $this->airtimes()->save($airtime);
-        $this->save();
 
         return $this;
     }
@@ -71,8 +75,13 @@ class Tag extends Model
         return $this->morphedByMany(Role::class, 'taggable');
     }
 
-    public function airtimes()
+    public function areas()
     {
-        return $this->morphedByMany(AirTime::class, 'taggable');
+        return $this->morphedByMany(Area::class, 'taggable');
+    }
+
+    public function campaigns()
+    {
+        return $this->morphedByMany(Campaign::class, 'taggable');
     }
 }

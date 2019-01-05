@@ -2,8 +2,10 @@
 
 namespace App;
 
-use App\{User, Contact, AirTime};
 use App\Contracts\Sociable;
+use Illuminate\Support\Arr;
+use App\Notifications\ContactInitiated;
+use App\{User, Contact, Area, Campaign};
 
 class Command
 {
@@ -11,12 +13,27 @@ class Command
 
 	private $sociable;
 
-    public static function tag($mobile, $stochastic = null)
+    private $group;
+
+    private $area;
+
+    private $campaign;
+
+    public static function tag($mobile, $attributes = [])
     {
+        $area = Arr::get($attributes, 'area');
+        $group = Arr::get($attributes, 'group');
+        $campaign = Arr::get($attributes, 'campaign');
+        $stochastic = Arr::get($attributes, 'keyword');
     	//improve on this
     	$sociable = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
 
-    	return (new static($sociable))->createTag($stochastic);
+    	return (new static($sociable))
+            ->setContextGroup($group)
+            ->setContextArea($area)
+            ->setContextCampaign($campaign)
+            ->createTag($stochastic)
+            ;
     }
 
 
@@ -42,11 +59,14 @@ class Command
     		optional($this->getContextGroup(), function ($group) use ($tag) {
     			$tag->setGroup($group);    			
     		});
+            optional($this->getContextArea(), function ($area) use ($tag) {
+                $tag->setArea($area);             
+            });
     		// optional($this->getContextRole(), function ($role)  use ($tag) {
     		// 	$tag->setRole($role);	
     		// });
-            optional($this->getContextAirTime(), function ($airtime) use ($tag) {
-                $tag->setAirTime($airtime);           
+            optional($this->getContextCampaign(), function ($airtime) use ($tag) {
+                $tag->setCampaign($airtime);           
             });
     	});
     }
@@ -55,16 +75,19 @@ class Command
     {
         $sociable = null;
         optional(Tag::whereCode($stochastic)->first(), function($tag) use (&$sociable) {
-            // dd($this->getSociable()->mobile);
             $sociable = $this->getSociable();
             $sociable->upline()->associate($tag->tagger);
             $sociable->save();
             $tag->groups->each(function ($group) use ($sociable) {
                 $sociable->assignGroup($group);
             });
-            // $tag->roles->each(function ($role) use ($sociable) {
-            //     $sociable->assignRole($role);
-            // });
+            $tag->areas->each(function ($area) use ($sociable) {
+                $sociable->assignArea($area);
+            });
+
+            $tag->campaigns->each(function ($campaign) use ($sociable) {
+                $sociable->notify(new ContactInitiated($campaign));
+            });
         });
 
         return $sociable;
@@ -83,7 +106,13 @@ class Command
     //improve on this
     protected function getContextGroup()
     {
-    	return $this->getSociable()->groups()->latest()->first();
+    	return $this->group ?? $this->getSociable()->groups()->latest()->first();
+    }
+
+    //improve on this
+    protected function getContextArea()
+    {
+        return $this->area ?? $this->getSociable()->areas()->latest()->first();
     }
 
     //improve on this
@@ -92,9 +121,36 @@ class Command
     	return $this->getSociable()->roles()->latest()->first();
     }
 
-    protected function getContextAirTime()
+    //improve on this
+    protected function getContextCampaign()
     {
-        return AirTime::first();
+        return $this->campaign ?? Campaign::first();
     }
 
+    protected function setContextGroup($name)
+    {
+        optional(Group::whereName($name)->first(), function ($group) {
+            $this->group = $group;
+        });
+
+        return $this;
+    }
+
+    protected function setContextArea($name)
+    {
+        optional(Area::whereName($name)->first(), function ($area) {
+            $this->area = $area;
+        });
+
+        return $this;
+    }
+
+    protected function setContextCampaign($name)
+    {
+        optional(Campaign::whereName($name)->first(), function ($campaign) {
+            $this->campaign = $campaign;
+        });
+
+        return $this;
+    }
 }

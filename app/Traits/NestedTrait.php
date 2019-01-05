@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 trait NestedTrait
 {
-	use NodeTrait;
+	use NodeTrait; 
 
 	public static function build($nodes, self $parent = null)
     {
@@ -41,4 +41,42 @@ trait NestedTrait
         return $instance->setRelation('children', $relation);
     }
 
+    public function getDottedNameAttribute()
+    {
+        $glue = '.';
+        $default = ! property_exists(static::class, 'default') ? true : $this->deault;
+        $pieces = 'name';
+
+        return implode($glue, $this->lineage($pieces, $default));
+    }
+
+    public function getQualifiedNameAttribute()
+    {
+        $glue = ! property_exists(static::class, 'glue') ? ', ' : $this->glue;
+        $default = ! property_exists(static::class, 'default') ? true : $this->deault;
+        $pieces = ! property_exists(static::class, 'pieces') ? 'title' : $this->pieces;
+
+        return implode($glue, $this->lineage($pieces, $default));
+    }
+
+    public function getQNAttribute()
+    {
+        return $this->qualified_name;
+    }
+
+    public function getTitleAttribute()
+    {
+        return $this->attributes['name'] = title_case(str_replace('_', ' ', $this->attributes['name']));
+    }
+
+    protected function lineage($pieces, $default = true)
+    {
+        // $pieces = ! property_exists(static::class, 'pieces') ? 'title' : $this->pieces;
+
+        $array = tap($this->ancestors()->defaultOrder()->get()->pluck($pieces)->toArray(), function (&$array) use ($pieces) {
+            array_push($array, $this->{$pieces});
+        }); 
+
+        return $default ? $array : array_reverse($array);
+    }
 }

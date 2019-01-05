@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\{HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups};
+use App\Traits\{HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups, HasAreas};
 
 class Contact extends Model implements Sociable
 {
     use Notifiable;
 
-	use HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups, HasRoles;
+	use HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups, HasRoles, HasAreas;
 	
     protected $table = 'contacts';
 

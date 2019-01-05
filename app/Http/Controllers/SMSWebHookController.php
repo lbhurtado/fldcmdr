@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\SMS;
-use App\Http\Requests\SMSWebHookRequest;
+use Illuminate\Http\Request;
+// use App\Http\Requests\SMSWebHookRequest;
 
 class SMSWebHookController extends Controller
 {
-	public function handle(SMSWebHookRequest $request)
+	// public function handle(SMSWebHookRequest $request)
+	public function handle(Request $request)
 	{
 		\Log::info($request);
 

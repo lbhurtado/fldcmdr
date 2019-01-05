@@ -14,13 +14,15 @@ use App\Traits\{HasNotifications,
                 HasSchemalessAttributes, 
                 HasMobile, 
                 Askable,
-                HasGroups};
+                HasGroups,
+                HasAreas
+            };
 
 class User extends Authenticatable implements Sociable
 {
     use Notifiable;
 
-    use HasNotifications, Verifiable, HasSchemalessAttributes, HasRoles, NodeTrait, HasMobile, Askable, HasGroups;
+    use HasNotifications, Verifiable, HasSchemalessAttributes, HasRoles, NodeTrait, HasMobile, Askable, HasGroups, HasAreas;
 
     protected $fillable = [
         'name', 'email', 'password', 'mobile', 'driver', 'channel_id',

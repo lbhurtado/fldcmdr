@@ -10,6 +10,10 @@ class Group extends Model
 {
 	use NestedTrait;
 
+    protected $glue = ':';
+
+    protected $pieces = 'title';
+
     protected $fillable = [
     	'name',
     ];
@@ -17,17 +21,5 @@ class Group extends Model
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
-    }
-
-    public function getQualifiedNameAttribute()
-    {
-    	return implode('.', tap($this->ancestors()->defaultOrder()->get()->pluck('name')->toArray(), function (&$array) {
-    		array_push($array, $this->name);
-    	}));
-    }
-
-    public function getQNAttribute()
-    {
-    	return $this->qualified_name;
     }
 }

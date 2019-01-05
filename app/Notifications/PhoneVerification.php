@@ -14,7 +14,6 @@ class PhoneVerification extends Notification
 {
     use Queueable;
 
-
     protected $content;
 
     public function __construct($otp)
