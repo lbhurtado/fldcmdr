@@ -13,7 +13,7 @@ class EngageSpark
     protected $client;
 
     /** @var string */
-    protected $endpoint;
+    protected $end_points;
 
     /** @var string */
     protected $api_key;
@@ -22,43 +22,31 @@ class EngageSpark
     protected $org_id;
 
     /** @var string */
-    protected $recipient_type = 'mobile_number';
-
-    /** @var string */
     protected $sender_id;
 
     public function __construct(array $config)
     {
-        $this->endpoint 		= Arr::get($config, 'endpoint', 'https://start.engagespark.com/api/v1/messages/sms');
-        $this->api_key 			= Arr::get($config, 'api_key');
-        $this->org_id 			= Arr::get($config, 'org_id');
-        // $this->recipient_type 	= Arr::get($config, 'recipient_type');
-        // $this->sender_id 		= Arr::get($config, 'sender_id');
-
-        $this->client = new HttpClient([
-            // 'timeout' => 5,
-            // 'connect_timeout' => 5,
+        $this->end_points = Arr::get($config, 'end_points');
+        $this->api_key 	  = Arr::get($config, 'api_key');
+        $this->org_id     = Arr::get($config, 'org_id');
+        $this->client     = new HttpClient([
+                                // 'timeout'         => 5,
+                                // 'connect_timeout' => 5,
         ]);
     }
 
-    public function send($params)
+    public function send($params, $mode = 'sms')
     {
         $base = [
-            // 'charset' => 'utf-8',
             'organization_id'   => $this->org_id,
-            'recipient_type'    => $this->recipient_type,
-            // 'sender_id'  		=> $this->sender_id,
-            // 'fmt'     => self::FORMAT_JSON,
         ];
-
         $params = \array_merge($base, \array_filter($params));
 
-        // dd($params);
         try {
-            $response = $this->client->request('POST', $this->endpoint, [
+            $response = $this->client->request('POST', $this->getEndPoint($mode), [
 	            'headers' => [
 				    'Authorization' => 'Token ' . $this->api_key,        
-				    'Accept'        => 'application/json',
+				    'Accept' => 'application/json',
 	            ],
             	'json' => $params
             ]);
@@ -76,5 +64,10 @@ class EngageSpark
             // throw CouldNotSendNotification::couldNotCommunicateWithSmsc($exception);
             throw $exception;
         }
+    }
+
+    protected function getEndPoint($mode)
+    {
+        return Arr::get($this->end_points, $mode, $this->end_points['sms']);
     }
 }

@@ -5,11 +5,32 @@ namespace App\Channels;
 class EngageSparkMessage
 {
     /**
+     * The mode.
+     *
+     * @var string
+     */
+    public $mode = 'sms'; //sms or airtime
+
+    /**
+     * The campaign.
+     *
+     * @var string
+     */
+    public $campaign;
+
+    /**
      * The phone number the message should be sent from.
      *
      * @var string
      */
     public $from = '';
+
+    /**
+     * The recipient type.
+     *
+     * @var string
+     */
+    public $recipient_type = 'mobile_number'; //mobile_number or contact_id
 
     /**
      * The message content.
@@ -38,6 +59,20 @@ class EngageSparkMessage
         $this->content = $content;
     }
 
+    public function mode($mode)
+    {
+        $this->mode = $mode;
+        
+        return $this;
+    }
+
+    public function campaign($campaign)
+    {
+        $this->campaign = $campaign;
+        
+        return $this;
+    }
+
     /**
      * Set the message content.
      *
@@ -63,5 +98,17 @@ class EngageSparkMessage
         $this->from = $from;
         
         return $this;
+    }
+
+    public function recipient_type($recipient_type)
+    {
+        $this->recipient_type = $recipient_type;
+        
+        return $this;
+    }
+
+    public function generateClientReference()
+    {
+        return str_random(12);
     }
 }
