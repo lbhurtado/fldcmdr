@@ -9,14 +9,14 @@ class EngageSparkMessage
      *
      * @var string
      */
-    public $mode = 'sms'; //sms or airtime
+    public $mode = 'sms'; //sms or topup
 
     /**
-     * The campaign.
+     * The air_time.
      *
-     * @var string
+     * @var double
      */
-    public $campaign;
+    public $air_time;
 
     /**
      * The phone number the message should be sent from.
@@ -66,9 +66,9 @@ class EngageSparkMessage
         return $this;
     }
 
-    public function campaign($campaign)
+    public function transfer($amount)
     {
-        $this->campaign = $campaign;
+        $this->air_time = $amount;
         
         return $this;
     }

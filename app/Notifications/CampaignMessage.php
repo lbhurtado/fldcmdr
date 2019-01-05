@@ -6,10 +6,9 @@ use App\Campaign;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use App\Channels\{EngageSparkChannel, EngageSparkMessage};
 
-class ContactInitiated extends Notification
+class CampaignMessage extends Notification
 {
     use Queueable;
 
@@ -23,16 +22,13 @@ class ContactInitiated extends Notification
     public function via($notifiable)
     {
         return config('chatbot.notification.channels');
-        return [EngageSparkChannel::class];
-        return [TwilioChannel::class];
-        return [TelerivetChannel::class];
     }
 
     public function toArray($notifiable)
     {
         return [
             'mobile' => $notifiable->mobile,
-            'message' => $this->campaign->message
+            'message' => $this->getContent(),
         ];
     }
 

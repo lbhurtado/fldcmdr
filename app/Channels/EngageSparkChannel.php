@@ -69,14 +69,13 @@ class EngageSparkChannel
                 'message'         => $message->content,
                 'recipient_type'  => $message->recipient_type,                
             ],
-            'airtime' => [
+            'topup' => [
                 'phoneNumber'     => '639081877788',
                 'maxAmount'       => '10',
                 'apiToken'        => 'b3867ab758b3fea05a4f40124e0e4f52c399ed12',
                 'clientRef'       => $message->generateClientReference(),
-                'resultsUrl'      => 'https://75c57b3e.ngrok.io/webhook/sms'
+                'resultsUrl'      => 'https://cfcfdf32.ngrok.io/webhook/sms'
             ],
-            // 'sender_id'  	  => $message->from,
         ];
 
         // if ($message->sendAt instanceof \DateTimeInterface) {

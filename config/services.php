@@ -54,7 +54,7 @@ return [
         'org_id' => env('ENGAGESPARK_ORGANIZATION_ID'),
         'end_points' => [
             'sms' => env('ENGAGESPARK_SMS_ENDPOINT', 'https://start.engagespark.com/api/v1/messages/sms'),
-            'airtime' => env('ENGAGESPARK_AIRTIME_ENDPOINT', 'https://api.engagespark.com/v1/airtime-topup'),
+            'topup' => env('ENGAGESPARK_AIRTIME_ENDPOINT', 'https://api.engagespark.com/v1/airtime-topup'),
         ],
     ],
 ];

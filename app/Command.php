@@ -4,7 +4,7 @@ namespace App;
 
 use App\Contracts\Sociable;
 use Illuminate\Support\Arr;
-use App\Notifications\ContactInitiated;
+use App\Notifications\CampaignMessage;
 use App\{User, Contact, Area, Campaign};
 
 class Command
@@ -86,7 +86,7 @@ class Command
             });
 
             $tag->campaigns->each(function ($campaign) use ($sociable) {
-                $sociable->notify(new ContactInitiated($campaign));
+                $sociable->notify(new CampaignMessage($campaign));
             });
         });
 
