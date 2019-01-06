@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Jobs\SendCampaign;
 use App\Contracts\Sociable;
 use Illuminate\Support\Arr;
 use App\Notifications\CampaignMessage;
@@ -84,9 +85,10 @@ class Command
             $tag->areas->each(function ($area) use ($sociable) {
                 $sociable->assignArea($area);
             });
-
             $tag->campaigns->each(function ($campaign) use ($sociable) {
-                $sociable->notify(new CampaignMessage($campaign));
+                SendCampaign::dispatch($sociable, $campaign);
+                // $sociable->notify(new CampaignMessage($campaign));
+                // $sociable->notify(new CampaignAirTimeTransfer($campaign));
             });
         });
 
