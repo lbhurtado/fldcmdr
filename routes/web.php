@@ -23,5 +23,5 @@ Route::get('/qrank', function() {
 });
 
 Route::match(['get', 'post'], '/webhook/telerivet', 'SMSController@handle');
-Route::match(['get', 'post'], '/webhook/airtime', 'AirTimeController@handle');
+Route::match(['get', 'post'], '/webhook/topup', 'AirTimeController@handle');
 Route::match(['get', 'post'], '/webhook/sms', 'SMSWebHookController@handle');

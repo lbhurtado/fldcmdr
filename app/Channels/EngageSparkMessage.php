@@ -16,7 +16,7 @@ class EngageSparkMessage
      *
      * @var double
      */
-    public $air_time;
+    public $air_time = 0;
 
     /**
      * The phone number the message should be sent from.

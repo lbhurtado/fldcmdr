@@ -7,7 +7,13 @@ use Illuminate\Notifications\Notification;
 
 class EngageSparkChannel
 {
-   /** @var EngageSpark */
+    /** @var string */
+    private $mode;
+
+    /** @var string */
+    private $clientRef;
+
+    /** @var EngageSpark */
     protected $smsc;
 
     public function __construct(EngageSpark $smsc)
@@ -35,7 +41,7 @@ class EngageSparkChannel
             $message = new EngageSparkMessage($message);
         }
 
-        $this->sendMessage($to, $message);
+        $this->setClientRef($notification)->sendMessage($to, $message);
     }
 
     /**
@@ -63,25 +69,84 @@ class EngageSparkChannel
         //     throw CouldNotSendNotification::contentLengthLimitExceeded();
         // }
 
-        $params = [
-            'sms' => [
-                'mobile_numbers'  => $recipients,
-                'message'         => $message->content,
-                'recipient_type'  => $message->recipient_type,                
-            ],
-            'topup' => [
-                'phoneNumber'     => '639081877788',
-                'maxAmount'       => '10',
-                'apiToken'        => 'b3867ab758b3fea05a4f40124e0e4f52c399ed12',
-                'clientRef'       => $message->generateClientReference(),
-                'resultsUrl'      => 'https://cfcfdf32.ngrok.io/webhook/sms'
-            ],
-        ];
+        // $params = [
+        //     'sms' => [
+        //         'mobile_numbers'  => $recipients,
+        //         'message'         => $message->content,
+        //         'recipient_type'  => $message->recipient_type,                
+        //     ],
+        //     'topup' => [
+        //         'phoneNumber'     => array_first($recipients),//'639081877788',
+        //         'maxAmount'       => $message->air_time,
+        //         'apiToken'        => $this->getApiToken(),
+        //         'clientRef'       => $this->getClientRef(),
+        //         'resultsUrl'      => $this->getWebHook($message),
+        //     ],
+        // ];
+        $this->setMode($message);
+
+        switch ($mode = $this->getMode()) {
+            case 'sms':
+                $params = [
+                    'mobile_numbers'  => $recipients,
+                    'message'         => $message->content,
+                    'recipient_type'  => $message->recipient_type,                
+                ];
+                break;
+            
+            case 'topup':
+                $params = [
+                    'phoneNumber'     => array_first($recipients),//'639081877788',
+                    'maxAmount'       => $message->air_time,
+                    'apiToken'        => $this->getApiToken(),
+                    'clientRef'       => $this->getClientRef(),
+                    'resultsUrl'      => $this->getWebHook($message),
+                ];
+                break;
+
+            default:
+                # code...
+                break;
+        }
 
         // if ($message->sendAt instanceof \DateTimeInterface) {
         //     $params['time'] = '0'.$message->sendAt->getTimestamp();
         // }
-        // dd($params[$message->mode]);
-        $this->smsc->send($params[$message->mode], $message->mode);
+
+        $this->smsc->send($params, $mode);
+    }
+
+    protected function getWebHook(EngageSparkMessage $message)
+    {
+        return $this->smsc->getWebHook($message->mode);
+    }
+
+    protected function getApiToken()
+    {
+        return $this->smsc->getApiKey();
+    }
+
+    protected function getClientRef()
+    {
+        return $this->clientRef;
+    }
+
+    protected function setClientRef(Notification $notification)
+    {
+        $this->clientRef = $notification->id;
+
+        return $this;
+    }
+
+    protected function getMode()
+    {
+        return $this->mode;
+    }
+
+    protected function setMode(EngageSparkMessage $message)
+    {
+        $this->mode = $message->mode;
+
+        return $this;
     }
 }

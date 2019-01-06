@@ -12,7 +12,7 @@ class EngageSpark
     /** @var HttpClient */
     protected $client;
 
-    /** @var string */
+    /** @var array */
     protected $end_points;
 
     /** @var string */
@@ -24,6 +24,9 @@ class EngageSpark
     /** @var string */
     protected $sender_id;
 
+    /** @var array */
+    protected $web_hooks;
+
     public function __construct(array $config)
     {
         $this->end_points = Arr::get($config, 'end_points');
@@ -33,6 +36,7 @@ class EngageSpark
                                 // 'timeout'         => 5,
                                 // 'connect_timeout' => 5,
         ]);
+        $this->web_hooks  = Arr::get($config, 'web_hooks');
     }
 
     public function send($params, $mode = 'sms')
@@ -69,5 +73,15 @@ class EngageSpark
     protected function getEndPoint($mode)
     {
         return Arr::get($this->end_points, $mode, $this->end_points['sms']);
+    }
+
+    public function getWebHook($mode)
+    {
+         return Arr::get($this->web_hooks, $mode, $this->web_hooks['sms']);   
+    }
+
+    public function getApiKey()
+    {
+        return $this->api_key;
     }
 }
