@@ -2,11 +2,11 @@
 
 namespace App;
 
-use App\Jobs\SendCampaign;
 use App\Contracts\Sociable;
 use Illuminate\Support\Arr;
-use App\Notifications\CampaignMessage;
+// use App\Notifications\CampaignMessage;
 use App\{User, Contact, Area, Campaign};
+use App\Jobs\{SendCampaign, SendInstruction};
 
 class Command
 {
@@ -44,12 +44,15 @@ class Command
     }
 
 
-    public static function claim($mobile, $stochastic)
+    public static function claim($mobile, $attributes)
     {
         //improve on this
-        $sociable = Contact::firstOrCreate(compact('mobile'));
+        $keyword = Arr::get($attributes, 'keyword');
+        $name = Arr::get($attributes, 'name') ?? 'Anonymous';
 
-        return (new static($sociable))->claimTag($stochastic);
+        $sociable = Contact::firstOrCreate(compact('mobile', 'name'));
+
+        return (new static($sociable))->claimTag($keyword);
     }
 
     public function __construct(Sociable $sociable)
@@ -60,6 +63,16 @@ class Command
     protected function createTag($stochastic = null)
     {
     	$code = $this->generateCode($stochastic);
+
+        if (Tag::whereCode($code)->first())
+            $code = $this->generateCode($stochastic);
+        if (Tag::whereCode($code)->first())
+            $code = $this->generateCode($stochastic);
+        if (Tag::whereCode($code)->first())
+            $code = $this->generateCode($stochastic);
+        if (Tag::whereCode($code)->first())
+            $code = $this->generateCode($stochastic);
+
     	$sociable = $this->getSociable();
 
     	return tap(Tag::createWithTagger(compact('code'), $sociable), function ($tag) {
@@ -69,11 +82,8 @@ class Command
             optional($this->getContextArea(), function ($area) use ($tag) {
                 $tag->setArea($area);             
             });
-    		// optional($this->getContextRole(), function ($role)  use ($tag) {
-    		// 	$tag->setRole($role);	
-    		// });
-            optional($this->getContextCampaign(), function ($airtime) use ($tag) {
-                $tag->setCampaign($airtime);           
+            optional($this->getContextCampaign(), function ($campaign) use ($tag) {
+                $tag->setCampaign($campaign);           
             });
     	});
     }
@@ -81,7 +91,8 @@ class Command
     protected function claimTag($stochastic)
     {
         $sociable = null;
-        optional(Tag::whereCode($stochastic)->first(), function($tag) use (&$sociable) {
+
+        optional(Tag::whereCode($stochastic)->first(), function($tag) use (&$sociable, $stochastic) {
             $sociable = $this->getSociable();
             $sociable->upline()->associate($tag->tagger);
             $sociable->save();
@@ -93,8 +104,9 @@ class Command
             });
             $tag->campaigns->each(function ($campaign) use ($sociable) {
                 SendCampaign::dispatch($sociable, $campaign);
-                // $sociable->notify(new CampaignMessage($campaign));
-                // $sociable->notify(new CampaignAirTimeTransfer($campaign));
+            });
+            tap(static::tag($sociable->mobile, ['keyword' => $stochastic . '_',]), function ($tag) use ($sociable) {
+                SendInstruction::dispatch($sociable, $tag->code);
             });
         });
 
@@ -103,7 +115,16 @@ class Command
 
     protected function generateCode($seed = null)
     {
-    	return $seed ?? str_random(6);
+        $seed = $seed ?? str_random(6); 
+
+        $seed = preg_replace('/[0-9]+/', '', $seed);
+        if ($seed[-1] == '_') {
+            $seed = substr($seed, 0, -1);  
+
+            return $seed . rand(100, 999);
+        }
+        else
+            return $seed;
     }
 
     protected function getSociable()

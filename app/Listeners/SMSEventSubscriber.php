@@ -16,9 +16,15 @@ class SMSEventSubscriber
 
         switch (true)
         {
-            case $sms->match("#{tag}", function ($tag) use ($sms) {
-                \Log::info('tag = ' . $tag);
-                Command::tag($sms->from, ['keyword' => $tag]);
+
+// $sms->match("{args}#{tag}", function ($args, $tag) use ($sms) {
+//     \Log::info(['args' => $args, 'tag' => $tag]);
+//     return true;
+// })
+
+            case $sms->match("{campaign}#{keyword}", function ($campaign, $keyword) use ($sms) {
+                \Log::info(compact('campaign', 'keyword'));
+                Command::tag($sms->from, compact('campaign', 'keyword'));
                 return true;
             }): break;
 
@@ -45,7 +51,10 @@ class SMSEventSubscriber
             default:
                 $sms->match("{*.}", function ($catch) use ($sms) {
                     \Log::info('catch = ' . $catch);
-                    Command::claim($sms->from, ['keyword' => $tag]);
+                    $args = explode(' ', $catch);
+                    $keyword = array_shift($args);
+                    $name = count($args) ? implode(' ', $args) : null;
+                    Command::claim($sms->from, compact('keyword', 'name'));
                 }); 
         }
     }

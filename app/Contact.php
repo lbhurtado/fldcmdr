@@ -22,6 +22,7 @@ class Contact extends Model implements Sociable
 
     protected $fillable = [
     	'mobile',
+        'name',
     	'role',
         'message',
     ];
@@ -108,5 +109,11 @@ class Contact extends Model implements Sociable
         $this->extra_attributes['telerivet_id'] = $value;
 
         return $this;
+    }
+
+    //put this in trait
+    public function tags()
+    {
+        return $this->morphMany(Tag::class, 'tagger');
     }
 }

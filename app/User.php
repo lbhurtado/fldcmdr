@@ -116,4 +116,9 @@ class User extends Authenticatable implements Sociable
         return $this->morphMany(Contact::class, 'upline');
         // return $this->hasMany(Contact::class);
     }
+
+    public function tags()
+    {
+        return $this->morphMany(Tag::class, 'tagger');
+    }
 }

@@ -17,22 +17,22 @@ class CampaignSeeder extends Seeder
 
         $campaigns = [
             [
-                'name'     => 'ABC123',
+                'name'     => 'regular',
                 'message'  => implode("\n", [
-                    'Welcome! Please check out this link: https://youtu.be/3yQ1T-uUhjA',
-                    'Please download Telegram from https://t.me',
-                    'Join the campaign thru https://t.me/grassroots_bot',
+                    'Isang MasigaBONG BaGOng Taon mula kay KUYA BONG GO!',
+                    'Ang 2019 ay isa na namang taon para mas maipaabot ang serbisyong Tatak Duterte sa mga Pilipino. #GOPhilippinesGO',
+                    'Bumisita sa FB page: https://www.facebook.com/bongGOma/ para mas makilala si Kuya Bong Go!',
 
                 ]),
                 'extra_attributes'  => [
-                    'air_time' => 10,
+                    'air_time' => 0,
                 ],
             ],
             [
-                'name'     => 'DEF456',
-                'message'  => '...jumps over the lazy dog.',
+                'name'     => 'special',
+                'message'  => 'Salamat sa iyong suporta.',
                 'extra_attributes'  => [
-                    'air_time' => 20,
+                    'air_time' => 10,
                 ],
             ],
         ];

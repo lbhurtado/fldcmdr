@@ -1,5 +1,6 @@
 <?php
 
 return [
-	'onboarding' => ":message You will be receiving :air_time peso load shortly. - System Administrator",
+	'onboarding' => ":message \n- HQ",
+	'instruction' => ":keyword is your <keyword>. Please ask your contacts to send \"<keyword> <name>\" to (0908) 187-7788. Thank you. \n- HQ",
 ];

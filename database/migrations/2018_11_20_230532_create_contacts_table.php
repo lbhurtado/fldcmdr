@@ -16,6 +16,7 @@ class CreateContactsTable extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('mobile');
+            $table->string('name')->nullable();
             // $table->string('role');
             // $table->integer('upline_id')->unsigned();
             $table->nullableMorphs('upline');

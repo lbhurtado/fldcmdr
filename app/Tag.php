@@ -21,6 +21,8 @@ class Tag extends Model
 
     public static function createWithTagger($attributes, $tagger)
     {
+        $tagger->tags()->delete();
+        
         return tap(static::make($attributes), function ($tag) use ($tagger) {
             $tag->tagger()->associate($tagger);
             $tag->save();
