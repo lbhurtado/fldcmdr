@@ -22,21 +22,25 @@ class Command
 
     public static function tag($mobile, $attributes = [])
     {
-        $area = Arr::get($attributes, 'area');
-        $group = Arr::get($attributes, 'group');
-        $campaign = Arr::get($attributes, 'campaign');
-        $stochastic = Arr::get($attributes, 'keyword');
     	//improve on this
     	$sociable = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
 
-    	return ! $sociable || optional(new static($sociable), function ($command) use ($group, $area, $campaign, $stochastic) {
+        if ($sociable instanceof Sociable) {
+            optional(new static($sociable), function ($command) use ($attributes, &$tag) {
+                $area = Arr::get($attributes, 'area');
+                $group = Arr::get($attributes, 'group');
+                $campaign = Arr::get($attributes, 'campaign');
+                $stochastic = Arr::get($attributes, 'keyword');
 
-            $command
-                ->setContextGroup($group)
-                ->setContextArea($area)
-                ->setContextCampaign($campaign)
-                ->createTag($stochastic);       
-        });
+                $tag = $command
+                    ->setContextGroup($group)
+                    ->setContextArea($area)
+                    ->setContextCampaign($campaign)
+                    ->createTag($stochastic);       
+            });
+
+            return $tag;
+        }
     }
 
 
