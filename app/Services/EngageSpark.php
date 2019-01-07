@@ -42,10 +42,10 @@ class EngageSpark
     public function send($params, $mode = 'sms')
     {
         $base = [
-            'organization_id'   => $this->org_id,
+            // 'organization_id'   => $this->org_id,
         ];
         $params = \array_merge($base, \array_filter($params));
-
+        
         try {
             $response = $this->client->request('POST', $this->getEndPoint($mode), [
 	            'headers' => [
@@ -78,6 +78,11 @@ class EngageSpark
     public function getWebHook($mode)
     {
          return Arr::get($this->web_hooks, $mode, $this->web_hooks['sms']);   
+    }
+
+    public function getOrgId()
+    {
+        return $this->org_id;
     }
 
     public function getApiKey()

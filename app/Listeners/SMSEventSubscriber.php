@@ -14,14 +14,40 @@ class SMSEventSubscriber
         $sms = $event->getSMS();
         $sms->checkStubAndInvite();
 
-        $sms->match('#{tag}', function ($tag) {
-            \Log::info('tag = ' . $tag);
-            Command::tag($sms->from, $tag);
-        });
+        switch (true)
+        {
+            case $sms->match("#{tag}", function ($tag) use ($sms) {
+                \Log::info('tag = ' . $tag);
+                Command::tag($sms->from, ['keyword' => $tag]);
+                return true;
+            }): break;
 
-        $sms->match('?{status}', function ($status) {
-            \Log::info('status = ' . $status);
-        });
+            case $sms->match("&{group}", function ($group) use ($sms) {
+                \Log::info('group = ' . $group);
+                return true;
+            }): break;
+
+            case $sms->match("@{area}", function ($area) use ($sms) {
+                \Log::info('area = ' . $area);
+                return true;
+            }): break;
+
+            case $sms->match("?{status}", function ($status) use ($sms) {
+                \Log::info('status = ' . $status);
+                return true;
+            }): break;
+
+            case $sms->match("!{warning}", function ($warning) use ($sms) {
+                \Log::info('warning = ' . $warning);
+                return true;
+            }): break;
+
+            default:
+                $sms->match("{*.}", function ($catch) use ($sms) {
+                    \Log::info('catch = ' . $catch);
+                    Command::claim($sms->from, ['keyword' => $tag]);
+                }); 
+        }
     }
 
     public function subscribe($events)

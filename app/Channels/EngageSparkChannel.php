@@ -88,6 +88,7 @@ class EngageSparkChannel
         switch ($mode = $this->getMode()) {
             case 'sms':
                 $params = [
+                    'organization_id' => $this->getOrgId(),
                     'mobile_numbers'  => $recipients,
                     'message'         => $message->content,
                     'recipient_type'  => $message->recipient_type,                
@@ -96,6 +97,7 @@ class EngageSparkChannel
             
             case 'topup':
                 $params = [
+                    'organizationId'  => $this->getOrgId(),
                     'phoneNumber'     => array_first($recipients),//'639081877788',
                     'maxAmount'       => $message->air_time,
                     'apiToken'        => $this->getApiToken(),
@@ -119,6 +121,11 @@ class EngageSparkChannel
     protected function getWebHook(EngageSparkMessage $message)
     {
         return $this->smsc->getWebHook($message->mode);
+    }
+
+    protected function getOrgId()
+    {
+        return $this->smsc->getOrgId();
     }
 
     protected function getApiToken()

@@ -29,12 +29,14 @@ class Command
     	//improve on this
     	$sociable = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
 
-    	return (new static($sociable))
-            ->setContextGroup($group)
-            ->setContextArea($area)
-            ->setContextCampaign($campaign)
-            ->createTag($stochastic)
-            ;
+    	return ! $sociable || optional(new static($sociable), function ($command) use ($group, $area, $campaign, $stochastic) {
+
+            $command
+                ->setContextGroup($group)
+                ->setContextArea($area)
+                ->setContextCampaign($campaign)
+                ->createTag($stochastic);       
+        });
     }
 
 

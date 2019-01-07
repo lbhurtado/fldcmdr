@@ -16,6 +16,7 @@ class VerifyCsrfToken extends Middleware
         'webhook/telerivet',
         'webhook/airtime',
         'webhook/engagespark',
+        'webhook/topup',
         'webhook/sms',
     ];
 }
