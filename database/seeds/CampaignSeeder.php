@@ -36,11 +36,23 @@ class CampaignSeeder extends Seeder
                 ],
             ],
             [
+                'name'     => 'lootbag',
+                'message'  => implode("\n", [
+                    'Nanalo ka!',
+                    'Isa ka sa maswerteng napili para makatanggap ng grocery items.',
+                    'Ipakita lang ang mensaheng ito sa namumuno upang makuha ang iyong premyo.',
+
+                ]),
+                'extra_attributes'  => [
+                    'air_time' => 0,
+                ],
+            ],
+            [
                 'name'     => 'lootbags',
                 'message'  => implode("\n", [
-                    'Yehey!',
-                    'Ikaw ay nanalo ng premyo.',
-                    'Ipakita lang ang mensahe at maaaring mo itong makuha sa mga namumuno.',
+                    'Nanalo ka!',
+                    'Isa ka sa maswerteng napili para makatanggap ng grocery items.',
+                    'Ipakita lang ang mensaheng ito sa namumuno upang makuha ang iyong premyo.',
 
                 ]),
                 'extra_attributes'  => [
@@ -49,7 +61,12 @@ class CampaignSeeder extends Seeder
             ],
             [
                 'name'     => 'load100',
-                'message'  => 'Ikaw ay nagantimpalaan ng P100 cellphone load. Salamat sa suporta.',
+                'message'  => implode("\n", [
+                    'Nanalo ka!',
+                    'Isa ka sa maswerteng napili para makatanggap ng load',
+                    'Ipakita lang ang mensaheng ito sa namumuno upang makuha ang iyong premyo.',
+
+                ]),
                 'extra_attributes'  => [
                     'air_time' => 100,
                 ],
