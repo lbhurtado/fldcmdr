@@ -2,30 +2,34 @@
 
 namespace App\Jobs;
 
+use App\Contracts\Sociable;
 use Illuminate\Bus\Queueable;
+use App\Notifications\UserBroadcast;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Notifications\{CampaignMessage, CampaignAirTimeTransfer};
 
-class SendCampaign implements ShouldQueue
+class SendAdhoc implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private $commander;
+
     private $sociable;
-    
-    private $campaign;
+
+    private $message;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($sociable, $campaign)
+    public function __construct(Sociable $commander, Sociable $sociable, $message)
     {
+        $this->commander = $commander;
         $this->sociable = $sociable;
-        $this->campaign = $campaign;
+        $this->message = $message;
     }
 
     /**
@@ -35,8 +39,6 @@ class SendCampaign implements ShouldQueue
      */
     public function handle()
     {
-        $this->sociable->notify(new CampaignMessage($this->campaign));
-        if ($this->campaign->isLoadable())
-            $this->sociable->notify(new CampaignAirTimeTransfer($this->campaign));
+        $this->sociable->notify(new UserBroadcast($this->commander, $this->message));
     }
 }

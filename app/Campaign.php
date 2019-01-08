@@ -9,6 +9,8 @@ class Campaign extends Model
 {
 	use HasSchemalessAttributes;
 
+    private $loadable = false;
+
     protected $fillable = [
     	'name',
     	'message',
@@ -30,12 +32,23 @@ class Campaign extends Model
 
     public function setAirTimeAttribute($value)
     {
-        $this->extra_attributes['air_time'] = filter_var($value, 
+        $value = $this->extra_attributes['air_time'] = filter_var($value, 
         	FILTER_VALIDATE_FLOAT, 
         	array('flags' => FILTER_NULL_ON_FAILURE)
         );
         $this->save();
+        $this->loadable = ($value > $this->getMinimumAirTimeTransfer());
 
         return $this;
+    }
+
+    protected function getMinimumAirTimeTransfer()
+    {
+        return 0;
+    }
+
+    public function isLoadable(): bool
+    {
+        return $this->loadable;
     }
 }

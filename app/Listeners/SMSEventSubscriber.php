@@ -17,8 +17,8 @@ class SMSEventSubscriber
         switch (true)
         {
 
-// $sms->match("{args}#{tag}", function ($args, $tag) use ($sms) {
-//     \Log::info(['args' => $args, 'tag' => $tag]);
+// $sms->match("pick {*.} {*.}", function ($count, $campaign) use ($sms) {
+//     \Log::info(['count' => $count, 'campaign' => $campaign]);
 //     return true;
 // })
 

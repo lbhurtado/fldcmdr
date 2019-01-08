@@ -2,11 +2,11 @@
 
 namespace App;
 
+use App\Eloquent\Phone;
 use App\Contracts\Sociable;
 use Illuminate\Support\Arr;
-// use App\Notifications\CampaignMessage;
 use App\{User, Contact, Area, Campaign};
-use App\Jobs\{SendCampaign, SendInstruction};
+use App\Jobs\{SendCampaign, SendInstruction, SendFeedback, SendAdhoc};
 
 class Command
 {
@@ -19,6 +19,18 @@ class Command
     private $area;
 
     private $campaign;
+
+    private $count;
+
+    private $contacts;
+
+    private $cmd;
+
+    private $status;
+
+    private $commander;
+
+    private $message;
 
     public static function tag($mobile, $attributes = [])
     {
@@ -56,20 +68,52 @@ class Command
 
     public static function pick($mobile, $arguments)
     {
-        $sociable = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
-        
-        if ($sociable instanceof Sociable) {
+        $commander = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
 
-            $count = Arr::get($arguments, 'count', 1);
-            $name = Arr::get($arguments, 'campaign'); 
+        if ($commander instanceof Sociable) {
+
+            $cmd = __FUNCTION__;
             
-            optional(Campaign::whereName($name)->first(), function ($campaign) use ($count) {
-                tap(Contact::all()->random($count), function ($contacts) use ($campaign) {
-                    $contacts->each(function($contact) use ($campaign) {
-                        SendCampaign::dispatch($contact, $campaign);
-                    });
-                });
-            });
+            return optional(new static($commander), function ($command) use ($commander, $cmd, $arguments) {
+
+                $count = Arr::get($arguments, 'count', 1);
+                $campaign = Arr::get($arguments, 'campaign'); 
+
+                return $command
+                    ->setCmd($cmd)
+                    ->setCommander($commander)
+                    ->setContextCampaign($campaign)
+                    ->generateRandomContactsList($count)
+                    ->campaign()
+                    ->setStatus('ok')
+                    ;
+
+            })->report();
+        }
+    }
+
+    public static function broadcast($mobile, $arguments)
+    {
+        $commander = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
+
+        if ($commander instanceof Sociable) {
+
+            $cmd = __FUNCTION__;
+            
+            return optional(new static($commander), function ($command) use ($commander, $cmd, $arguments) {
+
+                $message = Arr::get($arguments, 'message');
+
+                return $command
+                    ->setCmd($cmd)
+                    ->setCommander($commander)
+                    ->setMessage($message)
+                    ->generateContactsList()
+                    ->send()
+                    ->setStatus('ok')
+                    ;
+
+            })->report();
         }
     }
 
@@ -123,9 +167,11 @@ class Command
             $tag->campaigns->each(function ($campaign) use ($sociable) {
                 SendCampaign::dispatch($sociable, $campaign);
             });
-            tap(static::tag($sociable->mobile, ['keyword' => $stochastic . '_',]), function ($tag) use ($sociable) {
-                SendInstruction::dispatch($sociable, $tag->code);
-            });
+            //this is working
+            //disabled for now            
+            // tap(static::tag($sociable->mobile, ['keyword' => $stochastic . '_',]), function ($tag) use ($sociable) {
+            //     SendInstruction::dispatch($sociable, $tag->code);
+            // });
         });
 
         return $sociable;
@@ -199,5 +245,105 @@ class Command
         });
 
         return $this;
+    }
+
+    protected function setCount($count)
+    {
+        $this->count = $count;
+
+        return $this;
+    }
+
+    protected function generateContactsList()
+    {
+        //improve this
+        //get only downlines
+
+        $this->contacts = Contact::all()->shuffle();
+
+        return $this;
+    }
+
+    protected function generateRandomContactsList($count)
+    {
+        //improve this
+        //get only downlines
+
+        $this->contacts = Contact::all()->random($this->count = $count);
+
+        return $this;
+    }
+
+    protected function campaign()
+    {
+        $this->contacts->each(function ($contact) {
+            SendCampaign::dispatch($contact, $this->getContextCampaign());
+        });
+
+        return $this;
+    }
+
+    protected function send()
+    {
+        $this->contacts->each(function ($contact) {
+            SendAdhoc::dispatch($this->commander, $contact, $this->message);
+        });
+
+        return $this;
+    }
+
+    protected function setCmd($cmd)
+    {
+        $this->cmd = $cmd;
+
+        return $this;
+    }
+
+    protected function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    protected function setCommander(Sociable $commander)
+    {
+        $this->commander = $commander;
+
+        return $this;
+    }    
+
+    protected function setMessage($message)
+    {
+        $this->message = $message;
+
+        return $this;
+    }    
+
+    protected function report()
+    {
+        switch ($this->cmd) {
+             case 'pick':
+                 if ($this->status == 'ok') {
+                    $this->contacts->each(function($contact) use (&$list) {
+                        $mobile = Phone::number($contact->mobile, 3);
+                        $list .= "{$contact->name} {$mobile}\n";
+                    });
+                    $msg = implode("\n", [
+                                ucwords($this->cmd) . ' List:',
+                                $list,
+                            ]);
+
+                    SendFeedback::dispatch($this->commander, $msg);
+                 }
+
+                 return $this;
+             
+             default:
+                 # code...
+                 break;
+         }
+
+         return false;
     }
 }

@@ -8,33 +8,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Channels\{MessengerChannel, MessengerMessage};
 use App\Channels\{EngageSparkChannel, EngageSparkMessage};
 
-class UserBroadcast extends Notification
+class UserFeedback extends Notification
 {
     use Queueable;
 
-    protected $origin;
-
     protected $message;
 
-    public function __construct($origin, $message)
+    public function __construct($message)
     {
-        $this->origin = $origin;
         $this->message = $message;
     }
 
     public function via($notifiable)
     {
         return config('chatbot.notification.channels');
-        return [MessengerChannel::class];
-    }
-
-    public function toArray($notifiable)
-    {
-        return [
-            'from' => $this->origin->mobile,
-            'to' => $notifiable->mobile,
-            'message' => $this->getContent($notifiable),
-        ];
     }
 
     public function toMessenger($notifiable)
@@ -42,6 +29,14 @@ class UserBroadcast extends Notification
         return MessengerMessage::create()
             ->content($this->message)
             ;
+    }
+
+    public function toArray($notifiable)
+    {
+        return [
+            'mobile' => $notifiable->mobile,
+            'message' => $this->getContent($notifiable),
+        ];
     }
 
     public function toEngageSpark($notifiable)
@@ -53,10 +48,9 @@ class UserBroadcast extends Notification
 
     protected function getContent($notifiable)
     {
-        $from = $this->origin->name;
-        $to = $notifiable->name;
+        $name = $notifiable->name;
         $message = $this->message;
 
-        return trans('campaign.broadcast', compact('from', 'message' ,'to'));
+        return trans('campaign.feedback', compact('message', 'name'));
     }
 }
