@@ -35,6 +35,25 @@ class CampaignSeeder extends Seeder
                     'air_time' => 10,
                 ],
             ],
+            [
+                'name'     => 'lootbags',
+                'message'  => implode("\n", [
+                    'Yehey!',
+                    'Ikaw ay nanalo ng premyo.',
+                    'Ipakita lang ang mensahe at maaaring mo itong makuha sa mga namumuno.',
+
+                ]),
+                'extra_attributes'  => [
+                    'air_time' => 0,
+                ],
+            ],
+            [
+                'name'     => 'load100',
+                'message'  => 'Ikaw ay nagantimpalaan ng P100 cellphone load. Salamat sa suporta.',
+                'extra_attributes'  => [
+                    'air_time' => 100,
+                ],
+            ],
         ];
 
         foreach ($campaigns as $campaign) {

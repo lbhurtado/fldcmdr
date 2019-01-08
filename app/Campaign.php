@@ -12,6 +12,7 @@ class Campaign extends Model
     protected $fillable = [
     	'name',
     	'message',
+        'extra_attributes',
     ];
 
     protected $casts = [

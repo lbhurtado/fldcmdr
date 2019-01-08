@@ -7,6 +7,7 @@ $factory->define(App\Contact::class, function (Faker $faker) {
     $faker = FakerFactory::create('en_PH');
 
     return [
-    	'mobile' => $faker->phoneNumber,
+    	'name' => $faker->name,
+    	'mobile' => $faker->mobileNumber,
     ];
 });

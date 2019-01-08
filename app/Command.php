@@ -43,7 +43,6 @@ class Command
         }
     }
 
-
     public static function claim($mobile, $attributes)
     {
         //improve on this
@@ -53,6 +52,25 @@ class Command
         $sociable = Contact::firstOrCreate(compact('mobile', 'name'));
 
         return (new static($sociable))->claimTag($keyword);
+    }
+
+    public static function pick($mobile, $arguments)
+    {
+        $sociable = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
+        
+        if ($sociable instanceof Sociable) {
+
+            $count = Arr::get($arguments, 'count', 1);
+            $name = Arr::get($arguments, 'campaign'); 
+            
+            optional(Campaign::whereName($name)->first(), function ($campaign) use ($count) {
+                tap(Contact::all()->random($count), function ($contacts) use ($campaign) {
+                    $contacts->each(function($contact) use ($campaign) {
+                        SendCampaign::dispatch($contact, $campaign);
+                    });
+                });
+            });
+        }
     }
 
     public function __construct(Sociable $sociable)

@@ -13,6 +13,8 @@ class SendCampaign implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private $minimum_air_time = 0;
+
     private $sociable;
     
     private $campaign;
@@ -36,6 +38,7 @@ class SendCampaign implements ShouldQueue
     public function handle()
     {
         $this->sociable->notify(new CampaignMessage($this->campaign));
-        $this->sociable->notify(new CampaignAirTimeTransfer($this->campaign));
+        if ($this->campaign->air_time > $this->minimum_air_time)
+            $this->sociable->notify(new CampaignAirTimeTransfer($this->campaign));
     }
 }
