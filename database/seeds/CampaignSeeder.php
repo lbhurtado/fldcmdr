@@ -60,6 +60,18 @@ class CampaignSeeder extends Seeder
                 ],
             ],
             [
+                'name'     => 'load10',
+                'message'  => implode("\n", [
+                    'Nanalo ka!',
+                    'Isa ka sa maswerteng napili para makatanggap ng 10 pesos load',
+                    'Ipakita lang ang mensaheng ito sa namumuno upang makuha ang iyong premyo.',
+
+                ]),
+                'extra_attributes'  => [
+                    'air_time' => 10,
+                ],
+            ],
+            [
                 'name'     => 'load100',
                 'message'  => implode("\n", [
                     'Nanalo ka!',
