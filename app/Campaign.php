@@ -62,6 +62,6 @@ class Campaign extends Model
 
     public function isLoadable(): bool
     {
-        return $this->loadable;
+        return $this->extra_attributes['air_time'] > $this->getMinimumAirTimeTransfer();
     }
 }
