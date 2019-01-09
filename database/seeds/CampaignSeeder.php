@@ -83,6 +83,17 @@ class CampaignSeeder extends Seeder
                     'air_time' => 100,
                 ],
             ],
+            [
+                'name'     => 'ulit',
+                'message'  => implode("\n", [
+                    'Salamat sa suporta!',
+                    'Naka-rehistro ka na.',
+
+                ]),
+                'extra_attributes'  => [
+                    'air_time' => 0,
+                ],
+            ],
         ];
 
         foreach ($campaigns as $campaign) {

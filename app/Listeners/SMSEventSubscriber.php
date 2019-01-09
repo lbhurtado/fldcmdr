@@ -49,12 +49,24 @@ class SMSEventSubscriber
                 return true;
             }); break;
 
+            case $sms->match("Broadcast {message}", function ($message) use ($sms) {
+                \Log::info(['message' => $message]);
+                Command::broadcast($sms->from, ['message' => $message]);
+                return true;
+            }); break;
+
             case $sms->match("pick {count} {campaign}", function ($count, $campaign) use ($sms) {
                 \Log::info(['count' => $count, 'campaign' => $campaign]);
                 Command::pick($sms->from, ['count' => $count, 'campaign' => $campaign]);
                 return true;
             }); break;
-            
+
+            case $sms->match("Pick {count} {campaign}", function ($count, $campaign) use ($sms) {
+                \Log::info(['count' => $count, 'campaign' => $campaign]);
+                Command::pick($sms->from, ['count' => $count, 'campaign' => $campaign]);
+                return true;
+            }); break;
+
             default:
                 $sms->match("{*.}", function ($catch) use ($sms) {
                     \Log::info('catch = ' . $catch);

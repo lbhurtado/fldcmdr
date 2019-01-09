@@ -29,6 +29,20 @@ class Tag extends Model
         });
     }
 
+    public static function validateCode($code)
+    {
+        $code = strtoupper($code);
+
+        return ! is_null(static::whereCode($code)->first());
+    }
+
+    public static function withCode($code)
+    {
+        $code = strtoupper($code);
+
+        return static::whereCode($code)->first();
+    }
+
     public function setCodeAttribute($value)
     {
         $this->attributes['code'] = strtoupper($value);

@@ -32,6 +32,8 @@ class Command
 
     private $message;
 
+    private $report = false;
+
     public static function tag($mobile, $attributes = [])
     {
     	//improve on this
@@ -61,9 +63,23 @@ class Command
         $keyword = Arr::get($attributes, 'keyword');
         $name = Arr::get($attributes, 'name') ?? 'Anonymous';
 
-        $sociable = Contact::firstOrCreate(compact('mobile', 'name'));
+        if (Tag::validateCode($keyword)) {
+            $sociable = Contact::firstOrCreate(compact('mobile'), compact('mobile', 'name'));
 
-        return (new static($sociable))->claimTag($keyword);
+            // if (! $sociable->wasRecentlyCreated) {
+            //     if ($sociable->name != $name) {
+            //         $sociable->name = $name;
+            //         $sociable->save();
+            //     }
+            // }
+            // $sociable = Contact::firstOrCreate(compact('mobile', 'name'));
+
+            return (new static($sociable))->claimTag($keyword);
+        }
+
+        // $sociable = Contact::firstOrCreate(compact('mobile', 'name'));
+
+        // return (new static($sociable))->claimTag($keyword);
     }
 
     public static function pick($mobile, $arguments)
@@ -154,19 +170,29 @@ class Command
     {
         $sociable = null;
 
-        optional(Tag::whereCode($stochastic)->first(), function($tag) use (&$sociable, $stochastic) {
+        optional(Tag::withCode($stochastic)->first(), function($tag) use (&$sociable, $stochastic) {
             $sociable = $this->getSociable();
+
             $sociable->upline()->associate($tag->tagger);
             $sociable->save();
+
             $tag->groups->each(function ($group) use ($sociable) {
                 $sociable->assignGroup($group);
             });
             $tag->areas->each(function ($area) use ($sociable) {
                 $sociable->assignArea($area);
             });
-            $tag->campaigns->each(function ($campaign) use ($sociable) {
+
+            if (! $sociable->wasRecentlyCreated) {
+                $campaign = Campaign::whereName('ulit')->first();
                 SendCampaign::dispatch($sociable, $campaign);
-            });
+            }
+            else {
+                $tag->campaigns->each(function ($campaign) use ($sociable) {
+                    SendCampaign::dispatch($sociable, $campaign);    
+                });
+            }
+
             //this is working
             //disabled for now            
             // tap(static::tag($sociable->mobile, ['keyword' => $stochastic . '_',]), function ($tag) use ($sociable) {
@@ -276,9 +302,16 @@ class Command
 
     protected function campaign()
     {
-        $this->contacts->each(function ($contact) {
-            SendCampaign::dispatch($contact, $this->getContextCampaign());
-        });
+        $campaign = $this->getContextCampaign();
+
+        if (! $campaign->disabled) {
+            $this->contacts->each(function ($contact) use ($campaign) {
+                SendCampaign::dispatch($contact, $campaign);
+            });
+            $this->report = true;
+        }
+        $campaign->disabled = true;
+        $campaign->save();
 
         return $this;
     }
@@ -325,6 +358,10 @@ class Command
         switch ($this->cmd) {
              case 'pick':
                  if ($this->status == 'ok') {
+
+                    if ($this->report == false)
+                        return;
+
                     $this->contacts->each(function($contact) use (&$list) {
                         $mobile = Phone::number($contact->mobile, 3);
                         $list .= "{$contact->name} {$mobile}\n";
@@ -333,8 +370,8 @@ class Command
                                 ucwords($this->cmd) . ' List:',
                                 $list,
                             ]);
+                    SendFeedback::dispatch($this->commander, $msg);                        
 
-                    SendFeedback::dispatch($this->commander, $msg);
                  }
 
                  return $this;

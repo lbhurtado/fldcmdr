@@ -23,11 +23,24 @@ class Campaign extends Model
 
     protected $appends = [
     	'air_time',
+        'disabled'
     ];
 
     public function getAirTimeAttribute()
     {
         return $this->extra_attributes['air_time'];
+    }
+
+    public function getDisabledAttribute()
+    {
+        return $this->extra_attributes["disabled"] ?? false;
+    }
+
+    public function setDisabledAttribute($value)
+    {
+        $this->extra_attributes['disabled'] = $value;
+
+        return $this;
     }
 
     public function setAirTimeAttribute($value)
