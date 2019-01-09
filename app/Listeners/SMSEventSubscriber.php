@@ -17,11 +17,6 @@ class SMSEventSubscriber
         switch (true)
         {
 
-// $sms->match("pick {*.} {*.}", function ($count, $campaign) use ($sms) {
-//     \Log::info(['count' => $count, 'campaign' => $campaign]);
-//     return true;
-// })
-
             case $sms->match("{campaign}#{keyword}", function ($campaign, $keyword) use ($sms) {
                 \Log::info(compact('campaign', 'keyword'));
                 Command::tag($sms->from, compact('campaign', 'keyword'));
@@ -48,6 +43,18 @@ class SMSEventSubscriber
                 return true;
             }): break;
 
+            case $sms->match("broadcast {message}", function ($message) use ($sms) {
+                \Log::info(['message' => $message]);
+                Command::broadcast($sms->from, ['message' => $message]);
+                return true;
+            }); break;
+
+            case $sms->match("pick {count} {campaign}", function ($count, $campaign) use ($sms) {
+                \Log::info(['count' => $count, 'campaign' => $campaign]);
+                Command::pick($sms->from, ['count' => $count, 'campaign' => $campaign]);
+                return true;
+            }); break;
+            
             default:
                 $sms->match("{*.}", function ($catch) use ($sms) {
                     \Log::info('catch = ' . $catch);
