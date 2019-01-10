@@ -30,7 +30,7 @@ class CommandTest extends TestCase
         // $this->mobile = '09189362340';
                 $this->mobile = $this->faker->mobileNumber;
         $this->contact = factory(Contact::class)->create(['mobile' => $this->mobile]);
-        $this->group = factory(Group::class)->create();
+        $this->group = factory(Group::class)->create(['name' => 'global']);
         $this->area = factory(Area::class)->create();
         $this->contact->assignGroup($this->group);
         $this->contact->assignArea($this->area);
@@ -174,11 +174,14 @@ class CommandTest extends TestCase
         $this->assertEquals($this->group->name, $claimer3->groups()->first()->name);
         $this->assertEquals($this->area->name, $claimer3->areas()->first()->name);
 
-        $group = factory(Group::class)->create();
+        $group = factory(Group::class)->create(['name' => 'local']);
         $tag4 = Command::tag($claimer2->mobile, [
+            'keyword' => 'retsel',
             'group' => $group->name,
         ]);
-        $claimer4 = Command::claim($this->faker->mobileNumber, ['keyword' => $tag4->code]);
+
+        $claimer4 = Command::claim($this->faker->mobileNumber, ['keyword' => 'retsel']);
+
         $this->assertNotEquals($this->group->name, $claimer4->groups()->first()->name);
         $this->assertEquals($group->name, $claimer4->groups()->first()->name);
         $this->assertEquals($this->area->name, $claimer4->areas()->first()->name);

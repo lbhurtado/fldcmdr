@@ -83,21 +83,21 @@ class Tag extends Model
 
     public function groups()
     {
-        return $this->morphedByMany(Group::class, 'taggable');
+        return $this->morphedByMany(Group::class, 'taggable')->withTimestamps();
     }
 
     public function roles()
     {
-        return $this->morphedByMany(Role::class, 'taggable');
+        return $this->morphedByMany(Role::class, 'taggable')->withTimestamps();
     }
 
     public function areas()
     {
-        return $this->morphedByMany(Area::class, 'taggable');
+        return $this->morphedByMany(Area::class, 'taggable')->withTimestamps();
     }
 
     public function campaigns()
     {
-        return $this->morphedByMany(Campaign::class, 'taggable');
+        return $this->morphedByMany(Campaign::class, 'taggable')->withTimestamps();
     }
 }

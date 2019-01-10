@@ -36,16 +36,15 @@ class WebHookTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    // /** @test */
     public function server_webhook_accepts_sms_post()
     {
         $query = http_build_query($this->getData());
-
         $response = $this->post('/webhook/sms?' . $query);
         $response->assertStatus(200);
     }
 
-    /** @test */
+    // /** @test */
     public function server_webhook_does_not_accept_sms_without_secret()
     {
         $invalid_secret = $this->faker->sentence;
@@ -56,7 +55,7 @@ class WebHookTest extends TestCase
         $response->assertStatus(302);
     }
 
-    /** @test */
+    // /** @test */
     public function server_webhook_persists_message()
     {
         $message = $this->faker->word;

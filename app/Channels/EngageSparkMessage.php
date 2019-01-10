@@ -40,6 +40,14 @@ class EngageSparkMessage
     public $content;
 
     /**
+     * The sender id.
+     *
+     * @var string
+     */
+    public $sender_id;
+
+
+    /**
      * Create a message object.
      * @param string $content
      * @return static
@@ -103,6 +111,13 @@ class EngageSparkMessage
     public function recipient_type($recipient_type)
     {
         $this->recipient_type = $recipient_type;
+        
+        return $this;
+    }
+
+    public function sender_id($sender_id)
+    {
+        $this->sender_id = $sender_id;
         
         return $this;
     }

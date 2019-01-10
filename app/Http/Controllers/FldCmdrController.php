@@ -57,9 +57,11 @@ class FldCmdrController extends Controller
 
     public function broadcast(BotMan $bot, $message)
     {
+        $origin = Messenger::hook($bot)->getUser();
+
         $users = User::all();
-        $users->each(function($user) use ($bot, $message) {
-            $user->notify(new UserBroadcast($message));
+        $users->each(function($user) use ($origin, $bot, $message) {
+            $user->notify(new UserBroadcast($origin, $message));
         });
 
         $bot->reply(trans('broadcast.sent', ['count' => $users->count()]));

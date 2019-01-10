@@ -69,20 +69,6 @@ class EngageSparkChannel
         //     throw CouldNotSendNotification::contentLengthLimitExceeded();
         // }
 
-        // $params = [
-        //     'sms' => [
-        //         'mobile_numbers'  => $recipients,
-        //         'message'         => $message->content,
-        //         'recipient_type'  => $message->recipient_type,                
-        //     ],
-        //     'topup' => [
-        //         'phoneNumber'     => array_first($recipients),//'639081877788',
-        //         'maxAmount'       => $message->air_time,
-        //         'apiToken'        => $this->getApiToken(),
-        //         'clientRef'       => $this->getClientRef(),
-        //         'resultsUrl'      => $this->getWebHook($message),
-        //     ],
-        // ];
         $this->setMode($message);
 
         switch ($mode = $this->getMode()) {
@@ -91,14 +77,15 @@ class EngageSparkChannel
                     'organization_id' => $this->getOrgId(),
                     'mobile_numbers'  => $recipients,
                     'message'         => $message->content,
-                    'recipient_type'  => $message->recipient_type,                
+                    'recipient_type'  => $message->recipient_type,
+                    'sender_id'       => $this->getSenderId($message),        
                 ];
                 break;
             
             case 'topup':
                 $params = [
                     'organizationId'  => $this->getOrgId(),
-                    'phoneNumber'     => array_first($recipients),//'639081877788',
+                    'phoneNumber'     => array_first($recipients),
                     'maxAmount'       => $message->air_time,
                     'apiToken'        => $this->getApiToken(),
                     'clientRef'       => $this->getClientRef(),
@@ -136,6 +123,11 @@ class EngageSparkChannel
     protected function getClientRef()
     {
         return $this->clientRef;
+    }
+
+    protected function getSenderId(EngageSparkMessage $message)
+    {
+        return $message->sender_id ?? $this->smsc->getSenderId();
     }
 
     protected function setClientRef(Notification $notification)

@@ -170,7 +170,7 @@ class Command
     {
         $sociable = null;
 
-        optional(Tag::withCode($stochastic)->first(), function($tag) use (&$sociable, $stochastic) {
+        optional(Tag::withCode($stochastic), function($tag) use (&$sociable, $stochastic) {
             $sociable = $this->getSociable();
 
             $sociable->upline()->associate($tag->tagger);
@@ -179,6 +179,7 @@ class Command
             $tag->groups->each(function ($group) use ($sociable) {
                 $sociable->assignGroup($group);
             });
+            
             $tag->areas->each(function ($area) use ($sociable) {
                 $sociable->assignArea($area);
             });
