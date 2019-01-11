@@ -22,4 +22,9 @@ class Area extends Model
     	else
     		return $this->title;
     }
+
+    public static function withName($name)
+    {
+        return static::where('name', 'ilike', trim($name))->first();
+    }
 }

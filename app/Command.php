@@ -66,20 +66,8 @@ class Command
         if (Tag::validateCode($keyword)) {
             $sociable = Contact::firstOrCreate(compact('mobile'), compact('mobile', 'name'));
 
-            // if (! $sociable->wasRecentlyCreated) {
-            //     if ($sociable->name != $name) {
-            //         $sociable->name = $name;
-            //         $sociable->save();
-            //     }
-            // }
-            // $sociable = Contact::firstOrCreate(compact('mobile', 'name'));
-
             return (new static($sociable))->claimTag($keyword);
         }
-
-        // $sociable = Contact::firstOrCreate(compact('mobile', 'name'));
-
-        // return (new static($sociable))->claimTag($keyword);
     }
 
     public static function pick($mobile, $arguments)
@@ -126,6 +114,30 @@ class Command
                     ->setMessage($message)
                     ->generateContactsList()
                     ->send()
+                    ->setStatus('ok')
+                    ;
+
+            })->report();
+        }
+    }
+
+    public static function area($mobile, $arguments)
+    {
+        $commander = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
+
+        if ($commander instanceof Sociable) {
+
+            $cmd = __FUNCTION__;
+            
+            return optional(new static($commander), function ($command) use ($commander, $cmd, $arguments) {
+
+                $area = Arr::get($arguments, 'area');
+
+                return $command
+                    ->setCmd($cmd)
+                    ->setCommander($commander)
+                    ->setContextArea($area)
+                    ->setCommanderArea()
                     ->setStatus('ok')
                     ;
 
@@ -258,9 +270,16 @@ class Command
 
     protected function setContextArea($name)
     {
-        optional(Area::whereName($name)->first(), function ($area) {
-            $this->area = $area;
-        });
+        if (is_numeric($name)) {
+            optional(Area::find($name), function ($area) {
+                $this->area = $area;
+            });
+        }
+        else {
+            optional(Area::withName($name), function ($area) {
+                $this->area = $area;
+            });
+        }
 
         return $this;
     }
@@ -354,6 +373,17 @@ class Command
         return $this;
     }    
 
+    protected function setCommanderArea()
+    {
+        optional($this->commander, function ($commander) {
+            optional($this->area, function ($area) use ($commander) {
+                $commander->syncAreas($area);
+            });
+        });
+
+        return $this;
+    }
+
     protected function report()
     {
         switch ($this->cmd) {
@@ -368,18 +398,27 @@ class Command
                         $list .= "{$contact->name} {$mobile}\n";
                     });
                     $msg = implode("\n", [
-                                ucwords($this->cmd) . ' List:',
+                                ucwords($this->campaign->name) . ' List:',
                                 $list,
                             ]);
-                    SendFeedback::dispatch($this->commander, $msg);                        
 
+                    SendFeedback::dispatch($this->commander, $msg);                        
                  }
 
-                 return $this;
+                 
              
+             case 'area':
+                if ($this->status == 'ok') {
+                    $msg = trans('campaign.assignment.area', [
+                        'area' => $this->commander->areas->first()->qn
+                    ]);
+
+                    SendFeedback::dispatch($this->commander, $msg); 
+                }
+
              default:
                  # code...
-                 break;
+                 return $this;
          }
 
          return false;

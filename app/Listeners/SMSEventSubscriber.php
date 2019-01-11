@@ -20,6 +20,7 @@ class SMSEventSubscriber
             case $sms->match("{campaign}#{keyword}", function ($campaign, $keyword) use ($sms) {
                 \Log::info(compact('campaign', 'keyword'));
                 Command::tag($sms->from, compact('campaign', 'keyword'));
+
                 return true;
             }): break;
 
@@ -30,40 +31,48 @@ class SMSEventSubscriber
 
             case $sms->match("@{area}", function ($area) use ($sms) {
                 \Log::info('area = ' . $area);
+                Command::area($sms->from, compact('area'));
+
                 return true;
             }): break;
 
             case $sms->match("?{status}", function ($status) use ($sms) {
                 \Log::info('status = ' . $status);
+
                 return true;
             }): break;
 
             case $sms->match("!{warning}", function ($warning) use ($sms) {
                 \Log::info('warning = ' . $warning);
+
                 return true;
             }): break;
 
             case $sms->match("broadcast {message}", function ($message) use ($sms) {
                 \Log::info(['message' => $message]);
                 Command::broadcast($sms->from, ['message' => $message]);
+
                 return true;
             }); break;
 
             case $sms->match("Broadcast {message}", function ($message) use ($sms) {
                 \Log::info(['message' => $message]);
                 Command::broadcast($sms->from, ['message' => $message]);
+
                 return true;
             }); break;
 
             case $sms->match("pick {count} {campaign}", function ($count, $campaign) use ($sms) {
                 \Log::info(['count' => $count, 'campaign' => $campaign]);
                 Command::pick($sms->from, ['count' => $count, 'campaign' => $campaign]);
+
                 return true;
             }); break;
 
             case $sms->match("Pick {count} {campaign}", function ($count, $campaign) use ($sms) {
                 \Log::info(['count' => $count, 'campaign' => $campaign]);
                 Command::pick($sms->from, ['count' => $count, 'campaign' => $campaign]);
+
                 return true;
             }); break;
 

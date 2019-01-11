@@ -38,9 +38,7 @@ class Tag extends Model
 
     public static function withCode($code)
     {
-        $code = strtoupper($code);
-
-        return static::whereCode($code)->first();
+        return static::where('code', 'ilike', trim($code))->first();
     }
 
     public function setCodeAttribute($value)

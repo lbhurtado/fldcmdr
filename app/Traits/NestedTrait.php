@@ -66,7 +66,22 @@ trait NestedTrait
 
     public function getTitleAttribute()
     {
-        return $this->attributes['name'] = title_case(str_replace('_', ' ', $this->attributes['name']));
+        $string = str_replace('_', ' ', strtolower($this->attributes['name']));
+        $array = explode(' ', $string);
+        foreach ($array as $key => &$word) {
+            // $word = ucfirst($word);
+            if ($key == 0)
+                $word = ucfirst($word);
+            else
+                if (in_array($word, ['in', 'of', 'on', 'the']))
+                    $word = strtolower($word);
+                else     
+                    $word = ucfirst($word);   
+        }
+        $string = implode(' ', $array);
+
+        return $this->attributes['name'] = $string;
+        // return $this->attributes['name'] = title_case(str_replace('_', ' ', $this->attributes['name']));
     }
 
     protected function lineage($pieces, $default = true)
