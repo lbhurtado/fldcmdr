@@ -25,6 +25,11 @@ class Area extends Model
 
     public static function withName($name)
     {
-        return static::where('name', 'ilike', trim($name))->first();
+        return optional(static::all()->filter(function ($value, $key) use ($name) {
+            if (strtolower($value->name) == strtolower($name)) {
+                return $value;
+            }
+        }))->first();
+        // return static::where('name', 'ilike', trim($name))->first();
     }
 }
