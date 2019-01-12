@@ -6,6 +6,7 @@ return [
 	'feedback' => ":name:\n\n:message \n- HQ",
 	'broadcast' => ":to:\n\n:message \n- :from",
 	'assignment' => [
+		'group' => "You are now part of :group group.",
 		'area' => "You are now operating in :area.",
 	],
 ];

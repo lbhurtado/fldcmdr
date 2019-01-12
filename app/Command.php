@@ -121,6 +121,30 @@ class Command
         }
     }
 
+    public static function group($mobile, $arguments)
+    {
+        $commander = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
+
+        if ($commander instanceof Sociable) {
+
+            $cmd = __FUNCTION__;
+            
+            return optional(new static($commander), function ($command) use ($commander, $cmd, $arguments) {
+
+                $group = Arr::get($arguments, 'group');
+
+                return $command
+                    ->setCmd($cmd)
+                    ->setCommander($commander)
+                    ->setContextGroup($group)
+                    ->setCommanderGroup()
+                    ->setStatus('ok')
+                    ;
+
+            })->report();
+        }
+    }
+
     public static function area($mobile, $arguments)
     {
         $commander = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
@@ -265,9 +289,16 @@ class Command
 
     protected function setContextGroup($name)
     {
-        optional(Group::whereName($name)->first(), function ($group) {
-            $this->group = $group;
-        });
+        if (is_numeric($name)) {
+            optional(Group::find($name), function ($group) {
+                $this->group = $area;
+            });
+        }
+        else {
+            optional(Group::withName($name), function ($group) {
+                $this->group = $group;
+            });
+        }
 
         return $this;
     }
@@ -377,6 +408,17 @@ class Command
         return $this;
     }    
 
+    protected function setCommanderGroup()
+    {
+        optional($this->commander, function ($commander) {
+            optional($this->group, function ($group) use ($commander) {
+                $commander->syncGroups($group);
+            });
+        });
+
+        return $this;
+    }
+
     protected function setCommanderArea()
     {
         optional($this->commander, function ($commander) {
@@ -409,7 +451,19 @@ class Command
                     SendFeedback::dispatch($this->commander, $msg);                        
                  }
 
-                 
+                 break;
+
+             case 'group':
+                if ($this->status == 'ok') {
+                    $msg = trans('campaign.assignment.group', [
+                        'group' => $this->commander->groups->first()->name
+                    ]);
+
+                    // return $this->group;
+                    SendFeedback::dispatch($this->commander, $msg); 
+                }
+
+                break;
              
              case 'area':
                 if ($this->status == 'ok') {
@@ -420,11 +474,13 @@ class Command
                     SendFeedback::dispatch($this->commander, $msg); 
                 }
 
+                break;
+
              default:
                  # code...
-                 return $this;
+                 // return $this;
          }
 
-         return false;
+         return $this;
     }
 }

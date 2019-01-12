@@ -13,8 +13,8 @@ class GroupSeeder extends Seeder
     public function run()
     {
         DB::table('groups')->delete();
-        Group::build('hq.staff.personnel');
-        Group::build('hq.staff.intelligence');
-        Group::build('hq.staff.operation');   
+        Group::build('hq.slate');
+        Group::build('hq.original');
+        Group::build('hq.guardian');   
     }
 }

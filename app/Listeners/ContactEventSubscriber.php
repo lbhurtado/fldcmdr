@@ -16,14 +16,14 @@ class ContactEventSubscriber
                 // \Log::info('here');
         $contact = $event->getContact();
         $area = $event->getArea();
-        // Tag::all()->each(function ($tag) use ($contact, $area) {
-        //     if ($tag->tagger instanceof Contact)
-        //         if ($tag->tagger->id == $contact->id) {
-        //             $tag->areas()->delete();
-        //             // $tag->setArea($area);
-        //             // \Log::info($area);
-        //         }
-        // });
+        Tag::all()->each(function ($tag) use ($contact, $area) {
+            if ($tag->tagger instanceof Contact)
+                if ($tag->tagger->id == $contact->id) {
+                    // $tag->areas()->detach();
+                    $tag->setArea($area);
+                    // \Log::info($area);
+                }
+        });
 
     }
 

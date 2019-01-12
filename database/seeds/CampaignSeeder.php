@@ -30,7 +30,7 @@ class CampaignSeeder extends Seeder
             ],
             [
                 'name'     => 'special',
-                'message'  => 'Salamat sa iyong suporta.',
+                'message'  => 'Salamat sa iyong suporta. - Levi at Malot',
                 'extra_attributes'  => [
                     'air_time' => 10,
                 ],
