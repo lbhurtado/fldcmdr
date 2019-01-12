@@ -2,8 +2,9 @@
 
 namespace App\Traits;
 
-use App\Area;
+use App\{Area, Contact};
 use Illuminate\Support\Collection;
+use App\Events\{ContactEvent, ContactEvents};
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait HasAreas
@@ -91,7 +92,16 @@ trait HasAreas
     {
         $this->areas()->detach();
 
-        return $this->assignArea($areas);
+        $retval = $this->assignArea($areas);
+
+        if ($this instanceof Contact){
+            $event = new ContactEvent($this);
+            $event->setArea($areas[0]);
+            event(ContactEvents::AREA_SYNCED, $event);
+        }
+        
+
+        return $retval;
     }
 
     /**

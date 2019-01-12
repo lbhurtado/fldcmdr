@@ -208,9 +208,9 @@ class Command
 
             //this is working
             //disabled for now            
-            // tap(static::tag($sociable->mobile, ['keyword' => $stochastic . '_',]), function ($tag) use ($sociable) {
-            //     SendInstruction::dispatch($sociable, $tag->code);
-            // });
+            tap(static::tag($sociable->mobile, ['keyword' => $stochastic . '_',]), function ($tag) use ($sociable) {
+                SendInstruction::dispatch($sociable, $tag->code);
+            });
         });
 
         return $sociable;
@@ -244,6 +244,10 @@ class Command
     //improve on this
     protected function getContextArea()
     {
+        return $this->area 
+            ?? optional(optional($this->getSociable()->upline)->areas())->first()
+            ?? $this->getSociable()->areas()->latest()->first()
+            ;
         return $this->area ?? $this->getSociable()->areas()->latest()->first();
     }
 

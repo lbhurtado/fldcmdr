@@ -17,6 +17,8 @@ class ContactEvent
 
     private $contact;
 
+    private $area;
+
     public function __construct(Contact $contact)
     {
         $this->contact = $contact;
@@ -30,5 +32,17 @@ class ContactEvent
     public function getContact()
     {
         return $this->contact;
+    }
+
+    public function setArea($area)
+    {
+        $this->area = $area;
+
+        return $this;
+    }
+
+    public function getArea()
+    {
+        return $this->area;
     }
 }

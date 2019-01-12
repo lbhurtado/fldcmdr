@@ -13,7 +13,9 @@ class SMSWebHookController extends Controller
 	{
 		\Log::info($request);
 
-		SMS::create($request->toArray());
+		optional(SMS::create($request->toArray()), function ($sms) {
+			
+		});
 
 	    return response(env('APP_NAME'), 200);				
 	}

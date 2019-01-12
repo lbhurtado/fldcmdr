@@ -14,7 +14,7 @@ class AreaSeeder extends Seeder
     {
         DB::table('areas')->delete();
 
-        Area::build('5th District of Leyte.City of Baybay.The Altavista');
+        Area::build('5th District of Leyte.City of Baybay.Altavista');
         Area::build('5th District of Leyte.City of Baybay.Ambacan');
         Area::build('5th District of Leyte.City of Baybay.Amguhan');
         Area::build('5th District of Leyte.City of Baybay.Ampihanon');
