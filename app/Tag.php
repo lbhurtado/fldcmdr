@@ -7,6 +7,8 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasSchemalessAttributes;
 
+use App\Eloquent\TaggablePivot;
+
 class Tag extends Model
 {
 	use HasSchemalessAttributes;
@@ -21,7 +23,8 @@ class Tag extends Model
 
     public static function createWithTagger($attributes, $tagger)
     {
-        $tagger->tags()->delete();
+        // $tagger->tags()->delete();
+        $tagger->removeTags();
         
         return tap(static::make($attributes), function ($tag) use ($tagger) {
             $tag->tagger()->associate($tagger);
@@ -63,8 +66,12 @@ class Tag extends Model
         return $this;
     }
 
-    public function setArea(Area $area)
+    public function setArea(Area $area, $detach = false)
     {
+        if ($detach == true) {
+            $this->areas()->detach();
+        }
+
         $this->areas()->save($area);
 
         return $this;
@@ -82,6 +89,15 @@ class Tag extends Model
         $this->roles()->save($role);
 
         return $this;
+    }
+
+    public function newPivot(Model $parent, array $attributes, $table, $exists, $using = NULL)
+    {
+        if ($parent instanceof Area) {
+            return new TaggablePivot($parent, $attributes, $table, $exists);
+        }
+
+        return parent::newPivot($parent, $attributes, $table, $exists);
     }
 
     public function groups()

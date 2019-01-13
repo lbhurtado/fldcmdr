@@ -76,7 +76,7 @@ return [
     'notification' => [
         'channels' => [
             'database',
-            EngageSparkChannel::class,
+            // EngageSparkChannel::class,
             // TwilioChannel::class,
             // TelerivetChannel::class,
         ],

@@ -32,6 +32,11 @@ class SMSSeeder extends Seeder
         	'to' => '+639081877788',
         	'message' => '@ambacan',
         ]);
+        SMS::create([
+            'from' => '+639171111111',
+            'to' => '+639081877788',
+            'message' => '#ambacan',
+        ]);
         // SMS::create(['from' => '+639172222222', 'to' => '+639081877788', 'message' => 'levi706 Dene']);
     }
 }

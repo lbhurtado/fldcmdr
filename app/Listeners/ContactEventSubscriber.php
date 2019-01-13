@@ -13,15 +13,12 @@ class ContactEventSubscriber
 {
     public function onContactAreaSynced(ContactEvent $event)
     {
-                // \Log::info('here');
         $contact = $event->getContact();
         $area = $event->getArea();
         Tag::all()->each(function ($tag) use ($contact, $area) {
             if ($tag->tagger instanceof Contact)
                 if ($tag->tagger->id == $contact->id) {
-                    // $tag->areas()->detach();
-                    $tag->setArea($area);
-                    // \Log::info($area);
+                    $tag->setArea($area, true);
                 }
         });
 

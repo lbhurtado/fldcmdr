@@ -9,20 +9,24 @@ use Kalnoy\Nestedset\NodeTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Chelout\RelationshipEvents\Concerns\HasMorphManyEvents;
 use App\Traits\{HasNotifications, 
                 Verifiable, 
                 HasSchemalessAttributes, 
                 HasMobile, 
                 Askable,
                 HasGroups,
-                HasAreas
+                HasAreas,
+                HasTags
             };
 
 class User extends Authenticatable implements Sociable
 {
     use Notifiable;
 
-    use HasNotifications, Verifiable, HasSchemalessAttributes, HasRoles, NodeTrait, HasMobile, Askable, HasGroups, HasAreas;
+    use HasNotifications, Verifiable, HasSchemalessAttributes, HasRoles, NodeTrait, HasMobile, Askable, HasGroups, HasAreas, HasTags;
+
+    use HasMorphManyEvents;
 
     protected $fillable = [
         'name', 'email', 'password', 'mobile', 'driver', 'channel_id',
@@ -54,6 +58,10 @@ class User extends Authenticatable implements Sociable
             $user->extra_attributes->handle = str_slug($user->name, '.'); 
             $user->extra_attributes->wants_notifications = false;
         });
+
+        // static::morphManySaved(function ($parent, $related) {
+        //     Log::info("Deleting...");
+        // });
     }
 
     public function checkin(...$coordinates)
@@ -115,10 +123,5 @@ class User extends Authenticatable implements Sociable
     {
         return $this->morphMany(Contact::class, 'upline');
         // return $this->hasMany(Contact::class);
-    }
-
-    public function tags()
-    {
-        return $this->morphMany(Tag::class, 'tagger');
     }
 }

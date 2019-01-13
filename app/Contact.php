@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\{HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups, HasAreas};
+use App\Traits\{HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups, HasAreas, HasTags};
 
 class Contact extends Model implements Sociable
 {
     use Notifiable;
 
-	use HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups, HasRoles, HasAreas;
+	use HasNotifications, HasMobile, Askable, HasSchemalessAttributes, HasGroups, HasRoles, HasAreas, HasTags;
 	
     protected $table = 'contacts';
 
@@ -38,7 +38,7 @@ class Contact extends Model implements Sociable
         parent::boot();
 
         static::creating(function($user) {
-            $user->mobile   = Phone::number($user->mobile);
+            $user->mobile = Phone::number($user->mobile);
         });
     }
 
@@ -109,11 +109,5 @@ class Contact extends Model implements Sociable
         $this->extra_attributes['telerivet_id'] = $value;
 
         return $this;
-    }
-
-    //put this in trait
-    public function tags()
-    {
-        return $this->morphMany(Tag::class, 'tagger');
     }
 }
