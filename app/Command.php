@@ -34,6 +34,8 @@ class Command
 
     private $report = false;
 
+    private $keyword;
+
     public static function tag($mobile, $attributes = [])
     {
     	//improve on this
@@ -59,15 +61,28 @@ class Command
 
     public static function claim($mobile, $attributes)
     {
-        //improve on this
+        $cmd = __FUNCTION__;
+
         $keyword = Arr::get($attributes, 'keyword');
         $name = Arr::get($attributes, 'name') ?? 'Anonymous';
 
-        if (Tag::validateCode($keyword)) {
-            $sociable = Contact::firstOrCreate(compact('mobile'), compact('mobile', 'name'));
 
-            return (new static($sociable))->claimTag($keyword);
-        }
+        if (! Tag::validateCode($keyword)) return;
+    
+        $commander = Contact::firstOrCreate(compact('mobile'), compact('mobile', 'name'));
+
+        return optional(new static($commander), function ($command) use ($commander, $cmd, $keyword) {
+
+            $command
+                    ->setCmd($cmd)
+                    ->setCommander($commander)
+                    ->setKeyword($keyword)
+                    ->tagclaim()
+                    ;
+
+            return $command;
+        });
+        // return (new static($commander))->claimTag($keyword);
     }
 
     public static function pick($mobile, $arguments)
@@ -238,6 +253,11 @@ class Command
         });
 
         return $sociable;
+    }
+
+    protected function tagclaim()
+    {
+        $this->claimTag($this->getKeyword());
     }
 
     protected function generateCode($seed = null)
@@ -428,6 +448,18 @@ class Command
         });
 
         return $this;
+    }
+
+    protected function setKeyword($keyword)
+    {
+        $this->keyword = $keyword;
+
+        return $this;
+    }
+
+    protected function getKeyword()
+    {
+        return $this->keyword;
     }
 
     protected function report()
