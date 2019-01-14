@@ -78,6 +78,8 @@ class Command
                     ->setCommander($commander)
                     ->setKeyword($keyword)
                     ->tagclaim()
+                    // ->setCommanderArea()
+                    ->setStatus('ok')
                     ;
 
             return $command;
@@ -258,6 +260,8 @@ class Command
     protected function tagclaim()
     {
         $this->claimTag($this->getKeyword());
+
+        return $this;
     }
 
     protected function generateCode($seed = null)
@@ -443,6 +447,9 @@ class Command
     {
         optional($this->commander, function ($commander) {
             optional($this->area, function ($area) use ($commander) {
+            // optional($this->getContextArea(), function ($area) use ($commander) {
+                \Log::info("Command::setCommanderArea");
+                \Log::info($area);
                 $commander->syncAreas($area);
             });
         });

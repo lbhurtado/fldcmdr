@@ -76,7 +76,7 @@ return [
     'notification' => [
         'channels' => [
             'database',
-            EngageSparkChannel::class,
+            // EngageSparkChannel::class,
             // TwilioChannel::class,
             // TelerivetChannel::class,
         ],
@@ -107,3 +107,7 @@ return [
         ],
     ],
 ];
+
+        // php artisan migrate:fresh && php artisan db:seed && php artisan db:seed --class=SMSSeeder
+        // tail -100 storage/logs/laravel.log
+        // ssh -t forge@teccsbot.serbis.io 'cd teccsbot.serbis.io/manual/fldcmdr && git pull'
