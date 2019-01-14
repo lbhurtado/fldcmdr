@@ -26,6 +26,8 @@ class SMSEventSubscriber
 
             case $sms->match("&{group}", function ($group) use ($sms) {
                 \Log::info('group = ' . $group);
+                Command::group($sms->from, compact('group'));
+
                 return true;
             }): break;
 

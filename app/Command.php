@@ -38,17 +38,22 @@ class Command
 
     public static function tag($mobile, $attributes = [])
     {
+        $cmd = __FUNCTION__;
     	//improve on this
-    	$sociable = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
+    	$commander = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
 
-        if ($sociable instanceof Sociable) {
-            optional(new static($sociable), function ($command) use ($attributes, &$tag) {
+        \Log::info($commander->groups->first()->name . ' is group');
+        
+        if ($commander instanceof Sociable) {
+            optional(new static($commander), function ($command) use ($commander, $attributes, $cmd, &$tag) {
                 $area = Arr::get($attributes, 'area');
                 $group = Arr::get($attributes, 'group');
                 $campaign = Arr::get($attributes, 'campaign');
                 $stochastic = Arr::get($attributes, 'keyword');
 
                 $tag = $command
+                    ->setCmd($cmd)
+                    ->setCommander($commander)
                     ->setContextGroup($group)
                     ->setContextArea($area)
                     ->setContextCampaign($campaign)
@@ -206,11 +211,16 @@ class Command
 
     	$sociable = $this->getSociable();
 
+        // if ($code == 'ambacan') {
+        \Log::info(compact('code'));
+        // }
     	return tap(Tag::createWithTagger(compact('code'), $sociable), function ($tag) {
     		optional($this->getContextGroup(), function ($group) use ($tag) {
+                \Log::info("createTag.group = {$group->name}");
     			$tag->setGroup($group);    			
     		});
             optional($this->getContextArea(), function ($area) use ($tag) {
+                \Log::info("createTag.area = {$area->name}");
                 $tag->setArea($area);             
             });
             optional($this->getContextCampaign(), function ($campaign) use ($tag) {
@@ -286,15 +296,18 @@ class Command
     //improve on this
     protected function getContextGroup()
     {
-    	return $this->group ?? $this->getSociable()->groups()->latest()->first();
+    	return $this->group 
+            ?? $this->getSociable()->groups()->latest()->first()
+            ?? optional(optional($this->getSociable()->upline)->groups())->first()
+            ;
     }
 
     //improve on this
     protected function getContextArea()
     {
         return $this->area 
-            ?? optional(optional($this->getSociable()->upline)->areas())->first()
             ?? $this->getSociable()->areas()->latest()->first()
+            ?? optional(optional($this->getSociable()->upline)->areas())->first()
             ;
         return $this->area ?? $this->getSociable()->areas()->latest()->first();
     }
@@ -315,7 +328,7 @@ class Command
     {
         if (is_numeric($name)) {
             optional(Group::find($name), function ($group) {
-                $this->group = $area;
+                $this->group = $group;
             });
         }
         else {
@@ -447,9 +460,6 @@ class Command
     {
         optional($this->commander, function ($commander) {
             optional($this->area, function ($area) use ($commander) {
-            // optional($this->getContextArea(), function ($area) use ($commander) {
-                \Log::info("Command::setCommanderArea");
-                \Log::info($area);
                 $commander->syncAreas($area);
             });
         });
