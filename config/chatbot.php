@@ -74,12 +74,16 @@ return [
         'location' => env('SURVEY_LOCATION', true),
     ],
     'notification' => [
-        'channels' => [
-            'database',
-            EngageSparkChannel::class,
+        'default_channel' => env('NOTIFICATION_CLASS', EngageSparkChannel::class),
+        'send' => env('SEND_NOTIFICATION', true),
+        'channels' => array_merge(['database'],[env('NOTIFICATION_CLASS')])
+        // [
+            
+            // 'database',
+            // EngageSparkChannel::class,
             // TwilioChannel::class,
             // TelerivetChannel::class,
-        ],
+        // ],
     ],
     'default' => [
         'password' => env('DEFAULT_PASSWORD', '1234'),
