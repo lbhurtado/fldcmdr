@@ -23,11 +23,7 @@ class DownlineVerified extends Notification
 
     public function via($notifiable)
     {
-        return array_merge(
-            ['database'], 
-            config('chatbot.notification.send') 
-                ? [config('chatbot.notification.default_channel')] 
-                : []);
+        return config('chatbot.notification.channels');
         return ['database', MessengerChannel::class];
     }
 

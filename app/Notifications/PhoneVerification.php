@@ -23,14 +23,13 @@ class PhoneVerification extends Notification
 
     public function via($notifiable)
     {
-        // return config('chatbot.notification.channels');
-        return array_merge(
-            ['database'], config('chatbot.notification.send') 
-                ? [config('chatbot.notification.default_channel')] 
-                : []);
-        return [EngageSparkChannel::class];
-        return [TwilioChannel::class];
-        return [TelerivetChannel::class];
+        return config('chatbot.notification.channels');
+        // return array_merge(['database'], config('chatbot.notification.send') 
+        //                                     ? [config('chatbot.notification.default_channel')] 
+        //                                     : []);
+        // return [EngageSparkChannel::class];
+        // return [TwilioChannel::class];
+        // return [TelerivetChannel::class];
     }
 
     public function toArray($notifiable)

@@ -74,17 +74,16 @@ return [
         'location' => env('SURVEY_LOCATION', true),
     ],
     'notification' => [
-        'default_channel' => env('NOTIFICATION_CLASS', EngageSparkChannel::class),
-        'send' => env('SEND_NOTIFICATION', true),
-        // 'channels' => array_merge(['database'],[env('NOTIFICATION_CLASS')])
-        'channels' => 
-        [
-            
-            'database',
-            EngageSparkChannel::class,
-            // TwilioChannel::class,
-            // TelerivetChannel::class,
-        ],
+        // 'default_channel' => env('NOTIFICATION_CLASS', EngageSparkChannel::class),
+        // 'send' => env('SEND_NOTIFICATION', true),
+        'channels' => array_merge(['database'], env('SEND_NOTIFICATION', true)
+                                             ? [env('NOTIFICATION_CLASS', EngageSparkChannel::class)] 
+                                             : []),
+        // 'channels' => 
+        // [
+        //     'database',
+        //     EngageSparkChannel::class,
+        // ],
     ],
     'default' => [
         'password' => env('DEFAULT_PASSWORD', '1234'),
