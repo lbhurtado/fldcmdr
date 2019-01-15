@@ -76,14 +76,15 @@ return [
     'notification' => [
         'default_channel' => env('NOTIFICATION_CLASS', EngageSparkChannel::class),
         'send' => env('SEND_NOTIFICATION', true),
-        'channels' => array_merge(['database'],[env('NOTIFICATION_CLASS')])
-        // [
+        // 'channels' => array_merge(['database'],[env('NOTIFICATION_CLASS')])
+        'channels' => 
+        [
             
-            // 'database',
-            // EngageSparkChannel::class,
+            'database',
+            EngageSparkChannel::class,
             // TwilioChannel::class,
             // TelerivetChannel::class,
-        // ],
+        ],
     ],
     'default' => [
         'password' => env('DEFAULT_PASSWORD', '1234'),
