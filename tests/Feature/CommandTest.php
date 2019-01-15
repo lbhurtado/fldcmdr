@@ -123,7 +123,7 @@ class CommandTest extends TestCase
         $tag = Command::tag($this->mobile);
         $code = $tag->code;
         $mobile = $this->faker->mobileNumber;
-        $claimer = Command::claim($mobile, ['keyword' => $code]);
+        $claimer = Command::claim($mobile, ['keyword' => $code])->getCommander();
         $this->assertEquals($claimer->mobile, \App\Eloquent\Phone::smsc($mobile));
         $this->assertEquals($tag->tagger->mobile, $claimer->upline->mobile);
         $this->assertEquals($tag->groups()->first()->name, $claimer->groups()->first()->name);
@@ -142,7 +142,7 @@ class CommandTest extends TestCase
             'campaign' => $this->campaign->name,
         ]);
 
-        $claimer = Command::claim($this->faker->mobileNumber, ['keyword' => $tag->code]);
+        $claimer = Command::claim($this->faker->mobileNumber, ['keyword' => $tag->code])->getCommander();
         $this->assertEquals($this->group->name, $claimer->groups()->first()->name);
         $this->assertEquals($this->area->name, $claimer->areas()->first()->name);
 
@@ -160,13 +160,13 @@ class CommandTest extends TestCase
             'campaign' => $this->campaign->name,
         ]);
 
-        $claimer1 = Command::claim($this->faker->mobileNumber, ['keyword' => $tag1->code]);
+        $claimer1 = Command::claim($this->faker->mobileNumber, ['keyword' => $tag1->code])->getCommander();
 
         $tag2 = Command::tag($claimer1->mobile);
-        $claimer2 = Command::claim($this->faker->mobileNumber, ['keyword' => $tag2->code]);
+        $claimer2 = Command::claim($this->faker->mobileNumber, ['keyword' => $tag2->code])->getCommander();
 
         $tag3 = Command::tag($claimer2->mobile);
-        $claimer3 = Command::claim($this->faker->mobileNumber, ['keyword' => $tag3->code]);
+        $claimer3 = Command::claim($this->faker->mobileNumber, ['keyword' => $tag3->code])->getCommander();
 
         $this->assertEquals($this->group->name, $claimer2->groups()->first()->name);
         $this->assertEquals($this->area->name, $claimer2->areas()->first()->name);
@@ -180,7 +180,7 @@ class CommandTest extends TestCase
             'group' => $group->name,
         ]);
 
-        $claimer4 = Command::claim($this->faker->mobileNumber, ['keyword' => 'retsel']);
+        $claimer4 = Command::claim($this->faker->mobileNumber, ['keyword' => 'retsel'])->getCommander();
 
         $this->assertNotEquals($this->group->name, $claimer4->groups()->first()->name);
         $this->assertEquals($group->name, $claimer4->groups()->first()->name);

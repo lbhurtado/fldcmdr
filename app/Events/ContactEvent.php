@@ -19,6 +19,8 @@ class ContactEvent
 
     private $area;
 
+    private $group;
+
     public function __construct(Contact $contact)
     {
         $this->contact = $contact;
@@ -41,8 +43,20 @@ class ContactEvent
         return $this;
     }
 
+    public function setGroup($group)
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
     public function getArea()
     {
         return $this->area;
+    }
+
+    public function getGroup()
+    {
+        return $this->group;
     }
 }

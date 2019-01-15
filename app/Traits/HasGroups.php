@@ -2,8 +2,9 @@
 
 namespace App\Traits;
 
-use App\Group;
+use App\{Group, Contact};
 use Illuminate\Support\Collection;
+use App\Events\{ContactEvent, ContactEvents};
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait HasGroups
@@ -91,7 +92,15 @@ trait HasGroups
     {
         $this->groups()->detach();
 
-        return $this->assignGroup($groups);
+        $retval = $this->assignGroup($groups); 
+
+        if ($this instanceof Contact){
+            $event = new ContactEvent($this);
+            $event->setGroup($groups[0]);
+            event(ContactEvents::GROUP_SYNCED, $event);
+        }
+
+        return $retval;
     }
 
     /**

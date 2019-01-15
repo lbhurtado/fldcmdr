@@ -41,8 +41,6 @@ class Command
         $cmd = __FUNCTION__;
     	//improve on this
     	$commander = User::findByMobile($mobile) ?? Contact::findByMobile($mobile);
-
-        \Log::info($commander->groups->first()->name . ' is group');
         
         if ($commander instanceof Sociable) {
             optional(new static($commander), function ($command) use ($commander, $attributes, $cmd, &$tag) {
@@ -429,6 +427,11 @@ class Command
         $this->status = $status;
 
         return $this;
+    }
+
+    public function getCommander()
+    {
+        return $this->commander;
     }
 
     protected function setCommander(Sociable $commander)

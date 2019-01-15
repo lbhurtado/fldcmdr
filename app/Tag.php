@@ -59,8 +59,12 @@ class Tag extends Model
         return $this->morphTo();
     }
 
-    public function setGroup(Group $group)
+    public function setGroup(Group $group, $detach = false)
     {
+        if ($detach == true) {
+            $this->groups()->detach();
+        }
+
         $this->groups()->save($group);
 
         return $this;

@@ -21,7 +21,18 @@ class ContactEventSubscriber
                     $tag->setArea($area, true);
                 }
         });
+    }
 
+    public function onContactGroupSynced(ContactEvent $event)
+    {
+        $contact = $event->getContact();
+        $group = $event->getGroup();
+        Tag::all()->each(function ($tag) use ($contact, $group) {
+            if ($tag->tagger instanceof Contact)
+                if ($tag->tagger->id == $contact->id) {
+                    $tag->setGroup($group, true);
+                }
+        });
     }
 
     public function subscribe($events)
@@ -29,6 +40,11 @@ class ContactEventSubscriber
         $events->listen(
             ContactEvents::AREA_SYNCED, 
             ContactEventSubscriber::class.'@onContactAreaSynced'
+        );
+
+        $events->listen(
+            ContactEvents::GROUP_SYNCED, 
+            ContactEventSubscriber::class.'@onContactGroupSynced'
         );
     }  
 }
