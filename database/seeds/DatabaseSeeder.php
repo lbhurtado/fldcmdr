@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(CampaignSeeder::class); 
         // $this->call(GroupSeeder::class);
         // $this->call(AreaSeeder::class);
-        // $this->call(RolePermissionSeeder::class);
+        $this->call(RolePermissionSeeder::class);
         $this->call(QuickRankSeeder::class);
         $this->call(UserSeeder::class);
         // $this->call(SurveySeeder::class);
