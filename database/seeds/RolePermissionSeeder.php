@@ -17,6 +17,7 @@ class RolePermissionSeeder extends Seeder
         DB::table('roles')->delete();
 
         collect(config('chatbot.permissions'))->each(function ($permissions, $role) {
+            $guard_name = 'web';
             foreach (explode(':', $role) as $key => $value) {
                  switch ($key) {
                      case 0:
